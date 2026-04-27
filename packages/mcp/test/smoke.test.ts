@@ -5,8 +5,9 @@
 // D-01 thin smoke layer — catches wiring regressions like the Phase 14 decoder bugs.
 // All spawns use process.execPath (the running Node binary) + array args — never shell mode.
 
-import { describe, it, expect } from 'vitest';
-import { spawn } from 'node:child_process';
+import { describe, it, expect, afterEach } from 'vitest';
+import { spawn, type ChildProcess } from 'node:child_process';
+import { once } from 'node:events';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -87,57 +88,70 @@ async function handshake(child: ReturnType<typeof spawn>): Promise<void> {
 }
 
 describe('MCP server smoke', () => {
-  it('registers all 9 MCP tools (tools/list round-trip)', async () => {
-    const child = spawnServer();
-    try {
-      await handshake(child);
+  let children: ChildProcess[] = [];
 
-      writeFrame(child, { jsonrpc: '2.0', id: 2, method: 'tools/list' });
-      const response = (await readResponse(child, 2)) as {
-        result: { tools: Array<{ name: string }> };
-      };
+  function trackedSpawnServer(): ChildProcess {
+    const c = spawnServer();
+    children.push(c);
+    return c;
+  }
 
-      expect(response.result.tools).toHaveLength(9);
-
-      const names = response.result.tools.map((t) => t.name).sort();
-      expect(names).toEqual([
-        'localground_audit',
-        'localground_cleanup_scan',
-        'localground_copy',
-        'localground_decode_path_hash',
-        'localground_detect',
-        'localground_health_check',
-        'localground_placeholder_check',
-        'localground_seed',
-        'localground_verify',
-      ]);
-    } finally {
-      child.kill();
+  afterEach(async () => {
+    for (const c of children) {
+      if (c.exitCode === null) {
+        c.kill();
+        await Promise.race([
+          once(c, 'exit'),
+          new Promise((r) => setTimeout(r, 1000)),
+        ]);
+      }
     }
+    children = [];
+  });
+
+  it('registers all 9 MCP tools (tools/list round-trip)', async () => {
+    const child = trackedSpawnServer();
+    await handshake(child);
+
+    writeFrame(child, { jsonrpc: '2.0', id: 2, method: 'tools/list' });
+    const response = (await readResponse(child, 2)) as {
+      result: { tools: Array<{ name: string }> };
+    };
+
+    expect(response.result.tools).toHaveLength(9);
+
+    const names = response.result.tools.map((t) => t.name).sort();
+    expect(names).toEqual([
+      'localground_audit',
+      'localground_cleanup_scan',
+      'localground_copy',
+      'localground_decode_path_hash',
+      'localground_detect',
+      'localground_health_check',
+      'localground_placeholder_check',
+      'localground_seed',
+      'localground_verify',
+    ]);
   });
 
   it('localground_detect tool returns structured JSON content', async () => {
-    const child = spawnServer();
-    try {
-      await handshake(child);
+    const child = trackedSpawnServer();
+    await handshake(child);
 
-      writeFrame(child, {
-        jsonrpc: '2.0',
-        id: 3,
-        method: 'tools/call',
-        params: { name: 'localground_detect', arguments: {} },
-      });
-      const response = (await readResponse(child, 3, 15000)) as {
-        result: { content: Array<{ type: string; text: string }> };
-      };
+    writeFrame(child, {
+      jsonrpc: '2.0',
+      id: 3,
+      method: 'tools/call',
+      params: { name: 'localground_detect', arguments: {} },
+    });
+    const response = (await readResponse(child, 3, 15000)) as {
+      result: { content: Array<{ type: string; text: string }> };
+    };
 
-      expect(response.result.content[0].type).toBe('text');
+    expect(response.result.content[0].type).toBe('text');
 
-      // The text body is JSON-serialized core Result data — must parse as JSON
-      const parsed = JSON.parse(response.result.content[0].text) as { platform?: unknown };
-      expect(parsed).toHaveProperty('platform');
-    } finally {
-      child.kill();
-    }
+    // The text body is JSON-serialized core Result data — must parse as JSON
+    const parsed = JSON.parse(response.result.content[0].text) as { platform?: unknown };
+    expect(parsed).toHaveProperty('platform');
   });
 });
