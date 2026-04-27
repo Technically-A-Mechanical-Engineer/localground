@@ -7,7 +7,8 @@
 // All spawns use process.execPath + array args — never shell mode, never execSync.
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn, spawnSync, type ChildProcess } from 'node:child_process';
+import { once } from 'node:events';
 import path from 'node:path';
 import os from 'node:os';
 import fs from 'node:fs/promises';
@@ -15,6 +16,10 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DIST_PATH = path.resolve(__dirname, '..', 'dist', 'index.js');
+
+// Module-scoped children array — populated by runCli, reaped by per-describe afterEach hooks.
+// Each describe block clears its slice via `children.length = 0` in afterEach to avoid bleed.
+const children: ChildProcess[] = [];
 
 // EXIT_SUCCESS = 0, EXIT_FAILURE = 1, EXIT_ERROR = 2 (from packages/cli/src/format.ts)
 const EXIT_SUCCESS = 0;
@@ -37,6 +42,7 @@ function runCli(args: string[], opts: { cwd?: string } = {}): Promise<RunResult>
       cwd: opts.cwd,
       stdio: ['ignore', 'pipe', 'pipe'],
     });
+    children.push(child);
 
     let stdout = '';
     let stderr = '';
@@ -70,11 +76,33 @@ function runCli(args: string[], opts: { cwd?: string } = {}): Promise<RunResult>
   });
 }
 
+/**
+ * Reap any child processes still alive at end of test — kills + awaits exit
+ * (with 1000ms timeout fallback) to prevent the Vitest cleanup hang that
+ * happens when child.kill() is called but exit is never awaited.
+ */
+async function reapChildren(): Promise<void> {
+  for (const c of children) {
+    if (c.exitCode === null) {
+      c.kill();
+      await Promise.race([
+        once(c, 'exit'),
+        new Promise((r) => setTimeout(r, 1000)),
+      ]);
+    }
+  }
+  children.length = 0;
+}
+
 // ---------------------------------------------------------------------------
 // Read-only commands (no fixture needed)
 // ---------------------------------------------------------------------------
 
 describe('CLI smoke: read-only commands', () => {
+  afterEach(async () => {
+    await reapChildren();
+  });
+
   it('detect --json returns parseable env JSON with platform field', async () => {
     const result = await runCli(['detect', '--json']);
     expect(result.exitCode).toBe(EXIT_SUCCESS);
@@ -96,6 +124,7 @@ describe('CLI smoke: fixture-based commands', () => {
 
   afterEach(async () => {
     await fs.rm(tmpDir, { recursive: true, force: true });
+    await reapChildren();
   });
 
   // audit with --projects on a local git fixture — avoids auto-discovery which may hit slow cloud paths
