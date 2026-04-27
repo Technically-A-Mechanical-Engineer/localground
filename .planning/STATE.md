@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
-status: planning
+status: executing
 stopped_at: Phase 18 context gathered
-last_updated: "2026-04-27T12:28:09.638Z"
+last_updated: "2026-04-27T13:02:36.385Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 5
+  total_plans: 7
   completed_plans: 5
-  percent: 100
+  percent: 71
 ---
 
 # Project State
 
-**Status:** Ready to plan
+**Status:** Ready to execute
 **Last Activity:** 2026-04-27
 **Current focus:** Phase 17 — core-decoder-calibration
 
@@ -32,8 +32,8 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 Phase: 18
 Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-04-27
+Status: Ready to execute
+Last activity: 2026-04-27 -- Phase 18 planning complete
 
 ## Roadmap Summary
 
