@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: executing
-stopped_at: Phase 16 context gathered
-last_updated: "2026-04-27T02:24:56.485Z"
+stopped_at: Plan 16-01 complete (TEST-03/TEST-04 hygiene fixes shipped)
+last_updated: "2026-04-27T02:43:30.494Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 3
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 33
 ---
 
 # Project State
 
-**Status:** Ready to execute
+**Status:** Executing Phase 16
 **Last Activity:** 2026-04-27
-**Current focus:** Roadmap created (Phases 16-20); next step is `/gsd-plan-phase 16` to generate plans for Test Infrastructure Hardening
+**Current focus:** Phase 16 — test-infrastructure-hardening (plan 16-01 complete, 16-02 next)
 
 ## Project Reference
 
@@ -30,10 +30,10 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 ## Current Position
 
-Phase: Not started (roadmap defined; awaiting plans)
-Plan: —
-Status: Ready to execute
-Last activity: 2026-04-27 -- Phase 16 planning complete
+Phase: 16 (test-infrastructure-hardening) — EXECUTING
+Plan: 2 of 3 (16-01 complete; 16-02 next)
+Status: Executing Phase 16
+Last activity: 2026-04-27 — 16-01 (TEST-03/TEST-04 hygiene fixes) complete
 
 ## Roadmap Summary
 
@@ -61,6 +61,9 @@ Promoted into v3.0.1 Active scope (see ROADMAP.md and REQUIREMENTS.md): 999.1, 9
 
 Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era decisions added at milestone close).
 
+- [Phase 16]: Per D-Claude-1: decode.test.ts replacement asserts data.decodedPath/hashDirName on the success branch only — no failure-branch assertion to preserve test's documented 'must NOT throw' invariant
+- [Phase 16]: Per D-01: no opportunistic edits — both 16-01 tasks stayed surgical inside their respective it() blocks (1-line and 5-line deltas)
+
 ### Pending Todos
 
 None.
@@ -74,6 +77,6 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-04-27T01:52:14.840Z
-Stopped at: Phase 16 context gathered
-Resume file: .planning/phases/16-test-infrastructure-hardening/16-CONTEXT.md
+Last session: 2026-04-27T02:43:22.187Z
+Stopped at: Plan 16-01 complete (TEST-03/TEST-04 hygiene fixes shipped)
+Resume file: .planning/phases/16-test-infrastructure-hardening/16-02-PLAN.md

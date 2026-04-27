@@ -31,8 +31,8 @@ Quality-gate restoration and test hygiene cleanup. Source: backlog item 999.3.
 
 - [ ] **TEST-01**: `tsc --build` restored as a CI quality gate alongside tsup; D-18 (~30 implicit-any errors that tsup tolerates but tsc rejects) resolved without weakening strict mode
 - [ ] **TEST-02**: Vitest cleanup hang on `npm test` exit eliminated via `afterEach` cleanup of spawned children in MCP and CLI smoke tests; `npm test` exits with the same code Vitest reports
-- [ ] **TEST-03**: L-01 closed — `placeholder.test.ts` adds an explicit `expect(platformResult.success).toBe(true)` precondition guard so dependent assertions can never silently no-op
-- [ ] **TEST-04**: L-02 closed — `decode.test.ts` tautological assertion (`expect(typeof result.success).toBe('boolean')`, which can never fail given the discriminated union) replaced with a meaningful check
+- [x] **TEST-03**: L-01 closed — `placeholder.test.ts` adds an explicit `expect(platformResult.success).toBe(true)` precondition guard so dependent assertions can never silently no-op
+- [x] **TEST-04**: L-02 closed — `decode.test.ts` tautological assertion (`expect(typeof result.success).toBe('boolean')`, which can never fail given the discriminated union) replaced with a meaningful check
 
 ### Packaging
 
@@ -85,8 +85,8 @@ Which phases cover which requirements. Updated by the roadmapper.
 |-------------|-------|--------|
 | TEST-01 | Phase 16 | Pending |
 | TEST-02 | Phase 16 | Pending |
-| TEST-03 | Phase 16 | Pending |
-| TEST-04 | Phase 16 | Pending |
+| TEST-03 | Phase 16 | Complete |
+| TEST-04 | Phase 16 | Complete |
 | CORE-13 | Phase 17 | Pending |
 | CORE-14 | Phase 17 | Pending |
 | PKG-01 | Phase 18 | Pending |
