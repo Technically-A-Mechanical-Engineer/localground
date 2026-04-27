@@ -48,7 +48,9 @@
   2. Re-running the user's original 23-path-hash reproduction case (or an equivalent reproduction case with documented coverage of the same encoding classes) returns zero unexplained `no_candidates` results — every `no_candidates` either resolves to an existing folder or has a documented reason (e.g., source folder deleted)
   3. Decoder unit tests cover at least one case per newly-supported special character class and pass on Windows, macOS, and Linux
   4. WR-01 entry in CONTEXT.md (or equivalent) is marked closed with a link to the verifying test cases
-**Plans:** TBD
+**Plans:** 2 plans
+- [ ] 17-01-PLAN.md (Wave 1) — CORE-13 regex widening + per-class round-trip tests in decode.ts and decode.test.ts (D-01, D-02, D-05, D-06, D-07)
+- [ ] 17-02-PLAN.md (Wave 2) — CORE-14 closure: 17-VERIFICATION.md with deleted-source diagnostic table + PROJECT.md WR-01 row + v3.0.0-ROADMAP.md forward-pointer (D-03, D-04, D-08, D-09)
 
 ### Phase 18: Packaging Polish
 **Goal:** Published `@localground/mcp` and `@localground/cli` tarballs contain only compiled output, cutting download size for end users.
@@ -146,7 +148,7 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 14. Standalone CLI and Claude Code Skills | v3.0.0 | 11/11 | Complete | 2026-04-26 |
 | 15. Testing, CI, Publishing, and Documentation | v3.0.0 | 6/6 | Complete | 2026-04-26 |
 | 16. Test Infrastructure Hardening | v3.0.1 | 3/3 | Complete    | 2026-04-27 |
-| 17. Core Decoder Calibration | v3.0.1 | 0/0 | Not Started | - |
+| 17. Core Decoder Calibration | v3.0.1 | 0/2 | Plans Created | - |
 | 18. Packaging Polish | v3.0.1 | 0/0 | Not Started | - |
 | 19. Skill Runtime UAT | v3.0.1 | 0/0 | Not Started | - |
 | 20. Release Pipeline Validation | v3.0.1 | 0/0 | Not Started | - |
