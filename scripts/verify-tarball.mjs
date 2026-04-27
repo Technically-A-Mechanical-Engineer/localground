@@ -212,7 +212,7 @@ async function verifyOne(pkg) {
 
     console.error(`[verify-tarball] ${pkg.name}: OK (version=${versionResult.stdout.trim()})`);
   } finally {
-    await fs.rm(tmpDir, { recursive: true, force: true });
+    await fs.rm(tmpDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
   }
 }
 
