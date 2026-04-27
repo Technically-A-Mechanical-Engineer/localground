@@ -42,5 +42,8 @@ jobs:
       - name: Strict type check (tsc --build)
         run: npm run build:check
 
+      - name: Verify tarball shape (npm pack + clean install)
+        run: npm run verify:tarball
+
       - name: Run test suite
         run: npm test

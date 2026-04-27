@@ -14,6 +14,7 @@
     "build:check": "tsc --build tsconfig.json && tsc --noEmit -p tsconfig.test.json",
     "pretest": "npm run build",
     "test": "vitest run",
+    "verify:tarball": "node scripts/verify-tarball.mjs",
     "clean": "npm run clean --workspaces --if-present"
   },
   "devDependencies": {
