@@ -1,11 +1,10 @@
 ---
 gsd_state_version: 1.0
-milestone: none
-milestone_name: ""
-status: milestone-closed
-stopped_at: v3.0.0 milestone closed 2026-04-26 — awaiting next-milestone planning via /gsd-new-milestone
-last_updated: "2026-04-26T22:00:00Z"
-last_activity: 2026-04-26
+milestone: v3.0.1
+milestone_name: Validation and Hardening
+status: planning
+last_updated: "2026-04-27T01:17:26.532Z"
+last_activity: 2026-04-27
 progress:
   total_phases: 0
   completed_phases: 0
@@ -16,13 +15,13 @@ progress:
 
 # Project State
 
-**Status:** v3.0.0 milestone closed — awaiting next-milestone planning
+**Status:** v3.0.1 — Validation and Hardening — defining requirements
 **Last Activity:** 2026-04-26
-**Current focus:** Next milestone (v3.0.1) — runs on `/gsd-new-milestone`
+**Current focus:** Defining v3.0.1 requirements and roadmap
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.0 milestone close)
+See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 **Core value:** Get Claude Code users off cloud-synced storage safely — no data loss, no silent failures, every action verified before and after.
 
@@ -30,18 +29,18 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.0 milestone close)
 
 ## Current Position
 
-No active milestone. Next step: `/gsd-new-milestone` to start v3.0.1 (or whichever version the user chooses).
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-27 — Milestone v3.0.1 started
 
-## Backlog (captured at v3.0.0 close)
+## Backlog
 
-Six unsequenced items in ROADMAP.md `## Backlog` section, ready for promotion via `/gsd-review-backlog`:
+One unsequenced item remaining in ROADMAP.md `## Backlog` section after v3.0.1 promotion:
 
-- **999.1** UAT Tests 12-16 — skill end-to-end MCP routing (Test 15 critical: continuation-token loop + state file handoff)
-- **999.2** Pipeline first-run validation — ci.yml + release.yml live execution
-- **999.3** Test infrastructure cleanup — Vitest hang, L-01, L-02, tsc strict-mode
-- **999.4** Packaging polish — `files: ["dist"]` for tarball size reduction
-- **999.5** TIER 2 streaming refactor of spawnTool
-- **999.6** encode() regex calibration (WR-01)
+- **999.5** TIER 2 streaming refactor of spawnTool — deferred to v3.1.0 (architectural change with real risk surface; TIER 1 mitigation already shipped in Phase 14-11)
+
+Promoted into v3.0.1 Active scope (see ROADMAP.md and REQUIREMENTS.md): 999.1, 999.2, 999.3, 999.4, 999.6.
 
 ## Accumulated Context
 
@@ -56,11 +55,12 @@ None.
 ### Blockers/Concerns
 
 None at v3.0.0 close. Two known-deferred validation items:
+
 - ci.yml first run will land on first push to master after this commit cycle
 - release.yml first OIDC + provenance run will land on first `vN.N.N` tag push (v3.0.1+); v3.0.0 was published manually due to npm/cli#8544
 
 ## Session Continuity
 
-Last session: 2026-04-26 (v3.0.0 milestone close)
-Stopped at: Completed milestone close-out — REQUIREMENTS.md and ROADMAP.md drift reconciled, Backlog seeded with 6 items (999.1-999.6), milestone archive created at `.planning/milestones/v3.0.0-ROADMAP.md` and `.planning/milestones/v3.0.0-REQUIREMENTS.md`, MILESTONES.md updated, PROJECT.md fully evolved
-Resume file: None (clean handoff to `/gsd-new-milestone`)
+Last session: 2026-04-26 (v3.0.1 milestone start)
+Stopped at: PROJECT.md updated with Current Milestone v3.0.1 section and Active requirements; STATE.md reset via SDK; about to define formal REQUIREMENTS.md and create roadmap.
+Resume file: None — `/gsd-new-milestone` workflow is mid-execution and will continue inline through requirements + roadmap.

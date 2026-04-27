@@ -8,6 +8,20 @@ A toolkit that helps Claude Code CLI users migrate project folders off cloud-syn
 
 Get Claude Code users off cloud-synced storage safely — no data loss, no silent failures, every action verified before and after.
 
+## Current Milestone: v3.0.1 — Validation and Hardening
+
+**Goal:** Validate that v3.0.0 actually works end-to-end at runtime (skills + pipelines), close the known correctness gap in path-hash decoding, and reduce npm tarball weight — all while v3.0.0 implementation context is still warm.
+
+**Target features:**
+
+- Execute UAT Tests 12-16 against the registered `@localground/mcp` server — Test 15 (`/localground:migrate` two-session orchestration) is the only test that exercises the continuation-token loop and `localground-migrate-state.json` handoff
+- Land first end-to-end runs of `ci.yml` (3-OS matrix on master push) and `release.yml` (OIDC + provenance on v3.0.1 tag)
+- Restore `tsc --build` as a CI quality gate, eliminate the Vitest cleanup hang on `npm test` exit, and close two LOW-severity test hygiene findings (L-01, L-02)
+- Trim npm tarball download size by adding `"files": ["dist"]` to `packages/mcp/package.json` and `packages/cli/package.json`
+- Calibrate the `encode()` regex in `packages/core/src/environment/decode.ts` against actual Claude Code CLI behavior so silent decode failures stop slipping through (WR-01)
+
+**Key context:** v3.0.0 closed with two pipelines structurally verified but unexecuted, five UAT tests blocked behind MCP-server registration, and one regex correctness gap (6 of 23 path-hashes returned `no_candidates` on the user's machine, root cause undetermined). The TIER 2 streaming refactor of `spawnTool` (999.5) is deliberately deferred to v3.1.0 — TIER 1 mitigation already shipped, and the architectural change carries enough risk surface to belong in a minor release.
+
 ## Current State
 
 **v3.0.0 shipped 2026-04-26** to npm:
@@ -61,16 +75,20 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 
 ### Active
 
-(Empty — no active milestone. Next milestone planning starts with `/gsd-new-milestone`.)
+**v3.0.1 — Validation and Hardening (in planning):**
+
+- [ ] UAT Tests 12-16 executed end-to-end with `@localground/mcp` registered in Claude Code; Test 15 validates two-session continuation-token loop and state-file handoff (promoted from 999.1)
+- [ ] `ci.yml` first run on master green across the 3-OS matrix on Node 20.x (promoted from 999.2)
+- [ ] `release.yml` first OIDC + provenance publish lands successfully on v3.0.1 tag (promoted from 999.2)
+- [ ] `tsc --build` restored as CI quality gate; D-18 implicit-any regression resolved (promoted from 999.3)
+- [ ] Vitest cleanup hang eliminated via `afterEach` cleanup of spawned children in MCP/CLI smoke tests (promoted from 999.3)
+- [ ] L-01 (`placeholder.test.ts` silent precondition guard) and L-02 (`decode.test.ts` tautological assertion) hygiene findings closed (promoted from 999.3)
+- [ ] `mcp` and `cli` npm tarballs limited to `dist/` via `"files": ["dist"]` (promoted from 999.4)
+- [ ] `encode()` regex in `packages/core/src/environment/decode.ts` calibrated against actual Claude Code CLI encoding behavior; silent decode failures eliminated (promoted from 999.6)
 
 ### Backlog (captured in ROADMAP.md `## Backlog`, 999.x numbering)
 
-- **999.1** UAT Tests 12-16 (skill end-to-end MCP routing, Test 15 critical)
-- **999.2** Pipeline first-run validation (ci.yml + release.yml live execution)
-- **999.3** Test infrastructure cleanup (Vitest hang, L-01, L-02, tsc strict-mode)
-- **999.4** Packaging polish (`files: ["dist"]` for tarball size)
-- **999.5** TIER 2 streaming refactor of spawnTool
-- **999.6** encode() regex calibration (WR-01)
+- **999.5** TIER 2 streaming refactor of spawnTool — deferred to v3.1.0 (architectural change; TIER 1 mitigation already shipped)
 
 ### Out of Scope
 
@@ -153,4 +171,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-26 after v3.0.0 milestone close — three-package monorepo (@localground/core, @localground/mcp, @localground/cli) shipped to npm; 5 Claude Code skills delivered with `allowed-tools` frontmatter; v2.0.0 prompts preserved as no-install fallback; UAT-discovered defects (decoder mixed-punctuation, audit scope, silent operations) closed via gap-closure plans 14-08..14-11; 79-test Vitest suite with 3-OS CI matrix; OIDC trusted-publisher contract configured for v3.0.1+.*
+*Last updated: 2026-04-26 after v3.0.1 milestone start — promoted backlog items 999.1, 999.2, 999.3, 999.4, 999.6 into Active; 999.5 (TIER 2 streaming refactor) deferred to v3.1.0.*
