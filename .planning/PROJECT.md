@@ -157,6 +157,7 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 | Real-fs test fixtures (not mocked) — v3.0.0 | Phase 14 found Windows reparse-point and OneDrive-path bugs that mocks cannot reproduce. | ✓ Validated in v3.0.0 (caught real platform bugs) |
 | Filesystem-listing reverse-encode decoder — v3.0.0 | Sidesteps separator-guessing; any folder that physically exists decodes correctly. | ✓ Validated in v3.0.0 (closed UAT Defect B) |
 | Path-shape-only `looksLikeProject` predicate — v3.0.0 | No `.git`/`package.json` marker check. Supports plain-folder projects (D-01) without polluting audit with root paths. | ✓ Validated in v3.0.0 |
+| WR-01 (encode regex calibration) closed via Phase 17 — regex widened to cover seven CORE-13 char classes (apostrophe, ampersand, brackets, plus, equals, percent) | Defensive/forward-looking widening; 17/17 currently-extant path-hashes already round-trip and 6/6 `no_candidates` failures are documented as deleted source folders. Targeted, not catch-all (D-01). | ✓ Validated in v3.0.1 — see [`.planning/phases/17-core-decoder-calibration/17-VERIFICATION.md`](phases/17-core-decoder-calibration/17-VERIFICATION.md) |
 
 ## Evolution
 
@@ -176,4 +177,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-27 after Phase 16 (Test Infrastructure Hardening) complete — TEST-01 through TEST-04 moved to Validated; remaining v3.0.1 work covers Phases 17-20 (decoder calibration, packaging polish, skill UAT, release pipeline validation).*
+*Last updated: 2026-04-27 after Phase 17 (Core Decoder Calibration) complete — CORE-13 and CORE-14 satisfied; WR-01 closed and traced to 17-VERIFICATION.md; remaining v3.0.1 work covers Phases 18-20 (packaging polish, skill UAT, release pipeline validation).*
