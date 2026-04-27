@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: executing
-stopped_at: Plan 16-01 complete (TEST-03/TEST-04 hygiene fixes shipped)
-last_updated: "2026-04-27T02:43:30.494Z"
+stopped_at: Plan 16-02 complete (TEST-02 Vitest cleanup hang eliminated; npm test exits cleanly)
+last_updated: "2026-04-27T02:58:22.221Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
-  percent: 33
+  completed_plans: 2
+  percent: 67
 ---
 
 # Project State
 
 **Status:** Executing Phase 16
 **Last Activity:** 2026-04-27
-**Current focus:** Phase 16 — test-infrastructure-hardening (plan 16-01 complete, 16-02 next)
+**Current focus:** Phase 16 — test-infrastructure-hardening (plans 16-01 + 16-02 complete, 16-03 next)
 
 ## Project Reference
 
@@ -31,9 +31,9 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 ## Current Position
 
 Phase: 16 (test-infrastructure-hardening) — EXECUTING
-Plan: 2 of 3 (16-01 complete; 16-02 next)
+Plan: 3 of 3 (16-01 complete; 16-02 complete; 16-03 next)
 Status: Executing Phase 16
-Last activity: 2026-04-27 — 16-01 (TEST-03/TEST-04 hygiene fixes) complete
+Last activity: 2026-04-27 — 16-02 (TEST-02 Vitest cleanup hang elimination) complete
 
 ## Roadmap Summary
 
@@ -63,6 +63,7 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 
 - [Phase 16]: Per D-Claude-1: decode.test.ts replacement asserts data.decodedPath/hashDirName on the success branch only — no failure-branch assertion to preserve test's documented 'must NOT throw' invariant
 - [Phase 16]: Per D-01: no opportunistic edits — both 16-01 tasks stayed surgical inside their respective it() blocks (1-line and 5-line deltas)
+- [Phase 16]: Per D-05/D-06/D-07: TEST-02 closed via describe-scoped afterEach reaper (no Vitest pool isolation, no vitest.config.ts changes); existing CLI fixture-based afterEach EXTENDED with reapChildren rather than added as a second hook
 
 ### Pending Todos
 
@@ -77,6 +78,6 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-04-27T02:43:22.187Z
-Stopped at: Plan 16-01 complete (TEST-03/TEST-04 hygiene fixes shipped)
-Resume file: .planning/phases/16-test-infrastructure-hardening/16-02-PLAN.md
+Last session: 2026-04-27T02:58:02.071Z
+Stopped at: Plan 16-02 complete (TEST-02 Vitest cleanup hang eliminated; npm test exits cleanly)
+Resume file: .planning/phases/16-test-infrastructure-hardening/16-03-PLAN.md
