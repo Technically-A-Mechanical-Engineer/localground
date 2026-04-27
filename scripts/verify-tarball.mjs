@@ -119,6 +119,7 @@ function dryRunFiles(pkgName) {
   const r = spawnSync(process.execPath, [NPM_CLI_JS, 'pack', '--dry-run', '--json', '-w', pkgName], {
     cwd: REPO_ROOT,
     encoding: 'utf8',
+    timeout: SPAWN_TIMEOUT_MS,
   });
   if (r.status !== 0) {
     throw new Error(`npm pack --dry-run failed for ${pkgName}: ${r.stderr}`);
@@ -132,7 +133,7 @@ function packReal(pkgName, outDir) {
   const r = spawnSync(
     process.execPath,
     [NPM_CLI_JS, 'pack', '--pack-destination', outDir, '-w', pkgName, '--json'],
-    { cwd: REPO_ROOT, encoding: 'utf8' },
+    { cwd: REPO_ROOT, encoding: 'utf8', timeout: SPAWN_TIMEOUT_MS },
   );
   if (r.status !== 0) {
     throw new Error(`npm pack failed for ${pkgName}: ${r.stderr}`);
