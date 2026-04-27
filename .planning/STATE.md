@@ -4,21 +4,21 @@ milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: executing
 stopped_at: Phase 17 context gathered
-last_updated: "2026-04-27T04:56:43.086Z"
+last_updated: "2026-04-27T05:16:02.393Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 5
-  completed_plans: 3
-  percent: 60
+  completed_plans: 4
+  percent: 80
 ---
 
 # Project State
 
 **Status:** Ready to execute
 **Last Activity:** 2026-04-27
-**Current focus:** Phase 16 — test-infrastructure-hardening (plans 16-01 + 16-02 complete, 16-03 next)
+**Current focus:** Phase 17 — core-decoder-calibration
 
 ## Project Reference
 
@@ -30,10 +30,10 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 ## Current Position
 
-Phase: 17
-Plan: Not started
+Phase: 17 (core-decoder-calibration) — EXECUTING
+Plan: 2 of 2
 Status: Ready to execute
-Last activity: 2026-04-27 -- Phase 17 planning complete
+Last activity: 2026-04-27
 
 ## Roadmap Summary
 
@@ -66,6 +66,8 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase 16]: Per D-05/D-06/D-07: TEST-02 closed via describe-scoped afterEach reaper (no Vitest pool isolation, no vitest.config.ts changes); existing CLI fixture-based afterEach EXTENDED with reapChildren rather than added as a second hook
 - [Phase 16]: Phase 16-03: D-18 forecast did not materialize — surfaced 0 implicit-any errors after tsconfig.test.json gate landed; live-fire probe confirmed gate is active; Task 2 vacuous (no manufactured no-op commit)
 - [Phase 16]: Phase 16-03: tsconfig.test.json escape hatch (composite:false + noEmit:true at root) chosen over per-package include changes — preserves per-package rootDir while widening strict gate to test/**/* across all workspace packages
+- [Phase ?]: [Phase 17-01]: Per D-01 — encode() regex widened from /[\/: ,().]/g to /[\/: ,().'&[]+=%]/g (targeted, not catch-all)
+- [Phase ?]: [Phase 17-01]: Rule 3 deviation — added explicit `if (decodedPath !== null)` narrowing inside each new test to satisfy TEST-01 strict tsc gate without losing the loud-failure property of the preceding not.toBeNull() assertion
 
 ### Pending Todos
 
@@ -80,7 +82,7 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-04-27T04:01:43.576Z
+Last session: 2026-04-27T05:16:02.376Z
 Stopped at: Phase 17 context gathered
 Resume file: 
-.planning/phases/17-core-decoder-calibration/17-CONTEXT.md
+None
