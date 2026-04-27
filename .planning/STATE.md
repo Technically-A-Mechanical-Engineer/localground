@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
-status: ready_to_plan
-stopped_at: Plan 16-03 complete (TEST-01 closed structurally; tsc strict gate restored over src+test; CI step wired)
-last_updated: "2026-04-27T03:12:44.127Z"
+status: planning
+stopped_at: Phase 17 context gathered
+last_updated: "2026-04-27T04:01:43.596Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 1
   total_plans: 3
   completed_plans: 3
-  percent: 40
+  percent: 100
 ---
 
 # Project State
@@ -80,6 +80,7 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-04-27T03:12:36.586Z
-Stopped at: Plan 16-03 complete (TEST-01 closed structurally; tsc strict gate restored over src+test; CI step wired)
+Last session: 2026-04-27T04:01:43.576Z
+Stopped at: Phase 17 context gathered
 Resume file: 
+.planning/phases/17-core-decoder-calibration/17-CONTEXT.md
