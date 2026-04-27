@@ -46,7 +46,7 @@ npm tarball weight reduction. Source: backlog item 999.4.
 Decoder regex coverage gap closure. Source: backlog item 999.6.
 
 - [x] **CORE-13**: `encode()` regex in `packages/core/src/environment/decode.ts` calibrated against actual Claude Code CLI encoding behavior; folder names containing apostrophes, ampersands, brackets, parentheses, plus signs, equals signs, percent signs, and other special characters round-trip through `encode()` / `decode()` correctly (extends v3.0.0 CORE-02)
-- [ ] **CORE-14**: WR-01 closed — silent decode failures from regex undercoverage eliminated; verified by reproducing the user's original 23-path-hash sample (where 6 returned `no_candidates`) or an equivalent reproduction case, with all `no_candidates` either explained (deleted source folder) or fixed (regex-coverage gap)
+- [x] **CORE-14**: WR-01 closed — silent decode failures from regex undercoverage eliminated; verified by reproducing the user's original 23-path-hash sample (where 6 returned `no_candidates`) or an equivalent reproduction case, with all `no_candidates` either explained (deleted source folder) or fixed (regex-coverage gap)
 
 ### Documentation
 
@@ -88,7 +88,7 @@ Which phases cover which requirements. Updated by the roadmapper.
 | TEST-03 | Phase 16 | Complete |
 | TEST-04 | Phase 16 | Complete |
 | CORE-13 | Phase 17 | Complete |
-| CORE-14 | Phase 17 | Pending |
+| CORE-14 | Phase 17 | Complete |
 | PKG-01 | Phase 18 | Pending |
 | PKG-02 | Phase 18 | Pending |
 | UAT-01 | Phase 19 | Pending |

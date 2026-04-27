@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
-status: executing
-stopped_at: Phase 17 context gathered
-last_updated: "2026-04-27T05:16:02.393Z"
+status: verifying
+stopped_at: Phase 17 completed (CORE-13 + CORE-14 satisfied; WR-01 closed)
+last_updated: "2026-04-27T05:26:22.822Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 5
-  completed_plans: 4
-  percent: 80
+  completed_plans: 5
+  percent: 100
 ---
 
 # Project State
 
-**Status:** Ready to execute
+**Status:** Phase complete — ready for verification
 **Last Activity:** 2026-04-27
 **Current focus:** Phase 17 — core-decoder-calibration
 
@@ -30,9 +30,9 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 ## Current Position
 
-Phase: 17 (core-decoder-calibration) — EXECUTING
+Phase: 17 (core-decoder-calibration) — COMPLETE (CORE-13 + CORE-14 satisfied; WR-01 closed)
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-27
 
 ## Roadmap Summary
@@ -68,6 +68,7 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase 16]: Phase 16-03: tsconfig.test.json escape hatch (composite:false + noEmit:true at root) chosen over per-package include changes — preserves per-package rootDir while widening strict gate to test/**/* across all workspace packages
 - [Phase ?]: [Phase 17-01]: Per D-01 — encode() regex widened from /[\/: ,().]/g to /[\/: ,().'&[]+=%]/g (targeted, not catch-all)
 - [Phase ?]: [Phase 17-01]: Rule 3 deviation — added explicit `if (decodedPath !== null)` narrowing inside each new test to satisfy TEST-01 strict tsc gate without losing the loud-failure property of the preceding not.toBeNull() assertion
+- [Phase 17]: [Phase 17-02]: WR-01 closed via Phase 17 — encode regex calibration shipped, 6/6 no_candidates documented as deleted sources, traced via 17-VERIFICATION.md (PROJECT.md Key Decisions row + v3.0.0-ROADMAP.md:144 forward-pointer; CORE-14 closure via 6-entry deleted-source diagnostic table in 17-VERIFICATION.md)
 
 ### Pending Todos
 
@@ -82,7 +83,7 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-04-27T05:16:02.376Z
-Stopped at: Phase 17 context gathered
+Last session: 2026-04-27T05:26:22.805Z
+Stopped at: Phase 17 completed (CORE-13 + CORE-14 satisfied; WR-01 closed)
 Resume file: 
 None
