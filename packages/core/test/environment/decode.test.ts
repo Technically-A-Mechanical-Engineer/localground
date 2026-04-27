@@ -106,6 +106,109 @@ describe('decode', () => {
       }
     },
   );
+
+  it('round-trips encode/decode for a folder name containing an apostrophe (CORE-13)', async () => {
+    const subDir = path.join(tmpDir, "O'Brien");
+    await fs.mkdir(subDir);
+
+    const hash = encode(subDir);
+    const result = await decode(hash);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.hashDirName).toBe(hash);
+      expect(result.data.decodedPath).not.toBeNull();
+      // The decoded path must resolve back to the actual fixture (case-insensitive on Windows)
+      if (result.data.decodedPath !== null) {
+        expect(result.data.decodedPath.toLowerCase()).toBe(subDir.toLowerCase());
+      }
+    }
+  });
+
+  it('round-trips encode/decode for a folder name containing an ampersand (CORE-13)', async () => {
+    const subDir = path.join(tmpDir, 'Rock & Roll');
+    await fs.mkdir(subDir);
+
+    const hash = encode(subDir);
+    const result = await decode(hash);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.hashDirName).toBe(hash);
+      expect(result.data.decodedPath).not.toBeNull();
+      if (result.data.decodedPath !== null) {
+        expect(result.data.decodedPath.toLowerCase()).toBe(subDir.toLowerCase());
+      }
+    }
+  });
+
+  it('round-trips encode/decode for a folder name containing brackets (CORE-13)', async () => {
+    const subDir = path.join(tmpDir, 'Foo[Bar]');
+    await fs.mkdir(subDir);
+
+    const hash = encode(subDir);
+    const result = await decode(hash);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.hashDirName).toBe(hash);
+      expect(result.data.decodedPath).not.toBeNull();
+      if (result.data.decodedPath !== null) {
+        expect(result.data.decodedPath.toLowerCase()).toBe(subDir.toLowerCase());
+      }
+    }
+  });
+
+  it('round-trips encode/decode for a folder name containing a plus sign (CORE-13)', async () => {
+    const subDir = path.join(tmpDir, '1+1');
+    await fs.mkdir(subDir);
+
+    const hash = encode(subDir);
+    const result = await decode(hash);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.hashDirName).toBe(hash);
+      expect(result.data.decodedPath).not.toBeNull();
+      if (result.data.decodedPath !== null) {
+        expect(result.data.decodedPath.toLowerCase()).toBe(subDir.toLowerCase());
+      }
+    }
+  });
+
+  it('round-trips encode/decode for a folder name containing an equals sign (CORE-13)', async () => {
+    const subDir = path.join(tmpDir, 'key=val');
+    await fs.mkdir(subDir);
+
+    const hash = encode(subDir);
+    const result = await decode(hash);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.hashDirName).toBe(hash);
+      expect(result.data.decodedPath).not.toBeNull();
+      if (result.data.decodedPath !== null) {
+        expect(result.data.decodedPath.toLowerCase()).toBe(subDir.toLowerCase());
+      }
+    }
+  });
+
+  it('round-trips encode/decode for a folder name containing a percent sign (CORE-13)', async () => {
+    const subDir = path.join(tmpDir, '100% Done');
+    await fs.mkdir(subDir);
+
+    const hash = encode(subDir);
+    const result = await decode(hash);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.hashDirName).toBe(hash);
+      expect(result.data.decodedPath).not.toBeNull();
+      if (result.data.decodedPath !== null) {
+        expect(result.data.decodedPath.toLowerCase()).toBe(subDir.toLowerCase());
+      }
+    }
+  });
 });
 
 describe('encode', () => {
