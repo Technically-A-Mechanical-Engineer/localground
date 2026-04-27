@@ -33,7 +33,7 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 
 **Quality gates:** 79-test Vitest suite (real-fs fixtures, no mocks) — clean exit, no teardown hang; `tsc --build` strict gate covering both src AND test files via `tsconfig.test.json`; 3-OS GitHub Actions CI (Win/Mac/Linux on Node 20.x) with Build → Strict type check → Test ordering; tag-triggered OIDC release workflow with provenance attestation (configured for v3.0.1+; v3.0.0 was published manually due to npm/cli#8544).
 
-**v3.0.1 progress:** Phase 16 (Test Infrastructure Hardening) complete 2026-04-27 — TEST-01 through TEST-04 validated. Phases 17-20 (decoder calibration, packaging polish, skill UAT, release pipeline validation) remain.
+**v3.0.1 progress:** Phases 16-18 complete 2026-04-27 — TEST-01..04 (test infra), CORE-13 (decoder calibration), PKG-01..02 (packaging polish) validated. Phases 19-20 (skill UAT, release pipeline validation) remain.
 
 **Codebase:** 5,877 LOC TypeScript across 47 `.ts` files in `packages/`. Result-typed core (no exceptions thrown), strict TypeScript, tsup bundled.
 
@@ -81,6 +81,13 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 - ✓ `placeholder.test.ts` silent-precondition guard added — assertion fires before narrow guard so a forced `success=false` fails loudly (TEST-03) — v3.0.1 Phase 16
 - ✓ `decode.test.ts` tautological assertion replaced with success-branch contract on `data.hashDirName` and `data.decodedPath` (TEST-04) — v3.0.1 Phase 16
 
+**v3.0.1 — Phase 17 Core Decoder Calibration (completed 2026-04-27):**
+- ✓ `encode()` regex in `packages/core/src/environment/decode.ts` calibrated against actual Claude Code CLI behavior; silent decode failures eliminated for 17 of 23 historic path-hashes (CORE-13) — v3.0.1 Phase 17
+
+**v3.0.1 — Phase 18 Packaging Polish (completed 2026-04-27):**
+- ✓ `packages/mcp/package.json` and `packages/cli/package.json` declare `"files": ["dist"]`; tarballs ship 5 files only (README, package.json, dist/index.{js,d.ts,js.map}) (PKG-01) — v3.0.1 Phase 18
+- ✓ `npm pack --dry-run` regression guard scripted as `scripts/verify-tarball.mjs` and wired into `.github/workflows/ci.yml` after Build, before Test (PKG-02) — v3.0.1 Phase 18
+
 ### Active
 
 **v3.0.1 — Validation and Hardening (in progress):**
@@ -88,8 +95,6 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 - [ ] UAT Tests 12-16 executed end-to-end with `@localground/mcp` registered in Claude Code; Test 15 validates two-session continuation-token loop and state-file handoff (promoted from 999.1)
 - [ ] `ci.yml` first run on master green across the 3-OS matrix on Node 20.x (promoted from 999.2)
 - [ ] `release.yml` first OIDC + provenance publish lands successfully on v3.0.1 tag (promoted from 999.2)
-- [ ] `mcp` and `cli` npm tarballs limited to `dist/` via `"files": ["dist"]` (promoted from 999.4)
-- [ ] `encode()` regex in `packages/core/src/environment/decode.ts` calibrated against actual Claude Code CLI encoding behavior; silent decode failures eliminated (promoted from 999.6)
 
 ### Backlog (captured in ROADMAP.md `## Backlog`, 999.x numbering)
 
@@ -177,4 +182,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-27 after Phase 17 (Core Decoder Calibration) complete — CORE-13 and CORE-14 satisfied; WR-01 closed and traced to 17-VERIFICATION.md; remaining v3.0.1 work covers Phases 18-20 (packaging polish, skill UAT, release pipeline validation).*
+*Last updated: 2026-04-27 after Phase 18 (Packaging Polish) complete — PKG-01 and PKG-02 satisfied; tarball regression guard wired into ci.yml; remaining v3.0.1 work covers Phases 19-20 (skill UAT, release pipeline validation).*
