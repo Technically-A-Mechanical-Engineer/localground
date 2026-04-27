@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
-status: executing
-stopped_at: Completed 18-01-PLAN.md
-last_updated: "2026-04-27T13:13:00.000Z"
+status: verifying
+stopped_at: Completed 18-02-PLAN.md
+last_updated: "2026-04-27T13:27:43.058Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 7
-  completed_plans: 6
-  percent: 86
+  completed_plans: 7
+  percent: 100
 ---
 
 # Project State
 
-**Status:** Ready to execute
+**Status:** Phase complete — ready for verification
 **Last Activity:** 2026-04-27
 **Current focus:** Phase 18 — Packaging Polish
 
@@ -32,8 +32,8 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 Phase: 18 (Packaging Polish) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
-Last activity: 2026-04-27 -- Plan 18-01 complete (PKG-01 closed, PKG-02 verified at manifest layer)
+Status: Phase complete — ready for verification
+Last activity: 2026-04-27
 
 ## Roadmap Summary
 
@@ -71,6 +71,8 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase 17]: [Phase 17-02]: WR-01 closed via Phase 17 — encode regex calibration shipped, 6/6 no_candidates documented as deleted sources, traced via 17-VERIFICATION.md (PROJECT.md Key Decisions row + v3.0.0-ROADMAP.md:144 forward-pointer; CORE-14 closure via 6-entry deleted-source diagnostic table in 17-VERIFICATION.md)
 - [Phase 18-01]: PKG-01 closed via 1-line additions to packages/mcp/package.json and packages/cli/package.json — `"files": ["dist"]` inserted between `exports` and `publishConfig` per canonical npm key order; bundle invariant preserved (`@localground/core` stays in devDependencies); D-04 honored (packages/core/package.json untouched); D-05 honored (no .npmignore created)
 - [Phase 18-01]: Rule 3 deviation — transient `/tmp/verify-pack.mjs` required `shell: true` on Windows for `npm.cmd` resolution (Node 20+ EINVAL on direct .cmd spawn); persistent CI-wired script in Plan 18-02 will use the production-grade Windows-aware spawn pattern
+- [Phase ?]: [Phase 18-02]: PKG-02 closed under automated regression test — scripts/verify-tarball.mjs CI-wired into ci.yml step 'Verify tarball shape (npm pack + clean install)'; mcp --version short-circuit added before StdioServerTransport boot for deterministic non-server smoke-check exit path
+- [Phase ?]: [Phase 18-02]: Rule 3 deviation — replaced plan-body's literal 'npm.cmd' spawn with process.execPath + npm-cli.js resolution (npm_execpath / require.resolve / fs fallback). Plan-body pattern hits EINVAL on Windows + Node 20+ without shell:true (CVE-2024-27980); shell:true forbidden by D-02. Resolution fallback retains process.platform === 'win32' branch per acceptance criteria.
 
 ### Pending Todos
 
@@ -85,7 +87,7 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-04-27T13:13:00.000Z
-Stopped at: Completed 18-01-PLAN.md
+Last session: 2026-04-27T13:27:43.041Z
+Stopped at: Completed 18-02-PLAN.md
 Resume file: 
-.planning/phases/18-packaging-polish/18-02-PLAN.md
+None
