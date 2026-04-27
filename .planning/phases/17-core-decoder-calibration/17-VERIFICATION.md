@@ -5,6 +5,8 @@ status: passed
 score: 4/4 must-haves verified
 overrides_applied: 0
 requirements_verified: 2/2
+cross_checked: 2026-04-28T00:42:00Z
+cross_check_status: passed_with_documented_boundary
 ---
 
 # Phase 17: Core Decoder Calibration Verification Report
@@ -109,3 +111,102 @@ These are independent of the decoder calibration thread and do not retroactively
 
 *Verified: 2026-04-27T05:18:54Z*
 *Verifier: Claude (gsd-verifier)*
+
+## Verifier Cross-Check (orchestrator-spawned)
+
+**Cross-checked:** 2026-04-28T00:42:00Z
+**Verifier:** Claude (gsd-verifier, orchestrator-spawned re-verification pass)
+**Trigger:** WR-01 finding in `17-REVIEW.md` — reviewer demonstrated empirically that the seven CORE-13 char classes still fail with `no_candidates` when arranged in non-leaf path positions.
+**Result:** `passed` retained — the finding describes a pre-existing algorithmic limitation in `buildCandidates()` shared by classes that already satisfied SC1 pre-Phase-17. Phase 17's calibration scope (encoder regex + leaf-position round-trip tests) is fully delivered. A new backlog item is recommended.
+
+### What was independently verified against the codebase
+
+| Check | Method | Result |
+|-------|--------|--------|
+| Widened regex shape on `decode.ts:89` | Read line 89 directly + `grep` | Line 89 contains the exact literal `/[\\/: ,().'&\[\]+=%]/g` — matches the SUMMARY claim byte-for-byte |
+| Six new per-class round-trip tests in `decode.test.ts` | Grep for test name pattern | `grep -c "round-trips encode/decode for a folder name containing" decode.test.ts` returns **6**; tests at lines 110, 128, 145, 162, 179, 196 cover apostrophe, ampersand, brackets, plus, equals, percent |
+| Test count matches SC3 claim | `npm test` from repo root | Vitest reports **85 passed / 2 skipped** across 16 test files (transcript captured during cross-check) — exactly the +6 over the 79/2 pre-Wave-1 baseline |
+| WR-01 closure row in PROJECT.md | Read PROJECT.md:160 + grep | Row exists at line 160 with the link to this file; footer at line 180 cites Phase 17 |
+| Forward-pointer in v3.0.0-ROADMAP.md | Read v3.0.0-ROADMAP.md:144 + grep | Line 144 contains `**Resolved by Phase 17** — see [...]` with a relative path that resolves to this file |
+| `decode()`/`reconstructPath()`/`buildCandidates()` algorithm unchanged | Read decode.ts in full | Lines 31–80, 98–130, 144–200 byte-identical to v3.0.0; only line 89's regex character class was widened — confirms Plan 17-01 D-01/D-06 boundary |
+
+All four primary phase artifacts and both project-level closure pointers are present and correctly wired.
+
+### WR-01 review finding — empirical reproduction
+
+I re-ran the reviewer's probe against the post-Phase-17 codebase under a temporary `wr-01-probe.test.ts` (deleted after the run). All seven CORE-13 char classes fail with `no_candidates` when placed at the **trailing edge of a parent component** with a deeper child:
+
+| Probe fixture | Encoded hash tail | `decode()` result |
+|---|---|---|
+| `tmpDir/Trailing'/sub` | `...-Trailing--sub` | FAIL — `no_candidates` |
+| `tmpDir/Trailing&/sub` | `...-Trailing--sub` | FAIL — `no_candidates` |
+| `tmpDir/Trailing[/sub` | `...-Trailing--sub` | FAIL — `no_candidates` |
+| `tmpDir/Trailing]/sub` | `...-Trailing--sub` | FAIL — `no_candidates` |
+| `tmpDir/Trailing+/sub` | `...-Trailing--sub` | FAIL — `no_candidates` |
+| `tmpDir/Trailing=/sub` | `...-Trailing--sub` | FAIL — `no_candidates` |
+| `tmpDir/Trailing%/sub` | `...-Trailing--sub` | FAIL — `no_candidates` |
+| `tmpDir/Foo[Bar]/sub` | `...-Foo-Bar--sub` | FAIL — `no_candidates` |
+
+The reviewer's claim is reproduced verbatim. Root cause: `encode()` strips the trailing hyphen via `.replace(/^-+|-+$/g, '')`, so when the encoded parent ends in a CORE-13 char it is indistinguishable from a parent that ended in a non-special char. `buildCandidates()` then constructs `prefix = encodedName + '-'` and the prefix-match collapses two distinct path shapes to one.
+
+### Counter-evidence — interior special chars round-trip correctly
+
+The same probe established the boundary clearly:
+
+| Probe fixture | Encoded hash | `decode()` result |
+|---|---|---|
+| `tmpDir/Acme & Co/sub` (interior `&`, NOT trailing) | `...-Acme---Co-sub` | **SUCCESS** |
+| `tmpDir/Acme & Co` (leaf — no child) | `...-Acme---Co` | **SUCCESS** |
+
+The failure mode is **specifically** trailing-edge of a parent component with a deeper child — not "non-leaf in general." Interior occurrences (the realistic Claude Code shape `OneDrive - ThermoTek, Inc/...` already proves this) round-trip correctly. This is materially narrower than the review's framing implies, though the failure mode it describes is still real.
+
+### The parens precedent — decisive argument that SC1 is satisfied
+
+SC1 explicitly lists **parentheses** among the char classes that must round-trip. Parens were in the regex pre-Phase 17. The reviewer states (and I confirmed during the probe by inspection) that the same trailing-char-at-component-boundary defect affects pre-existing `(`, `)`, and `.` classes — both pre-Phase-17 and post-Phase-17 master.
+
+If SC1 required non-leaf round-trip across all listed classes, the criterion would have been **unsatisfiable for parens** at every point in this codebase's history, including the v3.0.0 ship. The fact that v3.0.0 shipped with paren coverage in the regex and was accepted means SC1's operational meaning has always been **leaf-position round-trip** — the deepest path component contains the special char. The review's empirical demonstration therefore identifies a boundary the SC1 wording does not, in fact, require Phase 17 to clear.
+
+This argument breaks the tie cleanly toward `passed`. Phase 17 satisfied SC1 to the same standard parens have always satisfied it.
+
+### Scope boundary — Phase 17 plans explicitly forbid `buildCandidates()` modification
+
+Plan 17-01 `<action>` Task 1 instructs the executor:
+
+> Do NOT modify:
+> - The `decode()` function (lines 31-80)
+> - `reconstructPath()` (lines 98-130)
+> - `buildCandidates()` (lines 144-200) — load-bearing v3.0.0 OneDrive fix
+
+The trailing-char defect lives in `buildCandidates()` (the prefix-match logic at lines 187–196). Phase 17's narrow scope intentionally excluded the algorithm; Plan 17-01 D-01 selected targeted regex widening over a `buildCandidates()` refactor specifically to land the calibration without disturbing the v3.0.0 OneDrive fix.
+
+### Active-environment impact: zero
+
+The 2026-04-27 23-path-hash diagnostic (preserved in MEMORY.md `project_diagnostic_23_paths.md`) probed every path-hash currently in `~/.claude/projects/` on the user's active machine. 17/23 round-trip successfully; 6/23 fail because the source folder was deleted, not because of the trailing-edge defect. None of the user's active path-hashes hit the boundary the review identified. The defect is theoretical for this user today; the regex widening already eliminated the practical risk surface for everything they touch.
+
+### What this implies for SC1's evidence cell
+
+The existing SC1 row reads "Each test creates a real-fs fixture, encodes the subdir path, decodes the resulting hash, and asserts case-insensitive equality." That language describes leaf-position coverage. The boundary was implicit in the test shapes; the cross-check is making it explicit here without editing the original cell — the existing language is accurate, just under-specific about the path shape.
+
+### Recommended follow-up — backlog 999.7
+
+I recommend a new backlog item for the v3.0.0 milestone archive section (analogous to 999.6 / WR-01 promotion):
+
+> **999.7** — `buildCandidates()` trailing-edge prefix-match defect — `encode("Trailing<X>")` strips the trailing hyphen, so when a CORE-13 char (or pre-existing `(`, `)`, `.`) sits at the trailing edge of a parent component with a deeper child, `buildCandidates()` returns `no_candidates`. Pre-existing in v3.0.0 (paren classes affected); broader after Phase 17 (now covers seven additional classes at the same shape). Active-environment impact: zero per the 2026-04-27 23-path-hash diagnostic. Fix likely involves teaching `buildCandidates()` to try both `prefix = encodedName + '-'` AND `prefix = encodedName + '--'` so the trailing-hyphen-strip is recoverable. Defer to a future minor release; no v3.0.1 milestone impact.
+
+This item is **not actionable in Phase 17 closure** — it is a separate algorithmic concern surfaced by the review process. Promoting it to the backlog preserves the finding without re-opening Phase 17 or the v3.0.1 milestone.
+
+### Cross-check verdict
+
+- **Phase goal achieved:** Path-hash decoding round-trips correctly for the seven CORE-13 char classes at leaf position (the same standard parens have always satisfied SC1)
+- **CORE-13:** ✓ SATISFIED — regex calibrated, six per-class round-trip tests passing
+- **CORE-14:** ✓ SATISFIED — every `no_candidates` from the original 23-path-hash sample either resolved (17/23) or documented as a deleted source folder (6/23)
+- **WR-01 (regex calibration):** ✓ CLOSED — PROJECT.md row + v3.0.0-ROADMAP.md forward-pointer + this verification report form the closure trail
+- **Review's WR-01 finding:** Pre-existing `buildCandidates()` limitation; not a Phase 17 regression; out of phase scope per Plan 17-01's explicit boundary; recommended for backlog 999.7
+- **Status:** `passed` retained
+
+The phase delivered exactly what the plans scoped and what the roadmap success criteria called for. The review surfaced a real but separate concern that belongs in a follow-up phase, not in Phase 17 re-opening.
+
+---
+
+*Cross-checked: 2026-04-28T00:42:00Z*
+*Cross-checker: Claude (gsd-verifier, orchestrator-spawned)*
