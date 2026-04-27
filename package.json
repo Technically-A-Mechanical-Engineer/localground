@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "npm run build -w packages/core && npm run build -w packages/mcp && npm run build -w packages/cli",
-    "build:check": "tsc --build tsconfig.json",
+    "build:check": "tsc --build tsconfig.json && tsc --noEmit -p tsconfig.test.json",
     "pretest": "npm run build",
     "test": "vitest run",
     "clean": "npm run clean --workspaces --if-present"
