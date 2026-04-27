@@ -70,6 +70,7 @@ describe('placeholderDetect', () => {
     await fs.writeFile(path.join(tmpDir, 'normal.txt'), 'content', 'utf8');
 
     const platformResult = detectPlatform();
+    expect(platformResult.success).toBe(true);
     if (!platformResult.success) return;
 
     const result = await placeholderDetect(tmpDir, platformResult.data.platform);
