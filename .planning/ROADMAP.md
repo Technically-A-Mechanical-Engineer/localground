@@ -151,7 +151,7 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 15. Testing, CI, Publishing, and Documentation | v3.0.0 | 6/6 | Complete | 2026-04-26 |
 | 16. Test Infrastructure Hardening | v3.0.1 | 3/3 | Complete    | 2026-04-27 |
 | 17. Core Decoder Calibration | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
-| 18. Packaging Polish | v3.0.1 | 2/2 | Complete   | 2026-04-27 |
+| 18. Packaging Polish | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
 | 19. Skill Runtime UAT | v3.0.1 | 0/0 | Not Started | - |
 | 20. Release Pipeline Validation | v3.0.1 | 0/0 | Not Started | - |
 
