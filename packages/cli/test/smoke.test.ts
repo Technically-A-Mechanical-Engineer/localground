@@ -123,8 +123,11 @@ describe('CLI smoke: fixture-based commands', () => {
   });
 
   afterEach(async () => {
-    await fs.rm(tmpDir, { recursive: true, force: true });
+    // Order is load-bearing: drain children before fs.rm so a future test that
+    // intentionally leaves a child alive cannot hold a Windows file handle inside
+    // tmpDir and trigger EBUSY.
     await reapChildren();
+    await fs.rm(tmpDir, { recursive: true, force: true });
   });
 
   // audit with --projects on a local git fixture — avoids auto-discovery which may hit slow cloud paths
