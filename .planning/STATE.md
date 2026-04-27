@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
-status: executing
-stopped_at: Plan 16-02 complete (TEST-02 Vitest cleanup hang eliminated; npm test exits cleanly)
-last_updated: "2026-04-27T02:58:22.221Z"
+status: verifying
+stopped_at: Plan 16-03 complete (TEST-01 closed structurally; tsc strict gate restored over src+test; CI step wired)
+last_updated: "2026-04-27T03:12:44.127Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
-  percent: 67
+  completed_plans: 3
+  percent: 100
 ---
 
 # Project State
 
-**Status:** Executing Phase 16
+**Status:** Phase complete — ready for verification
 **Last Activity:** 2026-04-27
 **Current focus:** Phase 16 — test-infrastructure-hardening (plans 16-01 + 16-02 complete, 16-03 next)
 
@@ -32,8 +32,8 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 Phase: 16 (test-infrastructure-hardening) — EXECUTING
 Plan: 3 of 3 (16-01 complete; 16-02 complete; 16-03 next)
-Status: Executing Phase 16
-Last activity: 2026-04-27 — 16-02 (TEST-02 Vitest cleanup hang elimination) complete
+Status: Phase complete — ready for verification
+Last activity: 2026-04-27
 
 ## Roadmap Summary
 
@@ -64,6 +64,8 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase 16]: Per D-Claude-1: decode.test.ts replacement asserts data.decodedPath/hashDirName on the success branch only — no failure-branch assertion to preserve test's documented 'must NOT throw' invariant
 - [Phase 16]: Per D-01: no opportunistic edits — both 16-01 tasks stayed surgical inside their respective it() blocks (1-line and 5-line deltas)
 - [Phase 16]: Per D-05/D-06/D-07: TEST-02 closed via describe-scoped afterEach reaper (no Vitest pool isolation, no vitest.config.ts changes); existing CLI fixture-based afterEach EXTENDED with reapChildren rather than added as a second hook
+- [Phase ?]: Phase 16-03: D-18 forecast did not materialize — surfaced 0 implicit-any errors after tsconfig.test.json gate landed; live-fire probe confirmed gate is active; Task 2 vacuous (no manufactured no-op commit)
+- [Phase ?]: Phase 16-03: tsconfig.test.json escape hatch (composite:false + noEmit:true at root) chosen over per-package include changes — preserves per-package rootDir while widening strict gate to test/**/* across all workspace packages
 
 ### Pending Todos
 
@@ -78,6 +80,6 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-04-27T02:58:02.071Z
-Stopped at: Plan 16-02 complete (TEST-02 Vitest cleanup hang eliminated; npm test exits cleanly)
-Resume file: .planning/phases/16-test-infrastructure-hardening/16-03-PLAN.md
+Last session: 2026-04-27T03:12:36.586Z
+Stopped at: Plan 16-03 complete (TEST-01 closed structurally; tsc strict gate restored over src+test; CI step wired)
+Resume file: 
