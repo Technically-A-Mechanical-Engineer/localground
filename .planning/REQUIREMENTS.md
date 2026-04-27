@@ -48,6 +48,12 @@ Decoder regex coverage gap closure. Source: backlog item 999.6.
 - [ ] **CORE-13**: `encode()` regex in `packages/core/src/environment/decode.ts` calibrated against actual Claude Code CLI encoding behavior; folder names containing apostrophes, ampersands, brackets, parentheses, plus signs, equals signs, percent signs, and other special characters round-trip through `encode()` / `decode()` correctly (extends v3.0.0 CORE-02)
 - [ ] **CORE-14**: WR-01 closed — silent decode failures from regex undercoverage eliminated; verified by reproducing the user's original 23-path-hash sample (where 6 returned `no_candidates`) or an equivalent reproduction case, with all `no_candidates` either explained (deleted source folder) or fixed (regex-coverage gap)
 
+### Documentation
+
+Per-package npm-page documentation visibility. Source: post-roadmap user clarification — `packages/mcp/README.md` and `packages/cli/README.md` were added in PR #11 (merged to master 2026-04-27) but were not part of the v3.0.0 publish, so npmjs.com currently shows the empty-state placeholder for both packages. Reference memory: `feedback_npm_package_readme.md`.
+
+- [ ] **DOC-03**: Per-package READMEs (`packages/mcp/README.md` and `packages/cli/README.md`) ship in the v3.0.1 tarballs published to npm and render on the `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` npmjs.com package pages, replacing the empty-state placeholder shown for v3.0.0 (extends v3.0.0 DOC-01, DOC-02)
+
 ## v3.1.0 Requirements
 
 Deferred to the next minor release. Tracked but not in the v3.0.1 roadmap.
@@ -77,27 +83,28 @@ Which phases cover which requirements. Updated by the roadmapper.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| UAT-01 | TBD | Pending |
-| UAT-02 | TBD | Pending |
-| UAT-03 | TBD | Pending |
-| UAT-04 | TBD | Pending |
-| UAT-05 | TBD | Pending |
-| PIPE-01 | TBD | Pending |
-| PIPE-02 | TBD | Pending |
-| TEST-01 | TBD | Pending |
-| TEST-02 | TBD | Pending |
-| TEST-03 | TBD | Pending |
-| TEST-04 | TBD | Pending |
-| PKG-01 | TBD | Pending |
-| PKG-02 | TBD | Pending |
-| CORE-13 | TBD | Pending |
-| CORE-14 | TBD | Pending |
+| TEST-01 | Phase 16 | Pending |
+| TEST-02 | Phase 16 | Pending |
+| TEST-03 | Phase 16 | Pending |
+| TEST-04 | Phase 16 | Pending |
+| CORE-13 | Phase 17 | Pending |
+| CORE-14 | Phase 17 | Pending |
+| PKG-01 | Phase 18 | Pending |
+| PKG-02 | Phase 18 | Pending |
+| UAT-01 | Phase 19 | Pending |
+| UAT-02 | Phase 19 | Pending |
+| UAT-03 | Phase 19 | Pending |
+| UAT-04 | Phase 19 | Pending |
+| UAT-05 | Phase 19 | Pending |
+| PIPE-01 | Phase 20 | Pending |
+| PIPE-02 | Phase 20 | Pending |
+| DOC-03 | Phase 20 | Pending |
 
 **Coverage:**
-- v3.0.1 requirements: 15 total
-- Mapped to phases: 0 (roadmapper will fill)
-- Unmapped: 15 ⚠️ (expected pre-roadmap)
+- v3.0.1 requirements: 16 total
+- Mapped to phases: 16 ✓
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-26*
-*Last updated: 2026-04-26 at v3.0.1 milestone start*
+*Last updated: 2026-04-27 — roadmap mapped 16/16 requirements to Phases 16-20 (DOC-03 added post-roadmap to lock per-package README visibility on npmjs.com)*

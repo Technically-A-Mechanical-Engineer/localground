@@ -5,6 +5,7 @@
 - ✅ **v1.2.0 Cloud-Sync Toolkit** -- Phases 1-4 (shipped 2026-04-11) -- [archive](milestones/v1.2.0-ROADMAP.md)
 - ✅ **v2.0.0 Five-Prompt Toolkit with Unified Versioning** -- Phases 5-11 (shipped 2026-04-12) -- [archive](milestones/v2.0.0-ROADMAP.md)
 - ✅ **v3.0.0 MCP Server + CLI Tooling** -- Phases 12-15 (shipped 2026-04-26) -- [archive](milestones/v3.0.0-ROADMAP.md)
+- 🚧 **v3.0.1 Validation and Hardening** -- Phases 16-20 (in progress)
 
 ## Phases
 
@@ -13,7 +14,73 @@
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 - 999.x: Backlog parking lot (unsequenced — see Backlog section)
 
-No active phases. Next milestone planning starts with `/gsd-new-milestone`.
+## Phases (v3.0.1 -- In Progress)
+
+- [ ] **Phase 16: Test Infrastructure Hardening** -- Restore tsc gate, eliminate Vitest cleanup hang, close two LOW-severity test hygiene findings
+- [ ] **Phase 17: Core Decoder Calibration** -- Calibrate encode() regex against actual Claude Code CLI behavior; eliminate silent decode failures (WR-01)
+- [ ] **Phase 18: Packaging Polish** -- Restrict mcp/cli npm tarballs to dist/ only via `files: ["dist"]`
+- [ ] **Phase 19: Skill Runtime UAT** -- Execute UAT Tests 12-16 end-to-end with `@localground/mcp` registered in Claude Code
+- [ ] **Phase 20: Release Pipeline Validation** -- ci.yml first green run on master + release.yml first OIDC + provenance publish on v3.0.1 tag
+
+## Phase Details
+
+### Phase 16: Test Infrastructure Hardening
+**Goal:** Restore the strict tsc quality gate and eliminate test-suite reliability defects so subsequent codebase changes (CORE-13/14, UAT validation) land under a hardened gate.
+**Depends on:** Nothing (first phase of v3.0.1; lands before codebase changes by design)
+**Requirements:** TEST-01, TEST-02, TEST-03, TEST-04
+**Success Criteria** (what must be TRUE):
+  1. `npm run typecheck` (or equivalent `tsc --build`) exits 0 in CI on Windows, macOS, and Linux without weakening strict mode
+  2. `npm test` exits with the same code Vitest reports (no hang on shutdown after suite completes)
+  3. Running the full Vitest suite against an intentionally-broken `placeholder.test.ts` precondition (e.g., forced `platformResult.success = false`) causes the dependent assertions to fail loudly instead of silently no-op
+  4. `decode.test.ts` no longer contains `expect(typeof result.success).toBe('boolean')` or any equivalent tautology that cannot fail given the discriminated union
+  5. CI run summary shows tsc + tsup + vitest all gating master pushes
+**Plans:** TBD
+
+### Phase 17: Core Decoder Calibration
+**Goal:** Path-hash decoding round-trips correctly for the full set of special characters Claude Code actually encodes, eliminating silent `no_candidates` failures.
+**Depends on:** Phase 16 (regex calibration changes land under restored tsc gate)
+**Requirements:** CORE-13, CORE-14
+**Success Criteria** (what must be TRUE):
+  1. `encode()` followed by `decode()` round-trips folder names containing apostrophes, ampersands, brackets, parentheses, plus signs, equals signs, and percent signs without data loss
+  2. Re-running the user's original 23-path-hash reproduction case (or an equivalent reproduction case with documented coverage of the same encoding classes) returns zero unexplained `no_candidates` results — every `no_candidates` either resolves to an existing folder or has a documented reason (e.g., source folder deleted)
+  3. Decoder unit tests cover at least one case per newly-supported special character class and pass on Windows, macOS, and Linux
+  4. WR-01 entry in CONTEXT.md (or equivalent) is marked closed with a link to the verifying test cases
+**Plans:** TBD
+
+### Phase 18: Packaging Polish
+**Goal:** Published `@localground/mcp` and `@localground/cli` tarballs contain only compiled output, cutting download size for end users.
+**Depends on:** Nothing (independent of TEST/CORE work; sequenced before UAT so UAT's `npm pack --dry-run` validation reflects the final tarball shape)
+**Requirements:** PKG-01, PKG-02
+**Success Criteria** (what must be TRUE):
+  1. `packages/mcp/package.json` and `packages/cli/package.json` both contain `"files": ["dist"]`
+  2. `npm pack --dry-run` (or equivalent) on each package shows `dist/` contents present and `src/`, `test/`, `tsconfig.json`, `tsup.config.ts`, and `vitest.config.ts` absent from the tarball file list
+  3. `npm pack --dry-run` on each package shows `README.md` and `package.json` present alongside `dist/` (npm always preserves these regardless of `files` config — verifies `files: ["dist"]` did not unintentionally strip them)
+  4. Local install from the packed tarball into a clean test directory still resolves all imports and exposes the documented entry points (smoke check that bundled `dist/` is self-sufficient)
+**Plans:** TBD
+
+### Phase 19: Skill Runtime UAT
+**Goal:** All five `/localground:*` skills route correctly through the registered `@localground/mcp` server and execute end-to-end against real filesystems — including the two-session continuation-token loop that no other test exercises.
+**Depends on:** Phase 17 (skills exercise decode-and-enrich code paths), Phase 18 (UAT runs against the same tarball shape that v3.0.1 will publish)
+**Requirements:** UAT-01, UAT-02, UAT-03, UAT-04, UAT-05
+**Success Criteria** (what must be TRUE):
+  1. `/localground:seed` produces a valid `.localground-seed-manifest.json` file plus a user-readable summary, with the underlying `localground_seed` MCP tool call visible in the transcript
+  2. `/localground:migrate` Session 1 writes `localground-migrate-state.json`, Claude Code restarts from the new path, Session 2 picks up the state file, completes settings migration, and exits without state loss or duplicate work
+  3. `/localground:reap` invokes both `localground_verify` and `localground_health_check` and produces a natural-language report mapping findings to recommendations
+  4. `/localground:cleanup` lists candidates from `localground_cleanup_scan`, requires per-item confirmation, and only deletes items the user explicitly confirms (zero deletions on items declined or skipped)
+  5. `/localground:verify` invokes `localground_audit` and produces a traffic-light report whose recommendations map to actionable next steps
+**Plans:** TBD
+
+### Phase 20: Release Pipeline Validation
+**Goal:** Both GitHub Actions workflows execute end-to-end for the first time — `ci.yml` green across the 3-OS matrix, and `release.yml` publishes both packages to npm with OIDC provenance and rendered per-package READMEs on the v3.0.1 tag push.
+**Depends on:** Phase 16, Phase 17, Phase 18, Phase 19 (all preceding work must be merged to master before the milestone-closing tag is pushed)
+**Requirements:** PIPE-01, PIPE-02, DOC-03
+**Success Criteria** (what must be TRUE):
+  1. The most recent `ci.yml` run on master shows green on Windows, macOS, and Linux jobs at Node 20.x; any platform-specific failures encountered earlier in the milestone are diagnosed and resolved with linked CI run IDs
+  2. Pushing the `v3.0.1` tag triggers `release.yml`, which publishes both `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` to npm
+  3. Both published packages show provenance attestation visible on npmjs.com via the "Provenance" badge on the package page
+  4. Both `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` npmjs.com pages render the per-package README content (`packages/mcp/README.md` and `packages/cli/README.md` respectively) — not the empty-state placeholder shown for v3.0.0
+  5. A clean machine running `npx -y @localground/cli@3.0.1 detect` resolves and executes successfully against the published artifacts
+**Plans:** TBD
 
 ## Phases (v1.2.0 -- Completed)
 
@@ -75,72 +142,23 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 13. MCP Server | v3.0.0 | 6/6 | Complete | 2026-04-13 |
 | 14. Standalone CLI and Claude Code Skills | v3.0.0 | 11/11 | Complete | 2026-04-26 |
 | 15. Testing, CI, Publishing, and Documentation | v3.0.0 | 6/6 | Complete | 2026-04-26 |
+| 16. Test Infrastructure Hardening | v3.0.1 | 0/0 | Not Started | - |
+| 17. Core Decoder Calibration | v3.0.1 | 0/0 | Not Started | - |
+| 18. Packaging Polish | v3.0.1 | 0/0 | Not Started | - |
+| 19. Skill Runtime UAT | v3.0.1 | 0/0 | Not Started | - |
+| 20. Release Pipeline Validation | v3.0.1 | 0/0 | Not Started | - |
 
 ## Backlog
 
-Unsequenced items captured at v3.0.0 close. Promote with `/gsd-review-backlog` when ready.
-
-### Phase 999.1: UAT Tests 12-16 — localground skills end-to-end MCP routing (BACKLOG)
-
-**Goal:** Register the published `@localground/mcp` server with Claude Code and execute the 5 skill UAT tests that were blocked in Phase 14 and never executed in Phase 15. Test 15 (`/localground:migrate` two-session orchestration) is critical — it is the only test that validates the continuation-token loop and `localground-migrate-state.json` handoff, neither of which are exercised by the CLI smoke tests.
-**Source:** `.planning/phases/14-standalone-cli-and-claude-code-skills/14-UAT.md` Tests 12-16 (all `result: blocked` with `blocked_by: requires-mcp-server-registered`)
-**Requirements:** SKILL-01..SKILL-07 runtime verification (static compliance verified, runtime not)
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd-review-backlog when ready)
-
-### Phase 999.2: Pipeline first-run validation — ci.yml + release.yml end-to-end (BACKLOG)
-
-**Goal:** Both GitHub Actions workflows are structurally verified but unexecuted end-to-end. First push to `master` triggers `ci.yml` (3-OS matrix, Node 20.x). First `vN.N.N` tag push triggers `release.yml` (OIDC trusted publisher + provenance). If trusted-publisher trust contract doesn't match exactly, the publish step will fail with `403 Forbidden` and need adjustment.
-**Source:** `.planning/phases/15-testing-ci-publishing-and-documentation/15-VERIFICATION.md` "Two pipelines structurally verified but unexecuted end-to-end" section
-**Requirements:** INFRA-04, INFRA-05 runtime verification (structural verification complete)
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd-review-backlog when ready)
-
-### Phase 999.3: Test infrastructure cleanup (BACKLOG)
-
-**Goal:** Restore tsc as a CI quality gate alongside tsup, fix the Vitest cleanup hang on `npm test` exit, and address two LOW-severity test hygiene findings from the Phase 15 code review.
-**Source:** `.planning/phases/15-testing-ci-publishing-and-documentation/15-VERIFICATION.md` Phase 16+ Carry-Overs table
-**Items:**
-- Vitest cleanup hang — add `afterEach` cleanup to MCP/CLI smoke tests to kill spawned children
-- L-01 — `placeholder.test.ts` silent precondition guard (`expect(platformResult.success).toBe(true)`)
-- L-02 — `decode.test.ts` tautological assertion (`expect(typeof result.success).toBe('boolean')` can never fail)
-- D-18 — `tsc --build` strict-mode regression (~30 implicit-any errors that tsup tolerates)
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd-review-backlog when ready)
-
-### Phase 999.4: Packaging polish — `files: ["dist"]` (BACKLOG)
-
-**Goal:** Reduce npm tarball download size by adding `"files": ["dist"]` to `packages/mcp/package.json` and `packages/cli/package.json`. Currently published tarballs include `src/`, `test/`, `tsconfig.json`, `tsup.config.ts`, `vitest.config.ts` — useful for sourcemaps but inflates download roughly 2x.
-**Source:** `.planning/phases/15-testing-ci-publishing-and-documentation/15-05-SUMMARY.md` Phase 16+ carry-overs
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd-review-backlog when ready)
+Unsequenced items remaining after v3.0.1 promotion. Promote with `/gsd-review-backlog` when ready.
 
 ### Phase 999.5: TIER 2 streaming refactor of spawnTool — real-time MCP-driven copy progress (BACKLOG)
 
 **Goal:** Phase 14-11 closed CLI silent operations at TIER 1 (three pre-operation stderr status lines). TIER 2 changes `spawnTool` from `spawnSync` with `stdio=['ignore','pipe','pipe']` to either inherited stdio (Option A) or async `spawn()` with line-streaming via `child.stdout('data')` (Option B). Surfaces robocopy/rsync per-line progress to the user during MCP-driven copy operations through the `/localground:migrate` skill.
 **Source:** `.planning/phases/14-standalone-cli-and-claude-code-skills/14-11-SUMMARY.md`; full diagnosis at `.planning/debug/cli-silent-long-operations.md` lines 148-158
-**Requirements:** TBD (CLI-01 UX refinement)
+**Requirements:** CLI-05 (deferred to v3.1.0; see REQUIREMENTS.md `## v3.1.0 Requirements`)
 **Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd-review-backlog when ready)
-
-### Phase 999.6: encode() regex calibration (WR-01) (BACKLOG)
-
-**Goal:** `packages/core/src/environment/decode.ts` line 89 — `encode()` regex `/[\\/: ,().]/g` is narrower than likely Claude Code behavior. Folders with apostrophes, ampersands, brackets, etc. would silently fail to decode. On the user's machine, 6 of 23 path-hashes returned `no_candidates` — undetermined whether deleted-source folders or encoder-mismatch silent failures.
-**Source:** `.planning/phases/14-standalone-cli-and-claude-code-skills/14-VERIFICATION.md` line 128 (Anti-Patterns Found); CONTEXT.md WR-01
-**Requirements:** TBD (CORE-02 refinement)
-**Plans:** 0 plans
+**Deferral note:** Captured under v3.1.0 Requirements in REQUIREMENTS.md — architectural change with real risk surface; TIER 1 mitigation already shipped. Will not be promoted into v3.0.1.
 
 Plans:
 - [ ] TBD (promote with /gsd-review-backlog when ready)
@@ -150,3 +168,5 @@ Plans:
 *v3.0.0 phases added: 2026-04-12*
 *v3.0.0 milestone closed: 2026-04-26*
 *Backlog seeded at v3.0.0 close: 2026-04-26*
+*v3.0.1 phases added: 2026-04-27 (promoted backlog 999.1, 999.2, 999.3, 999.4, 999.6 into Phases 16-20; 999.5 retained as backlog with v3.1.0 deferral note)*
+*v3.0.1 amendment: 2026-04-27 — added DOC-03 (per-package READMEs visible on npmjs.com) mapped to Phase 20; augmented Phase 18 SC-3 to verify README inclusion in tarball; augmented Phase 20 SC-4 to verify rendered README on package pages*
