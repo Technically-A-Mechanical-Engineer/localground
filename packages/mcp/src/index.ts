@@ -826,6 +826,15 @@ server.registerTool('localground_audit', {
 // --- Server Startup ---
 
 async function main(): Promise<void> {
+  // Smoke-check escape hatch: respond to --version without booting the MCP server.
+  // Used by scripts/verify-tarball.mjs to confirm the published tarball's bin
+  // entry executes end-to-end. Must run BEFORE StdioServerTransport setup —
+  // a transport on stdio would block forever waiting for a JSON-RPC client.
+  if (process.argv.includes('--version')) {
+    process.stdout.write(`${SERVER_VERSION}\n`);
+    process.exit(0);
+  }
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error(`${SERVER_NAME} MCP server v${SERVER_VERSION} running on stdio`);
