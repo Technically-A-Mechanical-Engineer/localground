@@ -31,7 +31,9 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 - 5 Claude Code skills: `/localground:seed`, `/localground:migrate`, `/localground:reap`, `/localground:cleanup`, `/localground:verify`
 - v2.0.0 paste-and-run prompts preserved in `prompts/` as no-install fallback
 
-**Quality gates:** 79-test Vitest suite (real-fs fixtures, no mocks); 3-OS GitHub Actions CI (Win/Mac/Linux on Node 20.x); tag-triggered OIDC release workflow with provenance attestation (configured for v3.0.1+; v3.0.0 was published manually due to npm/cli#8544).
+**Quality gates:** 79-test Vitest suite (real-fs fixtures, no mocks) — clean exit, no teardown hang; `tsc --build` strict gate covering both src AND test files via `tsconfig.test.json`; 3-OS GitHub Actions CI (Win/Mac/Linux on Node 20.x) with Build → Strict type check → Test ordering; tag-triggered OIDC release workflow with provenance attestation (configured for v3.0.1+; v3.0.0 was published manually due to npm/cli#8544).
+
+**v3.0.1 progress:** Phase 16 (Test Infrastructure Hardening) complete 2026-04-27 — TEST-01 through TEST-04 validated. Phases 17-20 (decoder calibration, packaging polish, skill UAT, release pipeline validation) remain.
 
 **Codebase:** 5,877 LOC TypeScript across 47 `.ts` files in `packages/`. Result-typed core (no exceptions thrown), strict TypeScript, tsup bundled.
 
@@ -73,16 +75,19 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 - ✓ Audit auto-discovery scoped via `looksLikeProject` predicate — v3.0.0 (Phase 14-10 gap-closure)
 - ✓ CLI long operations emit stderr status lines (TIER 1) gated on `!jsonMode` — v3.0.0 (Phase 14-11 gap-closure)
 
+**v3.0.1 — Phase 16 Test Infrastructure Hardening (completed 2026-04-27):**
+- ✓ `tsc --build` restored as CI quality gate covering both src and test files via root-level `tsconfig.test.json` (composite:false, noEmit:true, inherits strict family); D-18 implicit-any regression resolved (TEST-01) — v3.0.1 Phase 16
+- ✓ Vitest cleanup hang eliminated via describe-scoped `afterEach` reapers tracking spawned children in MCP and CLI smoke tests (TEST-02) — v3.0.1 Phase 16
+- ✓ `placeholder.test.ts` silent-precondition guard added — assertion fires before narrow guard so a forced `success=false` fails loudly (TEST-03) — v3.0.1 Phase 16
+- ✓ `decode.test.ts` tautological assertion replaced with success-branch contract on `data.hashDirName` and `data.decodedPath` (TEST-04) — v3.0.1 Phase 16
+
 ### Active
 
-**v3.0.1 — Validation and Hardening (in planning):**
+**v3.0.1 — Validation and Hardening (in progress):**
 
 - [ ] UAT Tests 12-16 executed end-to-end with `@localground/mcp` registered in Claude Code; Test 15 validates two-session continuation-token loop and state-file handoff (promoted from 999.1)
 - [ ] `ci.yml` first run on master green across the 3-OS matrix on Node 20.x (promoted from 999.2)
 - [ ] `release.yml` first OIDC + provenance publish lands successfully on v3.0.1 tag (promoted from 999.2)
-- [ ] `tsc --build` restored as CI quality gate; D-18 implicit-any regression resolved (promoted from 999.3)
-- [ ] Vitest cleanup hang eliminated via `afterEach` cleanup of spawned children in MCP/CLI smoke tests (promoted from 999.3)
-- [ ] L-01 (`placeholder.test.ts` silent precondition guard) and L-02 (`decode.test.ts` tautological assertion) hygiene findings closed (promoted from 999.3)
 - [ ] `mcp` and `cli` npm tarballs limited to `dist/` via `"files": ["dist"]` (promoted from 999.4)
 - [ ] `encode()` regex in `packages/core/src/environment/decode.ts` calibrated against actual Claude Code CLI encoding behavior; silent decode failures eliminated (promoted from 999.6)
 
@@ -171,4 +176,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-26 after v3.0.1 milestone start — promoted backlog items 999.1, 999.2, 999.3, 999.4, 999.6 into Active; 999.5 (TIER 2 streaming refactor) deferred to v3.1.0.*
+*Last updated: 2026-04-27 after Phase 16 (Test Infrastructure Hardening) complete — TEST-01 through TEST-04 moved to Validated; remaining v3.0.1 work covers Phases 17-20 (decoder calibration, packaging polish, skill UAT, release pipeline validation).*
