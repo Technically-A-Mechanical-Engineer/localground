@@ -34,7 +34,10 @@
   3. Running the full Vitest suite against an intentionally-broken `placeholder.test.ts` precondition (e.g., forced `platformResult.success = false`) causes the dependent assertions to fail loudly instead of silently no-op
   4. `decode.test.ts` no longer contains `expect(typeof result.success).toBe('boolean')` or any equivalent tautology that cannot fail given the discriminated union
   5. CI run summary shows tsc + tsup + vitest all gating master pushes
-**Plans:** TBD
+**Plans:** 3 plans
+- [ ] 16-01-PLAN.md (Wave 1) — TEST-03 + TEST-04 test hygiene fixes (placeholder precondition guard, decode tautology replacement)
+- [ ] 16-02-PLAN.md (Wave 1) — TEST-02 child-process cleanup via afterEach reapers in MCP and CLI smoke tests
+- [ ] 16-03-PLAN.md (Wave 2) — TEST-01 strict gate restoration via tsconfig.test.json + ci.yml step + implicit-any fixes (core → mcp → cli)
 
 ### Phase 17: Core Decoder Calibration
 **Goal:** Path-hash decoding round-trips correctly for the full set of special characters Claude Code actually encodes, eliminating silent `no_candidates` failures.
@@ -142,7 +145,7 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 13. MCP Server | v3.0.0 | 6/6 | Complete | 2026-04-13 |
 | 14. Standalone CLI and Claude Code Skills | v3.0.0 | 11/11 | Complete | 2026-04-26 |
 | 15. Testing, CI, Publishing, and Documentation | v3.0.0 | 6/6 | Complete | 2026-04-26 |
-| 16. Test Infrastructure Hardening | v3.0.1 | 0/0 | Not Started | - |
+| 16. Test Infrastructure Hardening | v3.0.1 | 0/3 | Planned | - |
 | 17. Core Decoder Calibration | v3.0.1 | 0/0 | Not Started | - |
 | 18. Packaging Polish | v3.0.1 | 0/0 | Not Started | - |
 | 19. Skill Runtime UAT | v3.0.1 | 0/0 | Not Started | - |
