@@ -145,7 +145,7 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 13. MCP Server | v3.0.0 | 6/6 | Complete | 2026-04-13 |
 | 14. Standalone CLI and Claude Code Skills | v3.0.0 | 11/11 | Complete | 2026-04-26 |
 | 15. Testing, CI, Publishing, and Documentation | v3.0.0 | 6/6 | Complete | 2026-04-26 |
-| 16. Test Infrastructure Hardening | v3.0.1 | 3/3 | Complete   | 2026-04-27 |
+| 16. Test Infrastructure Hardening | v3.0.1 | 3/3 | Complete    | 2026-04-27 |
 | 17. Core Decoder Calibration | v3.0.1 | 0/0 | Not Started | - |
 | 18. Packaging Polish | v3.0.1 | 0/0 | Not Started | - |
 | 19. Skill Runtime UAT | v3.0.1 | 0/0 | Not Started | - |

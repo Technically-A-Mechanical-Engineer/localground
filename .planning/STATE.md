@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
-status: verifying
+status: ready_to_plan
 stopped_at: Plan 16-03 complete (TEST-01 closed structurally; tsc strict gate restored over src+test; CI step wired)
 last_updated: "2026-04-27T03:12:44.127Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 3
   completed_plans: 3
-  percent: 100
+  percent: 40
 ---
 
 # Project State
 
-**Status:** Phase complete — ready for verification
+**Status:** Ready to plan
 **Last Activity:** 2026-04-27
 **Current focus:** Phase 16 — test-infrastructure-hardening (plans 16-01 + 16-02 complete, 16-03 next)
 
@@ -30,8 +30,8 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 ## Current Position
 
-Phase: 16 (test-infrastructure-hardening) — EXECUTING
-Plan: 3 of 3 (16-01 complete; 16-02 complete; 16-03 next)
+Phase: 17
+Plan: Not started
 Status: Phase complete — ready for verification
 Last activity: 2026-04-27
 
