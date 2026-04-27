@@ -99,7 +99,11 @@ describe('decode', () => {
 
       // decode may return success or no_candidates depending on OS traversal behavior,
       // but it must NOT throw an error — the traversal must be stable.
-      expect(typeof result.success).toBe('boolean');
+      // Success-branch contract: decoded path resolves through the symlink (mirrors lines 63-71 round-trip pattern).
+      if (result.success) {
+        expect(result.data.hashDirName).toBe(hash);
+        expect(result.data.decodedPath).not.toBeNull();
+      }
     },
   );
 });
