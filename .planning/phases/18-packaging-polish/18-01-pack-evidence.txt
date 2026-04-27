@@ -1,0 +1,25 @@
+## @localground/mcp
+
+Files in tarball:
+- README.md
+- dist/index.d.ts
+- dist/index.js
+- dist/index.js.map
+- package.json
+
+Required present: YES
+Stowaways present: NONE
+
+---
+
+## @localground/cli
+
+Files in tarball:
+- README.md
+- dist/index.d.ts
+- dist/index.js
+- dist/index.js.map
+- package.json
+
+Required present: YES
+Stowaways present: NONE
