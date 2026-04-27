@@ -86,7 +86,7 @@ export async function decode(
  */
 export function encode(filePath: string): string {
   // Replace each special character with a single hyphen
-  return filePath.replace(/[\\/: ,().]/g, '-').replace(/^-+|-+$/g, '');
+  return filePath.replace(/[\\/: ,().'&\[\]+=%]/g, '-').replace(/^-+|-+$/g, '');
 }
 
 /**
