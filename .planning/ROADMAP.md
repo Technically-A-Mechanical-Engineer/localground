@@ -62,7 +62,7 @@
   3. `npm pack --dry-run` on each package shows `README.md` and `package.json` present alongside `dist/` (npm always preserves these regardless of `files` config — verifies `files: ["dist"]` did not unintentionally strip them)
   4. Local install from the packed tarball into a clean test directory still resolves all imports and exposes the documented entry points (smoke check that bundled `dist/` is self-sufficient)
 **Plans:** 2 plans
-- [ ] 18-01-PLAN.md (Wave 1) — PKG-01 + initial PKG-02 verification: add files: ["dist"] to mcp/cli package.jsons, verify via npm pack --dry-run (D-04, D-05)
+- [x] 18-01-PLAN.md (Wave 1) — PKG-01 + initial PKG-02 verification: add files: ["dist"] to mcp/cli package.jsons, verify via npm pack --dry-run (D-04, D-05)
 - [ ] 18-02-PLAN.md (Wave 2) — Full PKG-02 closure: scripts/verify-tarball.mjs + ci.yml step + mcp --version handler, persistent regression guard (D-01, D-02, D-03)
 
 ### Phase 19: Skill Runtime UAT
@@ -151,7 +151,7 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 15. Testing, CI, Publishing, and Documentation | v3.0.0 | 6/6 | Complete | 2026-04-26 |
 | 16. Test Infrastructure Hardening | v3.0.1 | 3/3 | Complete    | 2026-04-27 |
 | 17. Core Decoder Calibration | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
-| 18. Packaging Polish | v3.0.1 | 0/2 | Not Started | - |
+| 18. Packaging Polish | v3.0.1 | 1/2 | In Progress|  |
 | 19. Skill Runtime UAT | v3.0.1 | 0/0 | Not Started | - |
 | 20. Release Pipeline Validation | v3.0.1 | 0/0 | Not Started | - |
 

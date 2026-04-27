@@ -38,8 +38,8 @@ Quality-gate restoration and test hygiene cleanup. Source: backlog item 999.3.
 
 npm tarball weight reduction. Source: backlog item 999.4.
 
-- [ ] **PKG-01**: Both `packages/mcp/package.json` and `packages/cli/package.json` declare `"files": ["dist"]`, restricting the published tarball to compiled output
-- [ ] **PKG-02**: Verified via `npm pack --dry-run` (or equivalent) that `src/`, `test/`, `tsconfig.json`, `tsup.config.ts`, and `vitest.config.ts` no longer appear in the tarball; `dist/` contents preserved
+- [x] **PKG-01**: Both `packages/mcp/package.json` and `packages/cli/package.json` declare `"files": ["dist"]`, restricting the published tarball to compiled output
+- [x] **PKG-02**: Verified via `npm pack --dry-run` (or equivalent) that `src/`, `test/`, `tsconfig.json`, `tsup.config.ts`, and `vitest.config.ts` no longer appear in the tarball; `dist/` contents preserved
 
 ### Core Correctness
 
@@ -89,8 +89,8 @@ Which phases cover which requirements. Updated by the roadmapper.
 | TEST-04 | Phase 16 | Complete |
 | CORE-13 | Phase 17 | Complete |
 | CORE-14 | Phase 17 | Complete |
-| PKG-01 | Phase 18 | Pending |
-| PKG-02 | Phase 18 | Pending |
+| PKG-01 | Phase 18 | Complete |
+| PKG-02 | Phase 18 | Complete |
 | UAT-01 | Phase 19 | Pending |
 | UAT-02 | Phase 19 | Pending |
 | UAT-03 | Phase 19 | Pending |
