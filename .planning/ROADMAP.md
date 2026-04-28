@@ -75,7 +75,14 @@
   3. `/localground:reap` invokes both `localground_verify` and `localground_health_check` and produces a natural-language report mapping findings to recommendations
   4. `/localground:cleanup` lists candidates from `localground_cleanup_scan`, requires per-item confirmation, and only deletes items the user explicitly confirms (zero deletions on items declined or skipped)
   5. `/localground:verify` invokes `localground_audit` and produces a traffic-light report whose recommendations map to actionable next steps
-**Plans:** TBD
+**Plans:** 7 plans
+- [ ] 19-01-PLAN.md (Wave 1) - Setup MCP registration with --scope user + UAT-01 (/localground:seed) + 19-UAT.md skeleton
+- [ ] 19-02-PLAN.md (Wave 2) - UAT-02 (/localground:migrate) Scenario C: 3 runs (happy + idempotency + missing-state-fallback)
+- [ ] 19-03-PLAN.md (Wave 3) - UAT-03 (/localground:reap) on UAT-02 destination
+- [ ] 19-04-PLAN.md (Wave 4) - UAT-04 (/localground:cleanup) synthetic stale-reference fixture, mixed yes/no/skip-all
+- [ ] 19-05-PLAN.md (Wave 5) - UAT-05 (/localground:verify) environment-wide audit
+- [ ] 19-06-PLAN.md (Wave 6) - Tarball-gate replay (D-04): npm pack + install + 5 routing-handshake tool calls
+- [ ] 19-07-PLAN.md (Wave 7) - Finalize 19-UAT.md frontmatter status + Gaps Summary
 
 ### Phase 20: Release Pipeline Validation
 **Goal:** Both GitHub Actions workflows execute end-to-end for the first time — `ci.yml` green across the 3-OS matrix, and `release.yml` publishes both packages to npm with OIDC provenance and rendered per-package READMEs on the v3.0.1 tag push.
@@ -152,7 +159,7 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 16. Test Infrastructure Hardening | v3.0.1 | 3/3 | Complete    | 2026-04-27 |
 | 17. Core Decoder Calibration | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
 | 18. Packaging Polish | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
-| 19. Skill Runtime UAT | v3.0.1 | 0/0 | Not Started | - |
+| 19. Skill Runtime UAT | v3.0.1 | 0/7 | Not Started | - |
 | 20. Release Pipeline Validation | v3.0.1 | 0/0 | Not Started | - |
 
 ## Backlog
