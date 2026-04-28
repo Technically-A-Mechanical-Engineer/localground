@@ -4,8 +4,8 @@ milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: planning
 stopped_at: Phase 19 context gathered
-last_updated: "2026-04-28T00:00:58.491Z"
-last_activity: 2026-04-27
+last_updated: "2026-04-28T20:54:00.000Z"
+last_activity: 2026-04-28
 progress:
   total_phases: 5
   completed_phases: 3
@@ -17,8 +17,8 @@ progress:
 # Project State
 
 **Status:** Ready to plan
-**Last Activity:** 2026-04-27
-**Current focus:** Phase 18 — Packaging Polish
+**Last Activity:** 2026-04-28 — Completed quick task 260428-lya: marked decoder-defects debug session resolved
+**Current focus:** Phase 19 — Skill Runtime UAT
 
 ## Project Reference
 
@@ -84,6 +84,12 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 - ci.yml first run will land on first push to master after this commit cycle (PIPE-01)
 - release.yml first OIDC + provenance run will land on first `vN.N.N` tag push (PIPE-02; v3.0.1 tag)
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260428-lya | Mark decoder-defects debug session resolved with pointers to 17-VERIFICATION and 999.7 backlog | 2026-04-28 | 9ae8881 | [260428-lya-mark-decoder-defects-debug-session-resol](./quick/260428-lya-mark-decoder-defects-debug-session-resol/) |
 
 ## Session Continuity
 
