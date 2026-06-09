@@ -4,8 +4,8 @@ milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: planning
 stopped_at: Phase 19 context gathered
-last_updated: "2026-04-28T20:54:00.000Z"
-last_activity: 2026-04-28
+last_updated: "2026-06-09T17:42:50.000Z"
+last_activity: 2026-06-09
 progress:
   total_phases: 5
   completed_phases: 3
@@ -17,7 +17,7 @@ progress:
 # Project State
 
 **Status:** Ready to plan
-**Last Activity:** 2026-04-28 — Completed quick task 260428-lya: marked decoder-defects debug session resolved
+**Last Activity:** 2026-06-09 — Completed quick task 260609-hcb: dependency vulnerability hardening (vitest bump + SDK-scoped overrides; npm audit 7→0)
 **Current focus:** Phase 19 — Skill Runtime UAT
 
 ## Project Reference
@@ -90,6 +90,7 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260428-lya | Mark decoder-defects debug session resolved with pointers to 17-VERIFICATION and 999.7 backlog | 2026-04-28 | 9ae8881 | [260428-lya-mark-decoder-defects-debug-session-resol](./quick/260428-lya-mark-decoder-defects-debug-session-resol/) |
+| 260609-hcb | Dependency vulnerability hardening v3.0.1 — bump vitest + SDK-scoped overrides (npm audit 7→0; all 4 gates green) | 2026-06-09 | 087ff05 | [260609-hcb-dependency-vulnerability-hardening-v3-0-](./quick/260609-hcb-dependency-vulnerability-hardening-v3-0-/) |
 
 ## Session Continuity
 
