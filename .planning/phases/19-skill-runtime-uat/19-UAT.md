@@ -2,9 +2,9 @@
 phase: 19-skill-runtime-uat
 verified: TBD
 status: TBD
-score: 0/5 truths verified
+score: 1/5 truths verified
 overrides_applied: 0
-requirements_verified: 0/5
+requirements_verified: 1/5
 ---
 
 # Phase 19: Skill Runtime UAT — Evidence Index
@@ -17,13 +17,13 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 
 | #   | Truth                                                                                                                                                                  | Status   | Evidence                                                                                                  |
 | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------- |
-| SC1 | `/localground:seed` produces a valid `.localground-seed-manifest.json` file plus a user-readable summary, with the underlying `localground_seed` MCP tool call visible in the transcript | PENDING | `localground_seed` TOOL validated in 19-01 (manifest on disk stands), but the `/localground:seed` COMMAND was non-functional until 19-08 (loose-skill registration defect). Re-confirmed by the 19-08 Task 4 routing proof — see `19-transcripts/plugin-registration.md` |
+| SC1 | `/localground:seed` produces a valid `.localground-seed-manifest.json` file plus a user-readable summary, with the underlying `localground_seed` MCP tool call visible in the transcript | VERIFIED | Re-confirmed via a REAL `/localground:seed` command (19-08 Task 4): plugin command → skill → `localground_detect` + `localground_seed` (isError:false) → manifest on disk. Evidence: `19-transcripts/plugin-registration.md` (§ Tool call (routing proof), § On-disk evidence). TOOL-only validation in `19-transcripts/seed.md` (19-01) stands as corroboration. |
 | SC2 | `/localground:migrate` Session 1 writes `localground-migrate-state.json`, Claude Code restarts from the new path, Session 2 picks up the state file, completes settings migration, and exits without state loss or duplicate work | PENDING  | See plan 19-02-PLAN.md |
 | SC3 | `/localground:reap` invokes both `localground_verify` and `localground_health_check` and produces a natural-language report mapping findings to recommendations | PENDING  | See plan 19-03-PLAN.md |
 | SC4 | `/localground:cleanup` lists candidates from `localground_cleanup_scan`, requires per-item confirmation, and only deletes items the user explicitly confirms (zero deletions on items declined or skipped) | PENDING  | See plan 19-04-PLAN.md |
 | SC5 | `/localground:verify` invokes `localground_audit` and produces a traffic-light report whose recommendations map to actionable next steps | PENDING  | See plan 19-05-PLAN.md |
 
-**Score:** 0/5 truths verified
+**Score:** 1/5 truths verified
 
 ### Required Artifacts
 
@@ -39,19 +39,22 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 | --------------------------------------------------- | --------------------------------------------- | --------------------------------------------------- | ------ |
 | localground MCP server registered with --scope user | `claude mcp list`                             | localground present, ✔ Connected, scope=user, cross-cwd | PASS   |
 | local-dist binary --version short-circuits cleanly  | `node packages/mcp/dist/index.js --version`   | exit 0; `3.0.0` to stdout; no transport-boot stderr | PASS   |
+| plugin loads after `--plugin-dir` restart; seed/reap/verify register + `/localground:seed` routes end-to-end | `claude --plugin-dir <repo>` then `/localground:seed` | 3 model-invocable commands register; seed routes to MCP tools + markers on disk (19-08) | PASS |
+| migrate/cleanup model-hidden (disable-model-invocation) yet user-invocable in slash menu | type `/localground` | maintainer confirmed both appear in the slash menu (2026-06-26) | PASS |
+| C-1: exactly one localground MCP server (local-dist), no auto-started plugin server | `claude mcp list` | one `localground` → `packages/mcp/dist/index.js`, ✔ Connected; no competing server | PASS |
 | (more rows added by 19-02 .. 19-06)                 |                                               |                                                     | PENDING |
 
 ### Requirements Coverage
 
 | Requirement | Source Plan(s) | Description                                   | Status    | Evidence                                                                       |
 | ----------- | -------------- | --------------------------------------------- | --------- | ----------------------------------------------------------------------------- |
-| UAT-01      | 19-01, 19-06, 19-08 | /localground:seed runtime validation          | PENDING   | TOOL validated in 19-01 (manifest on disk); COMMAND non-functional until the 19-08 plugin fix — re-confirm via real `/localground:seed` in 19-08 Task 4 |
+| UAT-01      | 19-01, 19-06, 19-08 | /localground:seed runtime validation          | SATISFIED | Real `/localground:seed` command routed end-to-end to MCP tools + markers on disk — `19-transcripts/plugin-registration.md` |
 | UAT-02      | 19-02, 19-06   | /localground:migrate two-session loop         | PENDING   | See 19-02-PLAN.md                                                              |
 | UAT-03      | 19-03, 19-06   | /localground:reap health check                | PENDING   | See 19-03-PLAN.md                                                              |
 | UAT-04      | 19-04, 19-06   | /localground:cleanup per-item confirmation    | PENDING   | See 19-04-PLAN.md                                                              |
 | UAT-05      | 19-05, 19-06   | /localground:verify environment audit         | PENDING   | See 19-05-PLAN.md                                                              |
 
-**Coverage so far:** 0/5 requirement IDs satisfied; 5 pending.
+**Coverage so far:** 1/5 requirement IDs satisfied; 4 pending.
 
 ### Human Verification Required
 
