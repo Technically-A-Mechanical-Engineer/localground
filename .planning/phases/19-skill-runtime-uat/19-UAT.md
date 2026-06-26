@@ -2,9 +2,9 @@
 phase: 19-skill-runtime-uat
 verified: TBD
 status: TBD
-score: 4/5 truths verified
+score: 5/5 truths verified
 overrides_applied: 0
-requirements_verified: 4/5
+requirements_verified: 5/5
 ---
 
 # Phase 19: Skill Runtime UAT — Evidence Index
@@ -21,9 +21,9 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 | SC2 | `/localground:migrate` Session 1 writes `localground-migrate-state.json`, Claude Code restarts from the new path, Session 2 picks up the state file, completes settings migration, and exits without state loss or duplicate work | VERIFIED | `19-transcripts/migrate-session-1.md § Tool call: localground_copy`, `§ State file (post-Session-1)`; `19-transcripts/migrate-session-2.md § State file (post-Session-2)` (session: 2 + completedTimestamp); `19-transcripts/migrate-idempotency.md § Skill enters Session 1 logic` (REWORDED per Correction 3 — no session: 2 early-exit, falls into Session 1); `19-transcripts/migrate-missing-state.md § Pre-run state confirmation` (state file deleted from BASE path per L-7) + `§ Tool call: localground_detect` (Session 1 entry confirmed) |
 | SC3 | `/localground:reap` invokes both `localground_verify` and `localground_health_check` and produces a natural-language report mapping findings to recommendations | VERIFIED | `19-transcripts/reap.md § Tool call: localground_health_check` (6-check response array; the seed_markers check carries `verify()` internally per index.ts:637-650, satisfying "invokes both"); `§ Skill output to user — traffic-light table` (rendered natural-language report); `§ Skill interpretation` (YELLOW — git_integrity WARN mapped to a `/localground:cleanup` recommendation; 5 PASS rolled up); `§ Manifest cross-check (post-run)` (2 markers — manifest survived UAT-02 migrate per L-6) |
 | SC4 | `/localground:cleanup` lists candidates from `localground_cleanup_scan`, requires per-item confirmation, and only deletes items the user explicitly confirms (zero deletions on items declined or skipped) | VERIFIED | `19-transcripts/cleanup.md § Tool call: localground_cleanup_scan` (3 ScanMatch candidates); `§ Candidate 1 dialogue (response: yes)` (file edited), `§ Candidate 2 dialogue (response: no)`, `§ Candidate 3 dialogue (response: skip all)` (verbatim per L-8 → halt); `§ Post-run state verification` (checksum diff: exactly 1 file changed = the YES file; declined + skipped files byte-identical to pre-run, stale refs still on disk). REFRAMED per Correction 1: file-reference fixture under os.tmpdir() (D-11/D-14), NOT directory candidates (cleanup-scan emits only ScanMatch records). |
-| SC5 | `/localground:verify` invokes `localground_audit` and produces a traffic-light report whose recommendations map to actionable next steps | PENDING  | See plan 19-05-PLAN.md |
+| SC5 | `/localground:verify` invokes `localground_audit` and produces a traffic-light report whose recommendations map to actionable next steps | VERIFIED | `19-transcripts/verify.md § Tool call: localground_audit` (summary: 15 projects / 60 checks / 29 PASS / 23 WARN / 8 FAIL + per-project `projects` array); `§ Skill output to user — traffic-light table per project` + `§ Skill output to user — overall summary` (RED roll-up); `§ Skill recommendations` (each WARN/FAIL class → named next step: cloud-synced → `/localground:seed`+`/localground:migrate`, not_a_git_repo → `git init`, stale refs → `/localground:cleanup`). L-11 known-reading + 6/23 null path-hash decode assessment in `§ Auto-discovery filter check`. RED is correct behavior (toolkit detects real env issues; criterion is findings→recommendations mapping). |
 
-**Score:** 4/5 truths verified
+**Score:** 5/5 truths verified
 
 ### Required Artifacts
 
@@ -39,7 +39,8 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 | `19-transcripts/reap.md`                       | UAT-03 transcript — health_check tool call + 6-check response + traffic-light table + interpretation | VERIFIED | Authored by plan 19-03 Task 1                                       |
 | `19-transcripts/cleanup.md`                    | UAT-04 transcript — cleanup_scan + 3-candidate dialogues + post-run checksum diff (REFRAMED per Correction 1) | VERIFIED | Authored by plan 19-04 Task 2                                       |
 | `<os.tmpdir>/lg-uat-cleanup-fixture-19/`       | Synthetic fixture (D-11/D-14 — under tmpdir, NOT real artifacts); 3 scannable files with stale OneDrive refs | VERIFIED | Created in plan 19-04 Task 1; reaped across a session-exit gap, rebuilt for the run; auto-cleaned at reboot |
-| (more rows added by 19-05 .. 19-06)            |                                                                                                  | PENDING  |                                                                    |
+| `19-transcripts/verify.md`                     | UAT-05 transcript — audit auto-discovery + per-project traffic-light + recommendations + L-11 check | VERIFIED | Authored by plan 19-05 Task 1                                       |
+| (more rows added by 19-06)                     |                                                                                                  | PENDING  |                                                                    |
 
 ### Behavioral Spot-Checks
 
@@ -62,7 +63,10 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 | cleanup-scan returned >= 3 ScanMatch records on fixture     | cleanup.md § Tool call: localground_cleanup_scan response               | 3 entries (filesScanned 4)                          | PASS   |
 | "skip all" verbatim (L-8) halted processing                 | cleanup.md § Candidate 3 dialogue (response: skip all)                  | exact string `skip all` then halt + summary         | PASS   |
 | Post-run: declined+skipped items byte-identical             | diff pre-run-checksums.txt post-run-checksums.txt                        | exactly 1 line different (the YES file only)        | PASS   |
-| (more rows added by 19-05 .. 19-06)                 |                                               |                                                     | PENDING |
+| localground_audit auto-discovery returns summary+projects   | verify.md § Tool call: localground_audit response                       | summary keys + 15-project array (60 checks)         | PASS   |
+| Recommendations map to actionable next steps (SC5)          | verify.md § Skill recommendations                                       | each WARN/FAIL class → named next step              | PASS   |
+| L-11 known-reading documented (looksLikeProject filter)     | verify.md § Auto-discovery filter check                                 | root/home excluded; 6/23 null decodes not errors    | PASS   |
+| (more rows added by 19-06)                          |                                               |                                                     | PENDING |
 
 ### Requirements Coverage
 
@@ -72,9 +76,9 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 | UAT-02      | 19-02, 19-06   | /localground:migrate two-session loop         | SATISFIED | 4 transcripts in `19-transcripts/` + state file at destination base path; all three input states (no file / session: 1 / session: 2) exercised |
 | UAT-03      | 19-03, 19-06   | /localground:reap health check                | SATISFIED | `19-transcripts/reap.md § Tool call: localground_health_check` (6-check array) + `§ Skill interpretation` (findings→recommendations); manifest survived UAT-02 migrate (post-run cross-check, 2 markers) |
 | UAT-04      | 19-04, 19-06   | /localground:cleanup per-item confirmation    | SATISFIED | `19-transcripts/cleanup.md` § Candidate 1/2/3 dialogues + § Post-run state verification (checksum diff: exactly 1 file changed). Synthetic os.tmpdir fixture, reframed per Correction 1 (file-references only) |
-| UAT-05      | 19-05, 19-06   | /localground:verify environment audit         | PENDING   | See 19-05-PLAN.md                                                              |
+| UAT-05      | 19-05, 19-06   | /localground:verify environment audit         | SATISFIED | `19-transcripts/verify.md § Tool call: localground_audit` (15 projects, RED roll-up) + `§ Skill recommendations` (findings→named next steps); L-11 + 6/23 null-decode assessment in `§ Auto-discovery filter check` |
 
-**Coverage so far:** 4/5 requirement IDs satisfied; 1 pending.
+**Coverage so far:** 5/5 requirement IDs satisfied; 0 pending (local-dist runtime; tarball-gate replay in 19-06 then 19-07 finalizes frontmatter status).
 
 ### Human Verification Required
 
