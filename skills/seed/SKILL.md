@@ -1,5 +1,4 @@
 ---
-name: localground-seed
 description: Plant verifiable markers in a Claude Code project before migration. Detects environment and seeds markers for post-migration verification.
 allowed-tools:
   - mcp__localground__localground_detect

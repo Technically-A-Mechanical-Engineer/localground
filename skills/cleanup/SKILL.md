@@ -1,5 +1,4 @@
 ---
-name: localground-cleanup
 description: Guided cleanup — scan for stale cloud storage artifacts and delete confirmed items with platform-appropriate shell commands.
 disable-model-invocation: true
 allowed-tools:

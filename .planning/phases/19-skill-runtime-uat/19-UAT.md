@@ -2,9 +2,9 @@
 phase: 19-skill-runtime-uat
 verified: TBD
 status: TBD
-score: 1/5 truths verified
+score: 0/5 truths verified
 overrides_applied: 0
-requirements_verified: 1/5
+requirements_verified: 0/5
 ---
 
 # Phase 19: Skill Runtime UAT — Evidence Index
@@ -17,13 +17,13 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 
 | #   | Truth                                                                                                                                                                  | Status   | Evidence                                                                                                  |
 | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------- |
-| SC1 | `/localground:seed` produces a valid `.localground-seed-manifest.json` file plus a user-readable summary, with the underlying `localground_seed` MCP tool call visible in the transcript | VERIFIED | `19-transcripts/seed.md` § Tool call: localground_seed and § On-disk evidence (post-run) |
+| SC1 | `/localground:seed` produces a valid `.localground-seed-manifest.json` file plus a user-readable summary, with the underlying `localground_seed` MCP tool call visible in the transcript | PENDING | `localground_seed` TOOL validated in 19-01 (manifest on disk stands), but the `/localground:seed` COMMAND was non-functional until 19-08 (loose-skill registration defect). Re-confirmed by the 19-08 Task 4 routing proof — see `19-transcripts/plugin-registration.md` |
 | SC2 | `/localground:migrate` Session 1 writes `localground-migrate-state.json`, Claude Code restarts from the new path, Session 2 picks up the state file, completes settings migration, and exits without state loss or duplicate work | PENDING  | See plan 19-02-PLAN.md |
 | SC3 | `/localground:reap` invokes both `localground_verify` and `localground_health_check` and produces a natural-language report mapping findings to recommendations | PENDING  | See plan 19-03-PLAN.md |
 | SC4 | `/localground:cleanup` lists candidates from `localground_cleanup_scan`, requires per-item confirmation, and only deletes items the user explicitly confirms (zero deletions on items declined or skipped) | PENDING  | See plan 19-04-PLAN.md |
 | SC5 | `/localground:verify` invokes `localground_audit` and produces a traffic-light report whose recommendations map to actionable next steps | PENDING  | See plan 19-05-PLAN.md |
 
-**Score:** 1/5 truths verified
+**Score:** 0/5 truths verified
 
 ### Required Artifacts
 
@@ -45,13 +45,13 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 
 | Requirement | Source Plan(s) | Description                                   | Status    | Evidence                                                                       |
 | ----------- | -------------- | --------------------------------------------- | --------- | ----------------------------------------------------------------------------- |
-| UAT-01      | 19-01, 19-06   | /localground:seed runtime validation          | SATISFIED | `19-transcripts/seed.md` § Tool call: localground_seed; on-disk manifest evidence |
+| UAT-01      | 19-01, 19-06, 19-08 | /localground:seed runtime validation          | PENDING   | TOOL validated in 19-01 (manifest on disk); COMMAND non-functional until the 19-08 plugin fix — re-confirm via real `/localground:seed` in 19-08 Task 4 |
 | UAT-02      | 19-02, 19-06   | /localground:migrate two-session loop         | PENDING   | See 19-02-PLAN.md                                                              |
 | UAT-03      | 19-03, 19-06   | /localground:reap health check                | PENDING   | See 19-03-PLAN.md                                                              |
 | UAT-04      | 19-04, 19-06   | /localground:cleanup per-item confirmation    | PENDING   | See 19-04-PLAN.md                                                              |
 | UAT-05      | 19-05, 19-06   | /localground:verify environment audit         | PENDING   | See 19-05-PLAN.md                                                              |
 
-**Coverage so far:** 1/5 requirement IDs satisfied; 4 pending.
+**Coverage so far:** 0/5 requirement IDs satisfied; 5 pending.
 
 ### Human Verification Required
 

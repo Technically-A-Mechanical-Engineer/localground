@@ -1,5 +1,4 @@
 ---
-name: localground-migrate
 description: Two-session migration — copy Claude Code projects from cloud-synced storage to local paths with verification and settings migration.
 disable-model-invocation: true
 allowed-tools:

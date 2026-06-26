@@ -16,6 +16,8 @@ Working in cloud-synced folders (OneDrive, Dropbox, Google Drive, iCloud) causes
 
 All three paths share the same safety model: migration never deletes, cleanup deletes only with individual confirmation and a verified local copy, verification never modifies anything.
 
+> **Skills (plugin form):** The five workflows above are also exposed as Claude Code skills under the `localground` plugin namespace — `/localground:seed`, `/localground:migrate`, `/localground:reap`, `/localground:cleanup`, `/localground:verify` — which route to the same MCP tools. Packaged plugin distribution (marketplace install) is being finalized in a later release; until then, use the MCP server, CLI, or prompts above.
+
 ## MCP Server (v3.0.0)
 
 Add the LocalGround MCP server to Claude Code to invoke all operations as native tool calls.

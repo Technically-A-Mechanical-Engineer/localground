@@ -1,5 +1,4 @@
 ---
-name: localground-reap
 description: Post-migration health check — verify seed markers and run 6-point health assessment with traffic-light scoring.
 allowed-tools:
   - mcp__localground__localground_detect

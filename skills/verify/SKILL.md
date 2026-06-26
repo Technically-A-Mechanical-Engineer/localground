@@ -1,5 +1,4 @@
 ---
-name: localground-verify
 description: Environment-wide audit — discover all projects, run health checks, generate traffic-light report with recommendations.
 allowed-tools:
   - mcp__localground__localground_audit

@@ -70,7 +70,7 @@ const PACKAGES = [
 
 const REQUIRED_FILES = ['package.json', 'README.md', 'dist/index.js', 'dist/index.d.ts', 'dist/index.js.map'];
 const FORBIDDEN_EXACT = ['tsconfig.json', 'tsup.config.ts', 'vitest.config.ts'];
-const FORBIDDEN_PREFIX = ['src/', 'test/'];
+const FORBIDDEN_PREFIX = ['src/', 'test/', 'skills/', '.claude-plugin/'];
 
 /**
  * Spawn helper: array args, never shell, watchdog timer, capture stdout/stderr.
