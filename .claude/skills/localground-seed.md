@@ -44,7 +44,7 @@ Project: my-project
 Path:    C:/Users/user/Projects/my-project
 Markers:
   Test file: .localground-seed-test (checksum: a1b2c3d4...)
-  Git tag:   lg-seed-v1 (commit: e5f6g7h8)
+  Git tag:   localground/seed/2026-06-26T00-00-59-707Z (commit: e5f6g7h8)
 Manifest:  .localground-seed-manifest.json
 
 Next: Run /localground:migrate when ready to move this project.
