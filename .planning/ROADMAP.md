@@ -79,7 +79,7 @@
 - [x] 19-01-PLAN.md (Wave 1) - Setup MCP registration with --scope user + UAT-01 (/localground:seed) + 19-UAT.md skeleton
 - [x] 19-02-PLAN.md (Wave 2) - UAT-02 (/localground:migrate) Scenario C: 3 runs (happy + idempotency + missing-state-fallback)
 - [x] 19-03-PLAN.md (Wave 3) - UAT-03 (/localground:reap) on UAT-02 destination
-- [ ] 19-04-PLAN.md (Wave 4) - UAT-04 (/localground:cleanup) synthetic stale-reference fixture, mixed yes/no/skip-all
+- [x] 19-04-PLAN.md (Wave 4) - UAT-04 (/localground:cleanup) synthetic stale-reference fixture, mixed yes/no/skip-all
 - [ ] 19-05-PLAN.md (Wave 5) - UAT-05 (/localground:verify) environment-wide audit
 - [ ] 19-06-PLAN.md (Wave 6) - Tarball-gate replay (D-04): npm pack + install + 5 routing-handshake tool calls
 - [ ] 19-07-PLAN.md (Wave 7) - Finalize 19-UAT.md frontmatter status + Gaps Summary
