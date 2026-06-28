@@ -81,7 +81,7 @@
 - [x] 19-03-PLAN.md (Wave 3) - UAT-03 (/localground:reap) on UAT-02 destination
 - [x] 19-04-PLAN.md (Wave 4) - UAT-04 (/localground:cleanup) synthetic stale-reference fixture, mixed yes/no/skip-all
 - [x] 19-05-PLAN.md (Wave 5) - UAT-05 (/localground:verify) environment-wide audit
-- [ ] 19-06-PLAN.md (Wave 6) - Tarball-gate replay (D-04): npm pack + install + 5 routing-handshake tool calls
+- [x] 19-06-PLAN.md (Wave 6) - Tarball-gate replay (D-04): 5 skills re-verified on packaged tarball across 2 relaunches; honesty gate 6/6; registration restored to local-dist; adversarially verified CLOSEOUT_SOUND
 - [ ] 19-07-PLAN.md (Wave 7) - Finalize 19-UAT.md frontmatter status + Gaps Summary
 
 ### Phase 20: Release Pipeline Validation
@@ -159,7 +159,7 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 16. Test Infrastructure Hardening | v3.0.1 | 3/3 | Complete    | 2026-04-27 |
 | 17. Core Decoder Calibration | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
 | 18. Packaging Polish | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
-| 19. Skill Runtime UAT | v3.0.1 | 0/7 | Not Started | - |
+| 19. Skill Runtime UAT | v3.0.1 | 6/7 | In Progress | - |
 | 20. Release Pipeline Validation | v3.0.1 | 0/0 | Not Started | - |
 
 ## Backlog

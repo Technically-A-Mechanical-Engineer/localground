@@ -25,6 +25,24 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 
 **Score:** 5/5 truths verified
 
+### Tarball-Runtime Replay (19-06 — D-04 gating pass)
+
+The five skills were **re-run on the packaged tarball runtime** (`@localground/mcp` installed from `localground-mcp-3.0.0.tgz` (48,701 B) into `<os.tmpdir>/lg-uat-19-tarball-install`, registered via `claude mcp add … node <tarball-path>`, swap @ 2026-06-28T17:32:34Z) across two fresh relaunches — proving the skills route + execute identically when served by the **published artifact** rather than the local-dist working tree (the D-04 gate).
+
+**The honesty rule (why tarball needs its own evidence):** local-dist and tarball binaries are both `3.0.0` with byte-identical tool responses — no envelope, version string, or `claude mcp get` proves *which binary served a call*. The only honest proof is a **process-identity witness** (a live `node.exe` whose command line contains `lg-uat-19-tarball-install` AND none serving `packages/mcp/dist/index.js`) + a launch timestamp post-dating the swap. Every tarball transcript carries this witness block, captured immutably at session launch.
+
+| SC | Tarball evidence (runtime = tarball node) |
+| --- | --- |
+| SC1 seed | `tarball-seed.md` — `localground_detect` + `localground_seed` (isError:false), manifest on disk, checksum d51c375d…, tag `localground/seed/2026-06-28T17-48-04-708Z` on 650a60e *(PID 5880, launch 17:37:38Z > swap)* |
+| SC2 migrate | **happy-path two-session boundary** (D-04 carve-out — Runs 2/3 are skill-logic branches already proven under local-dist): `tarball-migrate-session-1.md` (S1: copy 72 files robocopy exit1, verify allPassed:true, state `session:1` at dest BASE/L-7) + `tarball-migrate-session-2.md` (S2: state `session:1→2` + non-null `completedTimestamp`; filesystem-only by design) *(S1 PID 5880; S2 PID 103716, launch 18:47:20Z > swap)* |
+| SC3 reap | `tarball-reap.md` — `localground_health_check` 6-check (5 PASS, 1 WARN = expected untracked seed markers); manifest cross-check 2 markers survived migration; source/target align PASS (72 files) *(PID 103716)* |
+| SC4 cleanup | `tarball-cleanup.md` — `localground_cleanup_scan` 3 ScanMatch; per-item yes/no/skip-all dialogue; post-run md5 diff = **exactly 1 file changed** (note.md `dff09930…`→`c0ace4d8…`, byte-identical to local-dist); declined/skipped byte-identical *(PID 103716)* |
+| SC5 verify | `tarball-verify.md` — `localground_audit` auto-discovery, `summary{17 projects/68 checks/32P/26W/10F/FAIL}` + `projects` array; recommendations mapped; RED = correct (real findings) *(PID 103716)* |
+
+**Result:** every skill produced behavior **identical to its local-dist counterpart** on the tarball runtime (SC5 deltas = expected residual fixtures, NOT runtime differences — see `tarball-verify.md § Delta-from-local-dist analysis`). Two relaunches: **Relaunch A** (seed + migrate S1; PID 5880 @ 17:37:38Z) and **Relaunch B** (migrate S2 + reap + cleanup + verify; PID 103716 @ 18:47:20Z — post-dating both the swap AND the SR-6 install-dir reap+recovery @ ~18:38Z). **Honesty gate: 6/6 transcripts** carry launch-ts>swap + config=tarball + tarball-only process-identity witness. Registration **restored to local-dist** post-gate (`claude mcp get` = known-good target).
+
+**Tarball binary `--version` → `3.0.0`** is recorded as **boot-sanity only** (Phase 0) — `--version` short-circuits before the stdio transport, so it is NOT runtime proof; the per-transcript process-identity witness is the runtime proof.
+
 ### Required Artifacts
 
 | Artifact                                       | Expected                                                                                          | Status   | Details                                                              |
@@ -40,7 +58,12 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 | `19-transcripts/cleanup.md`                    | UAT-04 transcript — cleanup_scan + 3-candidate dialogues + post-run checksum diff (REFRAMED per Correction 1) | VERIFIED | Authored by plan 19-04 Task 2                                       |
 | `<os.tmpdir>/lg-uat-cleanup-fixture-19/`       | Synthetic fixture (D-11/D-14 — under tmpdir, NOT real artifacts); 3 scannable files with stale OneDrive refs | VERIFIED | Created in plan 19-04 Task 1; reaped across a session-exit gap, rebuilt for the run; auto-cleaned at reboot |
 | `19-transcripts/verify.md`                     | UAT-05 transcript — audit auto-discovery + per-project traffic-light + recommendations + L-11 check | VERIFIED | Authored by plan 19-05 Task 1                                       |
-| (more rows added by 19-06)                     |                                                                                                  | PENDING  |                                                                    |
+| `19-transcripts/tarball-seed.md`              | UAT-01 tarball replay — witness + detect + seed + manifest on disk | VERIFIED | 19-06 Relaunch A (tarball PID 5880, 17:37:38Z) |
+| `19-transcripts/tarball-migrate-session-1.md` | UAT-02 tarball S1 — witness + copy (72 files) + verify + state `session:1` (L-7) | VERIFIED | 19-06 Relaunch A (tarball PID 5880) |
+| `19-transcripts/tarball-migrate-session-2.md` | UAT-02 tarball S2 — witness + state `session:1→2` + completedTimestamp (filesystem-only) | VERIFIED | 19-06 Relaunch B (tarball PID 103716, 18:47:20Z) |
+| `19-transcripts/tarball-reap.md`              | UAT-03 tarball — witness + health_check 6-check + manifest cross-check (2 markers) | VERIFIED | 19-06 Relaunch B (tarball PID 103716) |
+| `19-transcripts/tarball-cleanup.md`           | UAT-04 tarball — witness + cleanup_scan 3 candidates + md5 diff (1 file changed) | VERIFIED | 19-06 Relaunch B (tarball PID 103716) |
+| `19-transcripts/tarball-verify.md`            | UAT-05 tarball — witness + audit (17 proj/68 checks) + recommendations | VERIFIED | 19-06 Relaunch B (tarball PID 103716) |
 
 ### Behavioral Spot-Checks
 
@@ -66,7 +89,16 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 | localground_audit auto-discovery returns summary+projects   | verify.md § Tool call: localground_audit response                       | summary keys + 15-project array (60 checks)         | PASS   |
 | Recommendations map to actionable next steps (SC5)          | verify.md § Skill recommendations                                       | each WARN/FAIL class → named next step              | PASS   |
 | L-11 known-reading documented (looksLikeProject filter)     | verify.md § Auto-discovery filter check                                 | root/home excluded; 6/23 null decodes not errors    | PASS   |
-| (more rows added by 19-06)                          |                                               |                                                     | PENDING |
+| Tarball process-identity witness (Relaunch A) | `Get-CimInstance … node.exe` | PID 5880 = `lg-uat-19-tarball-install`; NO local-dist node; launch 17:37:38Z > swap 17:32:34Z | PASS |
+| Tarball process-identity witness (Relaunch B) | `Get-CimInstance … node.exe` | PID 103716 = tarball; NO local-dist node; launch 18:47:20Z > swap AND > recovery ~18:38Z | PASS |
+| Tarball config binding (both relaunches) | `claude mcp get localground` | Args = tarball-install path, Scope: User (A connect-probe false-negative / B ✔ Connected — both overridden by live calls) | PASS |
+| SR-6 install-dir reap + recovery | re-install same `.tgz` (48,701 B) | dir purged across A→B gap (MODULE_NOT_FOUND); recovered ~18:38Z byte-identical; B node post-dates recovery | PASS |
+| Tarball migrate S2 state transition (SC2) | `python -c json.load(...)` | session `1→2` + completedTimestamp 2026-06-28T19:01:28.611Z; settingsMigrated/referencesUpdated=false (honest) | PASS |
+| Tarball cleanup md5 diff (SC4) | `diff pre/post-run-checksums` | exactly 1 file changed (note.md); declined(no)+skipped(skip all) byte-identical | PASS |
+| Tarball audit summary+projects (SC5) | `localground_audit` | summary{17/68/32P/26W/10F/FAIL} + 17-project array; deltas vs local-dist = expected residuals | PASS |
+| Tarball `--version` boot-sanity (NOT runtime proof) | `node <tarball>/dist/index.js --version` | `3.0.0` exit 0 (Phase 0); short-circuits before stdio — witness is the runtime proof | PASS |
+| Honesty gate: 6/6 tarball transcripts | grep witness anchor + launch-ts>swap + tarball config + no-local-dist | all 6 PASS; restore unblocked + run post-gate | PASS |
+| Registration restored to local-dist post-gate | `claude mcp get localground` | Scope: User config + ✔ Connected + Args=…/packages/mcp/dist/index.js (known-good) | PASS |
 
 ### Requirements Coverage
 
@@ -78,7 +110,7 @@ This index is plan-authored and updated by each plan as its UAT lands. `19-07` f
 | UAT-04      | 19-04, 19-06   | /localground:cleanup per-item confirmation    | SATISFIED | `19-transcripts/cleanup.md` § Candidate 1/2/3 dialogues + § Post-run state verification (checksum diff: exactly 1 file changed). Synthetic os.tmpdir fixture, reframed per Correction 1 (file-references only) |
 | UAT-05      | 19-05, 19-06   | /localground:verify environment audit         | SATISFIED | `19-transcripts/verify.md § Tool call: localground_audit` (15 projects, RED roll-up) + `§ Skill recommendations` (findings→named next steps); L-11 + 6/23 null-decode assessment in `§ Auto-discovery filter check` |
 
-**Coverage so far:** 5/5 requirement IDs satisfied; 0 pending (local-dist runtime; tarball-gate replay in 19-06 then 19-07 finalizes frontmatter status).
+**Coverage so far:** 5/5 requirement IDs satisfied; 0 pending. Local-dist runtime verified (19-01..05/08); **tarball-gate replay (19-06) COMPLETE** — all 5 skills re-verified on the packaged artifact across 2 relaunches; honesty gate 6/6 PASS; registration restored to local-dist (see § Tarball-Runtime Replay). 19-07 finalizes frontmatter status.
 
 ### Human Verification Required
 

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: executing
-stopped_at: Phase 19 — UAT-05 (plan 19-05) VERIFIED — all 5 SCs verified (local-dist)
-last_updated: "2026-06-26T21:49:20.000Z"
-last_activity: 2026-06-26
+stopped_at: Phase 19 — 19-06 (tarball-gate replay, D-04) COMPLETE — 5 skills re-verified on packaged tarball, honesty gate 6/6, registration restored to local-dist; next 19-07 (finalize)
+last_updated: "2026-06-28T23:31:54.000Z"
+last_activity: 2026-06-28
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 14
-  completed_plans: 11
-  percent: 79
+  completed_plans: 12
+  percent: 86
 ---
 
 # Project State
@@ -31,9 +31,9 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 ## Current Position
 
 Phase: 19 (Skill Runtime UAT) — EXECUTING
-Plan: 5 of 7 complete (UAT-05 VERIFIED — all 5 SCs verified, local-dist); next 19-06 (tarball-gate replay)
+Plan: 6 of 7 complete (19-06 tarball-gate replay COMPLETE — all 5 /localground:* skills re-verified on the packaged tarball runtime across 2 relaunches; honesty gate 6/6; registration restored to local-dist; adversarially verified CLOSEOUT_SOUND); next 19-07 (finalize 19-UAT.md frontmatter + Gaps Summary)
 Status: Executing Phase 19
-Last activity: 2026-06-26 -- UAT-05 (plan 19-05) VERIFIED + committed
+Last activity: 2026-06-28 -- 19-06 (tarball-gate replay) COMPLETE + adversarially verified; committing
 
 ## Roadmap Summary
 
@@ -94,7 +94,7 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-06-26T21:49:20.000Z
-Stopped at: Phase 19 — UAT-05 (plan 19-05) VERIFIED — all 5 SCs verified (local-dist); next 19-06 tarball replay
+Last session: 2026-06-28T23:31:54.000Z
+Stopped at: Phase 19 — 19-06 (tarball-gate replay, D-04) COMPLETE — 5 skills re-verified on packaged tarball, honesty gate 6/6, registration restored; next 19-07 (finalize)
 Resume file: 
-.planning/phases/19-skill-runtime-uat/19-06-PLAN.md
+.planning/phases/19-skill-runtime-uat/19-07-PLAN.md
