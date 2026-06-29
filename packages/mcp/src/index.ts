@@ -828,12 +828,29 @@ server.registerTool('localground_audit', {
 
 // --- Server Startup ---
 
+/**
+ * Returns true if any argv token is a recognised version-request flag.
+ * Case-sensitive and exact — `--Version`/`--VERSION` are NOT version requests (D-13).
+ * Over-broad near-misses `--versions`/`--versioned` are also NOT version requests (D-13).
+ * No argument-parser dependency — hand-rolled predicate only (D-14).
+ */
+function isVersionRequest(argv: string[]): boolean {
+  return argv.some(
+    (arg) =>
+      arg === '--version' ||
+      arg.startsWith('--version=') ||
+      arg === '-v' ||
+      arg === '-V',
+  );
+}
+
 async function main(): Promise<void> {
-  // Smoke-check escape hatch: respond to --version without booting the MCP server.
+  // Smoke-check escape hatch: respond to a version request without booting the MCP server.
   // Used by scripts/verify-tarball.mjs to confirm the published tarball's bin
   // entry executes end-to-end. Must run BEFORE StdioServerTransport setup —
   // a transport on stdio would block forever waiting for a JSON-RPC client.
-  if (process.argv.includes('--version')) {
+  // Recognized: --version, --version=…, -v, -V (case-sensitive, D-12/D-13/D-14).
+  if (isVersionRequest(process.argv.slice(2))) {
     process.stdout.write(`${SERVER_VERSION}\n`);
     process.exit(0);
   }
