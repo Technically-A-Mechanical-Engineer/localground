@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
 status: planning
-last_updated: "2026-06-29T17:01:26.803Z"
+stopped_at: Phase 21 context gathered
+last_updated: "2026-06-29T18:25:54.669Z"
 last_activity: 2026-06-29
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
-  percent: 0
 ---
 
 # Project State
@@ -117,7 +117,7 @@ Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-clo
 
 ## Session Continuity
 
-Last session: 2026-06-29
-Stopped at: v3.1.0 roadmap created — Phases 21-23 mapped (SEC-01 + CLI-06 → 21; BUILD-01 + CORE-15 → 22; CORE-16 → 23); 5/5 requirements covered; 999.7 promoted to CORE-16, 999.5 corrected to CLI-05 → v3.2.0. Next: `/gsd-plan-phase 21`.
+Last session: 2026-06-29T18:25:54.658Z
+Stopped at: Phase 21 context gathered
 Last commit: a5e289f docs(v3.0.1): generate milestone summary for onboarding
-Resume file: None
+Resume file: .planning/phases/21-supply-chain-bin-hardening/21-CONTEXT.md
