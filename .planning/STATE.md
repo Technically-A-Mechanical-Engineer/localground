@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: executing
-stopped_at: Phase 19 (Skill Runtime UAT) COMPLETE — status passed, verified 2026-06-28; gsd-verifier cross-check VERIFIED; next Phase 20 (Release Pipeline Validation)
-last_updated: "2026-06-28T23:54:07.000Z"
-last_activity: 2026-06-28
+stopped_at: "Phase 20 (Release Pipeline Validation) context gathered — 13 decisions locked (OIDC-primary publish + 5 must-fix-before-tag prerequisites incl. repository-field E422 blocker; incremental exact-commit sequencing; Windows CI verified-clean; SC5+documented-MCP install). Cross-model verified (Codex + 3-agent re-verification). Next: /gsd-plan-phase 20"
+last_updated: "2026-06-29T03:01:26.038Z"
+last_activity: 2026-06-26
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 14
-  completed_plans: 13
-  percent: 93
+  total_plans: 15
+  completed_plans: 15
+  percent: 100
 ---
 
 # Project State
@@ -94,7 +94,7 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-06-28T23:54:07.000Z
-Stopped at: Phase 19 (Skill Runtime UAT) COMPLETE — status passed, verified 2026-06-28; gsd-verifier cross-check VERIFIED. Milestone v3.0.1 advances to Phase 20 (Release Pipeline Validation).
+Last session: 2026-06-29T03:01:26.024Z
+Stopped at: Phase 20 (Release Pipeline Validation) context gathered — 13 decisions locked (OIDC-primary publish + 5 must-fix-before-tag prerequisites incl. repository-field E422 blocker; incremental exact-commit sequencing; Windows CI verified-clean; SC5+documented-MCP install). Cross-model verified (Codex + 3-agent re-verification). Next: /gsd-plan-phase 20
 Last commit: 07eddff (19-06) → 19-07 finalize commit lands this cycle (Phase 19 close)
-Resume file: (Phase 19 closed — no active plan) Next: optional comprehension-gate (Phase 19 sign-off), then /gsd-plan-phase 20 (Release Pipeline Validation — PIPE-01/02 + H-4; first GitHub push at the v3.0.1 tag)
+Resume file: .planning/phases/20-release-pipeline-validation/20-CONTEXT.md
