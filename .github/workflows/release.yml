@@ -24,6 +24,11 @@ jobs:
           node-version: '22.x'
           package-manager-cache: false
 
+      - name: Upgrade npm to an OIDC-capable version (>=11.5.1)
+        run: |
+          npm install -g npm@^11.5.1
+          echo "npm version now: $(npm --version)"
+
       - name: Install dependencies (npm ci)
         run: npm ci
 
