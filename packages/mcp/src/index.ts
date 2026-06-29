@@ -832,16 +832,23 @@ server.registerTool('localground_audit', {
  * Returns true if any argv token is a recognised version-request flag.
  * Case-sensitive and exact — `--Version`/`--VERSION` are NOT version requests (D-13).
  * Over-broad near-misses `--versions`/`--versioned` are also NOT version requests (D-13).
+ * Tokens after the `--` end-of-options terminator are operands, not flags, so
+ * `-- --version` falls through to normal startup (POSIX convention).
  * No argument-parser dependency — hand-rolled predicate only (D-14).
  */
 function isVersionRequest(argv: string[]): boolean {
-  return argv.some(
-    (arg) =>
+  for (const arg of argv) {
+    if (arg === '--') break; // end-of-options terminator: stop scanning for flags
+    if (
       arg === '--version' ||
       arg.startsWith('--version=') ||
       arg === '-v' ||
-      arg === '-V',
-  );
+      arg === '-V'
+    ) {
+      return true;
+    }
+  }
+  return false;
 }
 
 async function main(): Promise<void> {

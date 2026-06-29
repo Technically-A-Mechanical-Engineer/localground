@@ -224,4 +224,13 @@ describe('MCP bin --version predicate', () => {
       expect(child.exitCode).toBeNull(); // still running; afterEach reaps it
     });
   }
+
+  // `--` is the POSIX end-of-options terminator: tokens after it are operands, not
+  // flags, so `-- --version` must NOT be treated as a version request — it falls
+  // through to normal server startup (proven by a successful handshake).
+  it('falls through to server startup for `-- --version` (end-of-options terminator)', async () => {
+    const child = trackedSpawnServer(['--', '--version']);
+    await handshake(child);
+    expect(child.exitCode).toBeNull(); // server booted; afterEach reaps it
+  });
 });
