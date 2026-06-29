@@ -1,7 +1,7 @@
 ---
 phase: 19-skill-runtime-uat
-verified: TBD
-status: TBD
+verified: 2026-06-28T23:54:07Z
+status: passed
 score: 5/5 truths verified
 overrides_applied: 0
 requirements_verified: 5/5
@@ -118,13 +118,103 @@ Phase 19 is manual UAT. The maintainer (Robert LaSalle) executes each `/localgro
 
 ### Gaps Summary
 
-(Populated by 19-07 after all per-skill UATs run.)
+Phase 19 is observational UAT. Per CONTEXT D-17, no skill behavior changes were introduced. The following items are deliberately outside Phase 19's scope or are acknowledged non-gating findings.
 
-Carried forward from UAT-01 (non-blocking):
-- **Doc drift (corrected in 19-01):** seed git-tag scheme is `localground/seed/<timestamp>`, not the `lg-seed-*` shown in plan 19-01 step 6 / acceptance #8 and the skill-doc example. Skill-doc example fixed; plan criterion noted in 19-01-SUMMARY. No product change. Product behaves correctly and the manifest records the real tag name, so verify/reap match downstream.
-- **Decode boundary (observed, for UAT-05):** 6 of 23 path-hash entries decode to `null` (deleted/renamed folders + the `0159…CC_CLI` underscore case). To be assessed under UAT-05.
+**Deferred to v3.1.0** (per CONTEXT D-02, D-03):
+- Crash-resume mid-loop test (D-02) — race-prone in manual UAT; belongs in deterministic Vitest against `chunk()` + `copy()`.
+- Multi-project migration batching (D-03) — fixture overhead disproportionate; ROADMAP SC #2 specifies single-project handoff.
 
-Carried forward from UAT-02 (non-blocking):
-- **`jq` absent in the Git Bash env:** plan 19-02's `jq -r '.session'` verification commands fail with `command not found`; substituted `python -c` / `test` / `find` / `python hashlib` throughout. Environment/plan-assumption gap, not a product defect. Reassess plan wording in 19-07.
-- **UAT-time plugin loading vs end-user install (for 19-07 / Phase 20):** every UAT session loaded the plugin ad-hoc via `claude --plugin-dir`; the migrate skill's stock Session-1 handoff omits `--plugin-dir` (it assumes a global install). Surface the UAT-time-vs-end-user loading distinction; tie to H-4 (end-user auto-register path → Phase 20).
-- **Run 2/3 executed in-session (not a fresh launch):** by deliberate COORDINATOR decision (see migrate-idempotency.md), because the re-anchor snapshot lives in a different project (`localground/.planning/`) than the migrate CWD (`lg-uat-19-dest`). Session-detection is a deterministic on-disk read and idempotency is proven by sha256 before/after, so cold context was not load-bearing.
+**Deferred to Phase 20** (release-pipeline validation):
+- `npx -y @localground/cli@3.0.1 detect` smoke against the published tarball (Phase 20 / H-4 end-user install).
+- First green CI run on master (PIPE-01).
+- First OIDC + provenance publish on the `v3.0.1` tag (PIPE-02).
+- npmjs.com per-package README rendering (DOC-03).
+- **Bundled `.mcp.json` + npx end-user auto-register path (H-4):** every UAT session loaded the plugin ad-hoc via `claude --plugin-dir`, and the migrate skill's stock Session-1 handoff omits `--plugin-dir` (it assumes a global install). The UAT-time-vs-end-user loading distinction is validated in Phase 20.
+
+**Known limitations** (acknowledged, not gating):
+- **999.7** trailing-edge `buildCandidates` defect (Phase 17 backlog) — `encode("Trailing<X>")` strips the trailing hyphen; a CORE-13 char at the trailing edge of an intermediate path component fails decode. Active-environment impact: zero per the 2026-04-27 23-path-hash diagnostic. Fix deferred to v3.1.0.
+- **L-11 known reading:** `localground_audit` filters via `looksLikeProject` (packages/mcp/src/index.ts:712-718) — filesystem-root + home-dir entries excluded (correct, not a defect). 6/23 path-hash entries decode to `null` (deleted/renamed folders + the `0159…CC_CLI` underscore case); they never become audited projects and contribute zero audit FAILs.
+- **Correction 1 reframe:** `localground_cleanup_scan` emits only ScanMatch records (file references), NOT directory candidates. UAT-04 fixtures aligned with the actual code path; the cleanup skill's directory-candidate prose (localground-cleanup.md) is forward-looking spec, not currently exercised by the scan tool. Future enhancement (not Phase 19 scope per D-17).
+- **UAT-02 tarball replay = Run 1 only:** the happy-path two-session boundary is exercised on the tarball runtime; Runs 2 (idempotency) and 3 (missing-state-file fallback) proved out under local-dist (plan 19-02) and depend on skill logic (state-file branch detection in localground-migrate.md), NOT the runtime path — the skill loads identically on both runtimes, so local-dist proof transitively covers the tarball runtime. (Runs 2/3 were also executed in-session rather than via a fresh launch — a deliberate COORDINATOR decision; session-detection is a deterministic on-disk read and idempotency is proven by sha256 before/after, so cold context was not load-bearing.)
+- **Seed git-tag scheme** is `localground/seed/<timestamp>` (not the `lg-seed-*` shown in plan 19-01 step 6 / acceptance #8 and an earlier skill-doc example). Skill-doc example corrected in 19-01; product behavior is correct and the manifest records the real tag, so reap/verify match downstream. No product change.
+
+**Environment/tooling findings** (NOT product defects; reconciled here):
+- **`jq` absent** in the Git Bash env — plan-body `jq -r '.session'` commands fail `command not found`; substituted `python -c` / `md5sum` / `test` throughout 19-02..19-06. Plan-assumption gap, not a product issue.
+- **`node -e 'require("os").tmpdir()'` breaks under Git Bash quoting** (backslash collapse) → use `cygpath` for tmpdir resolution (applied across the 19-06 replay).
+- **Windows reaps loose `%TEMP%` files** across a session exit/return gap (directory shells survive) → tmpdir fixtures must be built and consumed within one continuous session (UAT-04), and long-lived tmpdir install dirs need a survival re-check across relaunch gaps (the 19-06 SR-6 install-dir reap+recovery @ ~18:38Z). Diagnosed environmental (the `scan()` source is read-only).
+- **MCP path-format:** `claude mcp add` registration paths are consumed by native Windows node → must be the `C:/…` form, not MSYS `/c/…` (cygpath -u).
+
+**Post-UAT housekeeping** (separate deliberate operation, NOT folded into Phase 19 per D-11/D-13 — preserves the safety-test invariant that the test validating "we don't accidentally delete things" must not itself become an unsafe deletion event):
+- Local-dist UAT chain: `lg-uat-fixture-19/` (OneDrive, seeded) + `lg-uat-19-dest/` + quarantined `lg-uat-19-dest-DISCARDED-broken-toolpath-s1/` + `lg-uat-19-plugintest/`.
+- Tarball UAT chain: `lg-uat-fixture-19-tarball/` (OneDrive) + `lg-uat-19-dest-tarball/` + the tarball install dir `<TEMP>/lg-uat-19-tarball-install/` + `packages/mcp/localground-mcp-3.0.0.tgz`.
+- Guarded plugin backup `~/.claude/_localground-backup-20260625-210050/`.
+- Phase 14 fixture artifacts (OneDrive QMS folder + 2535-file local target) (D-13); 3 diagnosed debug entries on the maintainer's machine (D-11).
+
+**UAT-discovered findings:** None — all 5 UATs (UAT-01 through UAT-05) closed under BOTH the local-dist runtime (plans 19-01..05, with the skill-registration defect fixed in 19-08) AND the tarball-runtime replay (plan 19-06, D-04 gating pass) without product defects. Honesty gate 6/6 on the tarball transcripts. Phase 19 advances the milestone to Phase 20.
+
+---
+
+## Verifier Cross-Check
+
+**Verifier:** Claude (gsd-verifier, D-09 cross-check) · **Cross-checked:** 2026-06-28 · **Mode:** read-only artifact verification (no skills/MCP tools re-run; manual-UAT phase)
+
+This section is **appended** per D-09 / the `feedback_plan_authored_verification` rule. No existing index content was modified, reordered, or overwritten.
+
+### What I independently confirmed (against on-disk evidence, not index claims)
+
+**Transcript existence (15 files — all present in `19-transcripts/`):**
+- 8 local-dist: `seed.md`, `migrate-session-1.md`, `migrate-session-2.md`, `migrate-idempotency.md`, `migrate-missing-state.md`, `reap.md`, `cleanup.md`, `verify.md`.
+- 6 tarball: `tarball-seed.md`, `tarball-migrate-session-1.md`, `tarball-migrate-session-2.md`, `tarball-reap.md`, `tarball-cleanup.md`, `tarball-verify.md`.
+- Plus `plugin-registration.md` (19-08 Task 4) — the primary SC1/UAT-01 routing-proof evidence the index cites.
+
+**Section anchors (every anchor the index cites was located by grep, not assumed):**
+- `seed.md`: `## Tool call: localground_detect`, `## Tool call: localground_seed`, `## On-disk evidence (post-run)` — present.
+- `migrate-session-1.md`: `## Tool call: localground_copy (chunk 1)`, `## Tool call: localground_verify`, `## State file (post-Session-1)` — present.
+- `migrate-session-2.md`: `## State file (post-Session-2)` — present.
+- `migrate-idempotency.md`: `## Skill enters Session 1 logic (NOT Session 2 …)` — present (matches Correction 3 rewording).
+- `migrate-missing-state.md`: `## Pre-run state confirmation`, `## Tool call: localground_detect` — present.
+- `reap.md`: `## Tool call: localground_health_check`, `## Skill output to user — traffic-light table`, `## Skill interpretation …`, `## Manifest cross-check (post-run)` — present.
+- `cleanup.md`: `## Tool call: localground_cleanup_scan`, `## Candidate 1/2/3 dialogue (yes/no/skip all)`, `## Post-run state verification` — present.
+- `verify.md`: `## Tool call: localground_audit`, `## Skill output to user — traffic-light table per project`, `## Skill recommendations`, `## Auto-discovery filter check (L-11 known reading)` — present.
+- `plugin-registration.md`: `## Tool call (routing proof)`, `## On-disk evidence` — present.
+
+**Tarball runtime witness (honesty proof — the load-bearing claim):**
+- All **6/6** tarball transcripts carry a `## Tarball runtime witness` anchor (grep-confirmed).
+- Process-identity + launch-ts > swap-ts (2026-06-28T17:32:34Z) verified per transcript:
+  - **Relaunch A** — `tarball-seed.md`, `tarball-migrate-session-1.md`: PID **5880**, launch **17:37:38Z** > swap; CommandLine = `…/lg-uat-19-tarball-install/…/dist/index.js`; explicit "NO node serving `packages/mcp/dist/index.js`".
+  - **Relaunch B** — `tarball-migrate-session-2.md`, `tarball-reap.md`, `tarball-cleanup.md`, `tarball-verify.md`: PID **103716**, launch **18:47:20Z** > swap AND > recovery ~18:38Z; CommandLine = tarball-install path; live-binding proof via `localground_detect isError:false`.
+- The tarball SC2 framing is **honest, not overstated**: `tarball-migrate-session-2.md` § Observations explicitly states Session 2 is filesystem-only and does NOT exercise the tarball MCP *binary* — the binary exercise lives in Relaunch-A Session 1 (`localground_copy` 72 files + `localground_verify allPassed:true` on PID 5880). The witness binds the session; the state transition (`session:1→2` + `completedTimestamp 2026-06-28T19:01:28.611Z`) is the load-bearing evidence. Index row 37 + row 96 match the transcript verbatim.
+
+**Substantive value cross-checks (read transcript bodies, compared to index numbers):**
+- SC1: `plugin-registration.md` real-command routing chain (slash → `skills/seed/SKILL.md` → `localground_detect`+`localground_seed` isError:false → 6-key manifest + sha256 `d51c375d…` + git tag on disk). Matches index row 20.
+- SC2 local-dist: state file at dest **BASE** path (L-7), `session:1`, dest==src file count 72/72. Matches index + spot-check row 77.
+- SC3: `health_check` 6-check array (git_integrity WARN; placeholder/cloud/path-hash/seed_markers/source_target_alignment PASS); YELLOW roll-up; WARN→`/localground:cleanup` recommendation; manifest 2 markers. Matches index row 22 + rows 81–84.
+- SC4: md5 diff = **exactly 1 file changed** (note.md `dff09930…`→`c0ace4d8…`); declined(`no`) + skipped(`skip all`) byte-identical with stale OneDrive refs intact. Matches index row 23 + row 88.
+- SC5 local-dist: `localground_audit summary{15/60/29P/23W/8F/FAIL}` + 15-project array; recommendations map WARN/FAIL classes to named next steps; L-11 filter documented. Matches index row 24 + rows 89–91.
+- Tarball SC1: checksum `d51c375d…`, tag `localground/seed/2026-06-28T17-48-04-708Z` on commit `650a60e`. Matches index row 36.
+- Tarball SC4: md5 diff exactly 1 file (note.md), byte-identical to local-dist. Matches index row 39 + row 97.
+- Tarball SC5: `summary{17/68/32P/26W/10F/FAIL}`, counts reconcile (17×4=68; 32+26+10=68; FAIL=10 all not_a_git_repo). Matches index row 40 + row 98.
+
+**Required-Artifacts on-disk spot-checks (Bash `test`/`ls`/`stat`):**
+- Per-plan SUMMARYs `19-01` … `19-06` — all present. `19-07-SUMMARY.md` absent (expected — 19-07 finalizes this index; not a gap).
+- Dest fixture manifest `…/lg-uat-19-dest/lg-uat-fixture-19/.localground-seed-manifest.json` — **present** (corroborates spot-check row 81, 2 markers survived migration).
+- tmpdir install dir `<TEMP>/lg-uat-19-tarball-install` — **present** (consistent with the SR-6 reap+recovery narrative; not yet reaped this session).
+
+**Frontmatter justification (`status: passed`):**
+- 5/5 Observable Truths VERIFIED with on-disk evidence (confirmed above).
+- 5/5 Requirements Coverage SATISFIED (UAT-01…05).
+- 5/5 tarball replay rows SATISFIED.
+- No terminal `diagnosed` row; no FAILED row in the Observable Truths or Requirements tables.
+- `score: 5/5`, `requirements_verified: 5/5`, `overrides_applied: 0` — all consistent with the evidence.
+
+### Discrepancies / gaps found
+
+**None that affect phase closure.** Two informational notes (neither is a gap; both are accurate as the index records them):
+1. The packaged tarball `…/packages/mcp/localground-mcp-3.0.0.tgz` is **not currently on disk** — but the index lists it only as a **post-UAT housekeeping** target (Gaps Summary, tarball UAT chain), never as a currently-present Required Artifact. The tarball was packed/installed/swapped during 19-06; its evidence is immutable in the 6 witness blocks (PID + launch-ts + CommandLine). Absence of the `.tgz` afterward is expected, not a gap.
+2. The SC1 primary evidence pointer correctly migrated from the TOOL-only `seed.md` (19-01) to the real-command `plugin-registration.md` (19-08) after the skill-registration fix. The index documents this transparently (UAT-01 source plans = 19-01, 19-06, 19-08; `seed.md` retained as corroboration). Both files exist with the cited anchors. Internally consistent.
+
+### Verdict
+
+**VERIFIED** — the evidence index matches the recorded evidence on disk. All 15 transcripts exist with the cited section anchors; all 6 tarball transcripts carry the process-identity witness with launch timestamps post-dating the 17:32:34Z swap (PID 5880 @ 17:37:38Z; PID 103716 @ 18:47:20Z); all 5 Observable Truths, 5 Requirements, and 5 tarball replay rows are substantively corroborated (not merely asserted); no terminal `diagnosed` row exists. The honesty gate (6/6 tarball witnesses, including the explicit "Session 2 is filesystem-only / binary exercise is in Session 1" disclosure) holds. `status: passed` is justified. **Phase 19 closure is sound.**
+
+_Verifier cross-check appended: 2026-06-28 · Claude (gsd-verifier)_
