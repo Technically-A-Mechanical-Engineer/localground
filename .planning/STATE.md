@@ -4,21 +4,21 @@ milestone: v3.1.0
 milestone_name: Hardening and Hygiene
 status: executing
 stopped_at: Phase 21 context gathered
-last_updated: "2026-06-29T18:49:43.379Z"
+last_updated: "2026-06-29T20:02:49.967Z"
 last_activity: 2026-06-29
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 2
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 50
 ---
 
 # Project State
 
 **Status:** Ready to execute
 **Last Activity:** 2026-06-29
-**Current focus:** v3.1.0 Hardening and Hygiene — roadmap done; next `/gsd-plan-phase 21`
+**Current focus:** Phase 21 — supply-chain-bin-hardening
 
 ## Project Reference
 
@@ -30,10 +30,10 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 ## Current Position
 
-Phase: Not started (roadmap created; plan-phase pending)
-Plan: —
+Phase: 21 (supply-chain-bin-hardening) — EXECUTING
+Plan: 2 of 2
 Status: Ready to execute
-Last activity: 2026-06-29 -- Phase 21 planning complete
+Last activity: 2026-06-29
 
 ## Roadmap Summary
 
@@ -79,6 +79,10 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase 20-02]: D-07 applied: Preflight step asserts GITHUB_REF_NAME == v<mcp version> and mcp == cli version before any publish
 - [Phase 20-02]: D-08 applied: Dry-run-both gate precedes both real publishes; step name documents pack/manifest guard scope, NOT auth/OIDC (review M1)
 - [Phase 20-04]: D-06 satisfied — version bump 3.0.0->3.0.1 across all five manifests + lockfile regen in single commit 4818cfb; D-04/M4 per-package repository/license preserved on BOTH mcp+cli; D-10 bump-timing honored (post-CI-green, pre-tag)
+- [Phase ?]: [Phase 21-01]: D-01/D-02 SHA-pin actions/checkout+setup-node; pinact@v4.1.0 ubuntu-only verify-pins job fail-closed
+- [Phase ?]: [Phase 21-01]: D-04/D-05/D-06 npm exact-pinned 11.18.0; Node floor 22.14.0; numeric sort-V floor-assert; floating 22.x removed
+- [Phase ?]: [Phase 21-01]: D-08 .github/dependabot.yml created; github-actions weekly grouped; run: literal gap documented with manual-bump note
+- [Phase ?]: [Phase 21-01]: D-11 SLSA-provenance attestation closure is a next-real-release obligation (not CI-on-push)
 
 ### Pending Todos
 
@@ -118,7 +122,7 @@ Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-clo
 
 ## Session Continuity
 
-Last session: 2026-06-29T18:25:54.658Z
+Last session: 2026-06-29T20:02:33.952Z
 Stopped at: Phase 21 context gathered
 Last commit: a5e289f docs(v3.0.1): generate milestone summary for onboarding
-Resume file: .planning/phases/21-supply-chain-bin-hardening/21-CONTEXT.md
+Resume file: None

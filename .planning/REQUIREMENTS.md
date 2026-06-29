@@ -12,7 +12,7 @@ A hardening/correctness milestone — five carry-forward items from the v3.0.1 c
 
 Harden the release pipeline — the `id-token: write` publish job is the repo's highest-privilege surface. Source: carry-forward MD-01. Research: `research/STACK.md`, `research/PITFALLS.md`.
 
-- [ ] **SEC-01**: Every third-party GitHub Actions `uses:` reference in `.github/workflows/ci.yml` and `release.yml` is pinned to a full 40-character commit SHA carrying a `# vX.Y.Z` version comment, and each pinned SHA is verified to actually resolve to its commented tag (e.g. via `pinact`/`zizmor` or a CI check — a SHA can point at a fork/wrong commit); the publish job exact-pins the runner npm to a specific version ≥ 11.5.1 **and** runs on Node ≥ 22.14.0 (the paired OIDC floors), asserting both at runtime; a Dependabot `github-actions` config keeps the pins updatable; the release continues to publish via OIDC with no stored npm token, retains `id-token: write`, and produces a surviving SLSA-provenance attestation
+- [x] **SEC-01**: Every third-party GitHub Actions `uses:` reference in `.github/workflows/ci.yml` and `release.yml` is pinned to a full 40-character commit SHA carrying a `# vX.Y.Z` version comment, and each pinned SHA is verified to actually resolve to its commented tag (e.g. via `pinact`/`zizmor` or a CI check — a SHA can point at a fork/wrong commit); the publish job exact-pins the runner npm to a specific version ≥ 11.5.1 **and** runs on Node ≥ 22.14.0 (the paired OIDC floors), asserting both at runtime; a Dependabot `github-actions` config keeps the pins updatable; the release continues to publish via OIDC with no stored npm token, retains `id-token: write`, and produces a surviving SLSA-provenance attestation
 
 ### Build / Version Integrity
 
@@ -62,7 +62,7 @@ Which phases cover which requirements.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SEC-01 | Phase 21 — Supply-Chain & Bin Hardening | Pending |
+| SEC-01 | Phase 21 — Supply-Chain & Bin Hardening | Complete |
 | CLI-06 | Phase 21 — Supply-Chain & Bin Hardening | Pending |
 | BUILD-01 | Phase 22 — Core Versioning & Audit Filter | Pending |
 | CORE-15 | Phase 22 — Core Versioning & Audit Filter | Pending |
