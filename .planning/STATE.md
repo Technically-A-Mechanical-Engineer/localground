@@ -121,6 +121,6 @@ Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-clo
 ## Session Continuity
 
 Last session: 2026-06-29
-Stopped at: v3.0.1 milestone CLOSED — archived + ROADMAP collapsed + PROJECT.md evolved; shipped to npm as v3.0.2; comprehension gates (19 + 20) affirmed. Next: `/gsd-new-milestone` for v3.1.0.
-Last commit: (milestone-close commits — see git log)
+Stopped at: v3.0.1 milestone CLOSED — archived + ROADMAP collapsed + PROJECT.md evolved; shipped to npm as v3.0.2; comprehension gates (19 + 20) affirmed. Milestone summary generated for team onboarding (`.planning/reports/MILESTONE_SUMMARY-v3.0.1.md`, commit a5e289f). Next: `/gsd-new-milestone` for v3.1.0.
+Last commit: a5e289f docs(v3.0.1): generate milestone summary for onboarding
 Resume file: None
