@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: executing
-stopped_at: "Phase 20 (Release Pipeline Validation) PLANNED — 6 plans (20-01..20-06) in 5 waves; plan-checker VERIFICATION PASSED; all 13 decisions (D-01..D-13) cited in plan truths; PIPE-01/PIPE-02/DOC-03 covered. Waves enforce D-10 irreversibility-safe sequence (pre-flight fixes → push master → CI green → version bump → CI green → tag-content verify → tag push → OIDC publish → post-publish verify). REPO-STATE correction baked into 20-03: origin/master EXISTS (78 commits behind, fast-forward catch-up push — NOT first push); v3.0.1 still first tag to fire release.yml. Next: /gsd-execute-phase 20"
-last_updated: "2026-06-29T03:36:06.369Z"
+stopped_at: "Phase 20 (Release Pipeline Validation) PLANNED + REVIEWED + REPLANNED — 6 plans (20-01..20-06) in 5 waves; plan-checker VERIFICATION PASSED twice (initial + post-reviews replan); all 13 decisions (D-01..D-13) cited in plan truths; PIPE-01/PIPE-02/DOC-03 covered. Cross-AI review (2 Codex passes, 20-REVIEWS.md) folded in 7 findings via /gsd-plan-phase 20 --reviews: H1 trusted-publisher 'Allowed actions: npm publish' (20-03), H2 corrected partial-publish recovery matrix (20-05), M1 dry-run-not-auth-guard wording (20-02/05), M2 token-fallback needs release.yml NODE_AUTH_TOKEN patch (20-05), M3 pre-tag npm-view registry-state check (20-05), M4 20-04 verifies BOTH manifests' repository/license, L1 no --tags on catch-up push (20-03). O1 (.planning/ exposure) RESOLVED=accept/publish (security-clean; identity/employer already public since v3.0.0 incl. shipped npm source). Waves enforce D-10 irreversibility-safe sequence. REPO-STATE: origin/master EXISTS (78 behind, fast-forward catch-up — NOT first push); v3.0.1 still first tag to fire release.yml. Next: /gsd-execute-phase 20"
+last_updated: "2026-06-29T04:47:50.000Z"
 last_activity: 2026-06-29
 progress:
   total_phases: 5
@@ -31,9 +31,9 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 ## Current Position
 
 Phase: 20 (Release Pipeline Validation) — PLANNED (6 plans, 5 waves); ready to execute. Milestone-closing phase.
-Plan: 0 of 6 complete — Phase 20 plans created (20-01..20-06) covering PIPE-01/PIPE-02/DOC-03; plan-checker VERIFICATION PASSED; all D-01..D-13 cited in plan truths. (Phase 19 CLOSED — status passed, gsd-verifier VERIFIED.)
+Plan: 0 of 6 complete — Phase 20 plans created (20-01..20-06) covering PIPE-01/PIPE-02/DOC-03; plan-checker VERIFICATION PASSED (twice); all D-01..D-13 cited in plan truths. Cross-AI reviewed (20-REVIEWS.md, 2 Codex passes) and REPLANNED — 7 findings folded in (H1/H2 HIGH + M1-M4 + L1); O1 .planning-exposure resolved=accept. (Phase 19 CLOSED.)
 Status: Ready to execute
-Last activity: 2026-06-29 -- Phase 20 planning complete
+Last activity: 2026-06-29 -- Phase 20 planned → cross-AI reviewed → replanned (--reviews); ready to execute
 
 ## Roadmap Summary
 
