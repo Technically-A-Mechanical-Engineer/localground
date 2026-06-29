@@ -8,14 +8,15 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { spawn, type ChildProcess } from 'node:child_process';
 import { once } from 'node:events';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DIST_PATH = path.resolve(__dirname, '..', 'dist', 'index.js');
 
-function spawnServer() {
-  return spawn(process.execPath, [DIST_PATH], {
+function spawnServer(args: string[] = []) {
+  return spawn(process.execPath, [DIST_PATH, ...args], {
     stdio: ['pipe', 'pipe', 'pipe'],
   });
 }
@@ -90,8 +91,8 @@ async function handshake(child: ReturnType<typeof spawn>): Promise<void> {
 describe('MCP server smoke', () => {
   let children: ChildProcess[] = [];
 
-  function trackedSpawnServer(): ChildProcess {
-    const c = spawnServer();
+  function trackedSpawnServer(args: string[] = []): ChildProcess {
+    const c = spawnServer(args);
     children.push(c);
     return c;
   }
@@ -154,4 +155,73 @@ describe('MCP server smoke', () => {
     const parsed = JSON.parse(response.result.content[0].text) as { platform?: unknown };
     expect(parsed).toHaveProperty('platform');
   });
+});
+
+// ─── MCP bin --version predicate (CLI-06, D-12, D-13, D-14) ─────────────────
+//
+// All spawns use trackedSpawnServer(args) so every child — including the
+// deliberately-hung fall-through children — is pushed into children[] and reaped
+// by afterEach.  No raw untracked spawn() calls in this block (WARNING 3).
+
+describe('MCP bin --version predicate', () => {
+  // Read the expected version from package.json at test time — no hardcoded literal.
+  const expectedVersion = (
+    JSON.parse(
+      readFileSync(path.resolve(__dirname, '..', 'package.json'), 'utf8'),
+    ) as { version: string }
+  ).version;
+
+  let children: ChildProcess[] = [];
+
+  function trackedSpawnServer(args: string[] = []): ChildProcess {
+    const c = spawnServer(args);
+    children.push(c);
+    return c;
+  }
+
+  afterEach(async () => {
+    for (const c of children) {
+      if (c.exitCode === null) {
+        c.kill();
+        await Promise.race([
+          once(c, 'exit'),
+          new Promise((r) => setTimeout(r, 1000)),
+        ]);
+      }
+    }
+    children = [];
+  });
+
+  // D-12: Each of these four flags must print the package version and exit 0.
+  for (const flag of ['--version', '--version=x', '-v', '-V']) {
+    it(`prints version and exits 0 for ${flag}`, async () => {
+      const child = trackedSpawnServer([flag]);
+
+      const stdout = await new Promise<string>((resolve, reject) => {
+        let buf = '';
+        child.stdout!.on('data', (chunk: Buffer) => { buf += chunk.toString('utf8'); });
+        child.stdout!.on('end', () => resolve(buf));
+        child.on('error', reject);
+      });
+
+      await once(child, 'exit');
+
+      expect(child.exitCode).toBe(0);
+      expect(stdout.trim()).toBe(expectedVersion);
+    });
+  }
+
+  // D-13: These case-sensitive / near-miss flags are NOT version requests.
+  // Proven by a successful JSON-RPC initialize handshake (positive-handshake proof —
+  // the server booted, so the flag fell through, NOT the weaker "did not exit" check).
+  for (const flag of ['--Version', '--VERSION', '--versions', '--versioned']) {
+    it(`falls through to server startup (handshake succeeds) for ${flag}`, async () => {
+      const child = trackedSpawnServer([flag]);
+      // If the child exited early with a version print this handshake would time out
+      // on a dead stdin, surfacing a test failure — which is the correct behaviour.
+      await handshake(child);
+      // Reaching here proves the server booted and is listening (fall-through confirmed).
+      expect(child.exitCode).toBeNull(); // still running; afterEach reaps it
+    });
+  }
 });
