@@ -1,0 +1,22 @@
+# Dependabot configuration for github-actions ecosystem (SEC-01 / D-08)
+#
+# Accepted gaps (document only — do not add config to fix these this phase):
+#   1. This config scans uses: refs only — it does NOT track the npm@11.18.0 run:
+#      literal in release.yml. That pin ages silently; bump it by hand (see the
+#      MANUAL-BUMP comment in release.yml) when a newer OIDC-capable npm ships.
+#      The runtime floor-assert (release.yml) guards correctness so staleness
+#      never drops below the OIDC floor.
+#   2. Grouped updates default to version-updates. Repo-level Dependabot security
+#      alerts fire independently — no separate applies-to: security-updates group
+#      is configured for this phase.
+
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns:
+          - "*"
