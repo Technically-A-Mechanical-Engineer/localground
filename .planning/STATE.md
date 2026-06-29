@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
-status: executing
-stopped_at: Phase 21 context gathered
-last_updated: "2026-06-29T20:02:49.967Z"
+status: verifying
+stopped_at: "Completed 21-02-PLAN.md — Phase 21 all plans done"
+last_updated: "2026-06-29T20:09:13.931Z"
 last_activity: 2026-06-29
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
-  percent: 50
+  completed_plans: 2
+  percent: 100
 ---
 
 # Project State
 
-**Status:** Ready to execute
+**Status:** Phase complete — ready for verification
 **Last Activity:** 2026-06-29
 **Current focus:** Phase 21 — supply-chain-bin-hardening
 
@@ -30,9 +30,9 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 ## Current Position
 
-Phase: 21 (supply-chain-bin-hardening) — EXECUTING
-Plan: 2 of 2
-Status: Ready to execute
+Phase: 21 (supply-chain-bin-hardening) — COMPLETE
+Plan: 2 of 2 (all plans done)
+Status: Phase complete — ready for verification
 Last activity: 2026-06-29
 
 ## Roadmap Summary
@@ -83,6 +83,7 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase ?]: [Phase 21-01]: D-04/D-05/D-06 npm exact-pinned 11.18.0; Node floor 22.14.0; numeric sort-V floor-assert; floating 22.x removed
 - [Phase ?]: [Phase 21-01]: D-08 .github/dependabot.yml created; github-actions weekly grouped; run: literal gap documented with manual-bump note
 - [Phase ?]: [Phase 21-01]: D-11 SLSA-provenance attestation closure is a next-real-release obligation (not CI-on-push)
+- [Phase 21-02]: D-12/D-13/D-14 closed: isVersionRequest() helper matches --version, --version=…, -v, -V; case-sensitive --Version/--VERSION/--versions/--versioned fall through; no commander/yargs added; verify-tarball contract intact; positive-handshake proof locks fall-through behavior
 
 ### Pending Todos
 
@@ -122,7 +123,7 @@ Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-clo
 
 ## Session Continuity
 
-Last session: 2026-06-29T20:02:33.952Z
+Last session: 2026-06-29T20:09:13.918Z
 Stopped at: Phase 21 context gathered
 Last commit: a5e289f docs(v3.0.1): generate milestone summary for onboarding
 Resume file: None

@@ -24,7 +24,7 @@ Eliminate the last hardcoded version literal so the seed manifest cannot drift f
 
 Replace the brittle one-flag check in the mcp bin without over-engineering. Source: carry-forward MD-02. Research: `research/FEATURES.md`, `research/PITFALLS.md`.
 
-- [ ] **CLI-06**: The mcp bin robustly recognizes a `--version` request — including `--version=…` and a `-v`/`-V` alias — prints the version string to stdout, exits 0, and never boots the stdio transport; long-form flags are case-sensitive, so `--Version`/`--VERSION` are intentionally NOT treated as version requests and fall through to normal startup (defined, testable behavior for the case the bug report flagged); the existing pre-transport short-circuit, `process.exit(0)`, and exact-string contract that `verify-tarball.mjs` depends on are preserved; no argument-parser dependency is added to the mcp package
+- [x] **CLI-06**: The mcp bin robustly recognizes a `--version` request — including `--version=…` and a `-v`/`-V` alias — prints the version string to stdout, exits 0, and never boots the stdio transport; long-form flags are case-sensitive, so `--Version`/`--VERSION` are intentionally NOT treated as version requests and fall through to normal startup (defined, testable behavior for the case the bug report flagged); the existing pre-transport short-circuit, `process.exit(0)`, and exact-string contract that `verify-tarball.mjs` depends on are preserved; no argument-parser dependency is added to the mcp package
 
 ### Core Correctness
 
@@ -63,7 +63,7 @@ Which phases cover which requirements.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | SEC-01 | Phase 21 — Supply-Chain & Bin Hardening | Complete |
-| CLI-06 | Phase 21 — Supply-Chain & Bin Hardening | Pending |
+| CLI-06 | Phase 21 — Supply-Chain & Bin Hardening | Complete |
 | BUILD-01 | Phase 22 — Core Versioning & Audit Filter | Pending |
 | CORE-15 | Phase 22 — Core Versioning & Audit Filter | Pending |
 | CORE-16 | Phase 23 — Decoder Trailing-Edge Fix | Pending |
