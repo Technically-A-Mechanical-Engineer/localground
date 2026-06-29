@@ -23,7 +23,7 @@ End-to-end UAT against the registered `@localground/mcp` server. v3.0.0 verified
 Both GitHub Actions workflows shipped with v3.0.0 are structurally verified but unexecuted end-to-end. Source: backlog item 999.2.
 
 - [ ] **PIPE-01**: `ci.yml` first end-to-end run on master push lands green across the 3-OS matrix (Windows / macOS / Linux on Node 20.x); any platform-specific failures are diagnosed and resolved before milestone close
-- [ ] **PIPE-02**: `release.yml` first end-to-end run on v3.0.1 tag publishes both `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` to npm with OIDC trusted-publisher provenance attestation visible on npmjs.com
+- [x] **PIPE-02**: `release.yml` first end-to-end run on v3.0.1 tag publishes both `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` to npm with OIDC trusted-publisher provenance attestation visible on npmjs.com
 
 ### Test Infrastructure
 
@@ -97,7 +97,7 @@ Which phases cover which requirements. Updated by the roadmapper.
 | UAT-04 | Phase 19 | Pending |
 | UAT-05 | Phase 19 | Pending |
 | PIPE-01 | Phase 20 | Pending |
-| PIPE-02 | Phase 20 | Pending |
+| PIPE-02 | Phase 20 | Complete |
 | DOC-03 | Phase 20 | Complete |
 
 **Coverage:**

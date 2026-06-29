@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: executing
-stopped_at: "Completed Phase 20 Plan 01 — D-04/D-05/D-13 manifest metadata pre-flight (3/3 tasks, 3 commits). Next: Plan 20-02 (release.yml hardening)"
-last_updated: "2026-06-29T05:07:41.782Z"
+stopped_at: "Completed Phase 20 Plan 02 — release.yml hardened (Node 22.x, no cache, preflight, dry-run-both). Next: Plan 20-03 (first push to GitHub / PIPE-01)"
+last_updated: "2026-06-29T05:11:24.019Z"
 last_activity: 2026-06-29
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 21
-  completed_plans: 16
-  percent: 76
+  completed_plans: 17
+  percent: 81
 ---
 
 # Project State
@@ -31,7 +31,7 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 ## Current Position
 
 Phase: 20 (release-pipeline-validation) — EXECUTING
-Plan: 2 of 6
+Plan: 3 of 6
 Status: Ready to execute
 Last activity: 2026-06-29
 
@@ -76,6 +76,10 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase ?]: D-04 closed: repository.url set case-exact in both published manifests — E422 blocker removed
 - [Phase ?]: D-05 closed: license MIT added to both published manifests
 - [Phase ?]: D-13 closed: PROJECT.md updated to describe three distribution forms (MCP server, CLI, paste-prompts) plus plugin
+- [Phase 20-02]: D-02 applied: release.yml node-version 20.x → 22.x (npm ≥11.5.1 OIDC floor); ci.yml untouched
+- [Phase 20-02]: D-09 applied: cache: npm removed from release setup-node (cache-poisoning hardening per actions/setup-node #1358)
+- [Phase 20-02]: D-07 applied: Preflight step asserts GITHUB_REF_NAME == v<mcp version> and mcp == cli version before any publish
+- [Phase 20-02]: D-08 applied: Dry-run-both gate precedes both real publishes; step name documents pack/manifest guard scope, NOT auth/OIDC (review M1)
 
 ### Pending Todos
 
@@ -97,7 +101,7 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-06-29T05:07:41.768Z
-Stopped at: Completed Phase 20 Plan 01 — D-04/D-05/D-13 manifest metadata pre-flight (3/3 tasks, 3 commits). Next: Plan 20-02 (release.yml hardening)
-Last commit: 07eddff (19-06) → 19-07 finalize commit lands this cycle (Phase 19 close)
+Last session: 2026-06-29T05:10:00Z
+Stopped at: Completed Phase 20 Plan 02 — release.yml hardened (Node 22.x, no cache, preflight, dry-run-both). Next: Plan 20-03 (first push to GitHub / PIPE-01)
+Last commit: f469174 (feat(20-02): add preflight and dry-run-both gate to release.yml)
 Resume file: None
