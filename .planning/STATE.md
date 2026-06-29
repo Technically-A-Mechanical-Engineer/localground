@@ -2,20 +2,21 @@
 gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
-status: planning
+status: executing
 stopped_at: Phase 21 context gathered
-last_updated: "2026-06-29T18:25:54.669Z"
+last_updated: "2026-06-29T18:49:43.379Z"
 last_activity: 2026-06-29
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 0
+  total_plans: 2
   completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
-**Status:** v3.1.0 milestone — roadmap created (Phases 21-23), planning pending
+**Status:** Ready to execute
 **Last Activity:** 2026-06-29
 **Current focus:** v3.1.0 Hardening and Hygiene — roadmap done; next `/gsd-plan-phase 21`
 
@@ -31,8 +32,8 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 Phase: Not started (roadmap created; plan-phase pending)
 Plan: —
-Status: Roadmap created — Phases 21-23 mapped, 5/5 requirements covered
-Last activity: 2026-06-29 — v3.1.0 roadmap created
+Status: Ready to execute
+Last activity: 2026-06-29 -- Phase 21 planning complete
 
 ## Roadmap Summary
 
