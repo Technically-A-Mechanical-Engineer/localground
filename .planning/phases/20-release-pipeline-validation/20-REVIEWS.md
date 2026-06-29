@@ -1,10 +1,12 @@
 ---
 phase: 20
-reviewers: [codex]
-reviewed_at: 2026-06-29T03:57:52Z
+reviewers: [codex, codex-app]
+reviewed_at: 2026-06-29T04:13:39Z
 plans_reviewed: [20-01-PLAN.md, 20-02-PLAN.md, 20-03-PLAN.md, 20-04-PLAN.md, 20-05-PLAN.md, 20-06-PLAN.md]
-review_model: "codex-cli 0.130.0 (GPT, service_tier=fast)"
-note: "Only Codex was available as an independent reviewer. gemini/opencode/qwen/cursor/coderabbit not installed; claude skipped (running inside Claude Code, review-independence)."
+review_models:
+  - "codex-cli 0.130.0 (GPT, service_tier=fast) — repo-grounded CLI pass"
+  - "Codex app (deep pass) — confirmed the HIGH 'Allowed actions' claim + 3 fresh findings; raw record in 20-REVIEWS-codex-app.md"
+note: "Two independent Codex passes (CLI + app). gemini/opencode/qwen/cursor/coderabbit not installed; claude skipped (review-independence). All findings below independently re-verified by the orchestrator against the actual plan/workflow files."
 ---
 
 # Cross-AI Plan Review — Phase 20 (Release Pipeline Validation)
@@ -47,31 +49,97 @@ Sources checked: local repo files cited above; npm Trusted Publishing docs and n
 
 ---
 
-## Consensus Summary
+---
 
-**Single independent reviewer this run (Codex / GPT).** No second external CLI was installed, so "consensus" = Codex's findings, triaged below by the orchestrator with a verification status on each (✅ independently confirmed via git/file read · ⚠ asserted by Codex, verify at point-of-use).
+## Codex App Review (deep pass — claim verification + fresh findings)
 
-### Actionable Concerns (ranked)
+*Independent second Codex pass. Raw record: `20-REVIEWS-codex-app.md`. Orchestrator re-verified every file:line citation below — all accurate.*
 
-1. **[HIGH · ⚠ verify at npm UI] Trusted Publisher "Allowed actions" field (20-03 / D-03).** Codex asserts npm's GitHub trusted-publisher setup now requires selecting allowed actions (and that configs created after ~2026-05-20 must explicitly allow ≥1 action). The plan's D-03 acceptance criteria list only owner/repo/workflow/environment. *Not independently verified — confirm against the live npmjs.com UI during 20-03 Task 3.* If real: add "Allowed actions: npm publish" to the per-package config AND to the acceptance criteria. A mis-set allowed-action is exactly the partial-publish failure mode the phase guards against.
 
-2. **[MEDIUM · ✅ valid framing] `npm publish --dry-run` is NOT an auth/OIDC guard (20-02 / 20-05 / D-08).** Dry-run validates pack/manifest/file-list only; trusted-publisher config errors only surface at real publish time (npm does not verify the config when saved). Reword the dry-run-both rationale so the executor does not treat a green dry-run as proof OIDC will authenticate.
+### Claim Check: npm Trusted Publisher "Allowed actions"
 
-3. **[MEDIUM · ✅ valid] D-01 token fallback is operationally incomplete (20-05).** `release.yml` does not reference `NODE_AUTH_TOKEN` today (release.yml:37-41), so merely adding a repo secret will NOT rescue a failed OIDC tag run — it requires a workflow patch (`env: NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}`) plus a written "if nothing published, fix-config-and-rerun-same-tag vs. token-path-and-retag" runbook. Add the runbook to 20-05.
+Verdict: CONFIRM.
 
-4. **[MEDIUM-for-owner · ✅ CONFIRMED] The catch-up push publishes the entire `.planning/` history (D-10).** CONTEXT/D-10 says "`.planning/` is gitignored so only source commits go public" — that is FALSE for already-TRACKED files. Verified: 95 `.planning/` files are tracked; `origin/master` already exposes 7 (v3.0.0-era); **61 of the 78 unpushed commits touch `.planning/`**, so `git push origin master` grows the public `.planning/` footprint from 7 → 95 files (all v3.0.1 phase plans, contexts, debug sessions, notes incl. the Codex-review note, comprehension artifacts). This is IRREVERSIBLE once on public GitHub. **Owner decision required before 20-03:** accept publishing planning history, OR scrub/`git rm --cached` the `.planning/` paths (history-rewrite) before the push. Not a blocker for the pipeline mechanics; it is a disclosure-intent decision.
+The exact current npm field name is `Allowed actions (required)`. In the GitHub Actions trusted-publisher setup, npm docs list it with the instruction to select which actions the trusted publisher can perform: `npm publish`, `npm stage publish`, or both, and at least one must be selected. The same page also says trusted publisher configurations created before May 20, 2026 are automatically set to allow `npm publish` only, while configurations created after May 20, 2026 require explicitly selecting at least one allowed action.
 
-5. **[LOW · ✅ CONFIRMED] Local `v3.0.0` tag exists; do not push tags during the catch-up (20-03).** A local `v3.0.0` tag exists and is not on the remote. 20-03 already uses plain `git push origin master` (no `--tags`), which is correct — make it explicit: never `git push --tags` / `--follow-tags` before the deliberate `v3.0.1` tag push in 20-05.
+Doc link: https://docs.npmjs.com/trusted-publishers/ (see "Configuring trusted publishing" -> "For GitHub Actions", especially the `Allowed actions (required)` field and the note immediately after the provider field lists).
 
-### Agreed Strengths (Codex)
-- D-04 repository-field handling correct (20-01 adds case-exact URL + `directory`; 20-04 verifies survival of the bump).
-- D-02 correctly scoped (only release job → Node 22; CI stays Node 20).
-- Irreversible-publish sequence well designed (push/CI → bump → CI-on-bump → tag-content `git show` → tag push).
-- DOC-03 README readiness matches reality (install + Windows `cmd /c npx` + MIT present in both).
-- Lockfile drift real and addressed by 20-04.
+Repo impact: 20-03 / D-03 is incomplete as written. The plan lists owner, repo, workflow filename, and blank environment only (`20-03-PLAN.md:127-132`). The same omission exists in D-03 context (`20-CONTEXT.md:24-26`). For this release, both `@localground/mcp` and `@localground/cli` should be configured with `Allowed actions: npm publish`. If one package is configured correctly and the other is not, the release can still enter the exact partial-publish state the phase is trying to prevent.
 
-### Divergent Views
-None — single reviewer. Codex's overall risk rating: **MEDIUM**, dropping toward LOW once concerns #1 and #2 are addressed.
+Severity: HIGH.
 
-### Orchestrator note
-Concerns #1, #2, #3, #5 are surgical plan/wording fixes — fold them in via `/gsd-plan-phase 20 --reviews`. Concern #4 is a one-time owner disclosure decision that does not change the pipeline mechanics; resolve it before executing 20-03.
+### Fresh Findings (missed by the CLI pass)
+
+### Finding 1 - HIGH - Partial-publish recovery is internally inconsistent
+
+20-05 / D-08 and D-01 still contain a dangerous recovery path. The plan says that if one package publishes and the other does not, the maintainer should "recover via a follow-up patch (3.0.2) for the failed package only if needed" (`20-05-PLAN.md:139`). It also says that if an OIDC-auth failure occurs, "nothing was published" and the run is retryable (`20-05-PLAN.md:140`).
+
+That is not generally true in this workflow. The release publishes MCP first, then CLI (`release.yml:37-41` today; 20-02 preserves the same real-publish order after gates at `20-02-PLAN.md:160-165`). If `@localground/mcp@3.0.1` publishes and `@localground/cli@3.0.1` fails due to CLI-side trusted-publisher configuration, the failure is auth-related but something was published. Re-running the same workflow will hit the already-published MCP version before reaching CLI.
+
+The "3.0.2 for the failed package only" instruction is also incompatible with D-07. 20-02's preflight requires MCP and CLI versions to match (`20-02-PLAN.md:144-155`). A CLI-only 3.0.2 recovery cannot pass the planned release workflow without changing the workflow or bypassing the preflight, and it leaves package version skew in a toolkit that is otherwise planned as a paired release.
+
+Correct recovery matrix before tag push:
+
+- If neither package is live: fix npm trusted-publisher config and rerun the same tag workflow; token fallback can be used only after wiring `NODE_AUTH_TOKEN`.
+- If MCP is live and CLI is not, and the CLI artifact is otherwise correct: publish the missing `@localground/cli@3.0.1` through a controlled one-package path after fixing auth/config; do not try to republish MCP.
+- If the failed package needs content changes: bump both publishable packages to 3.0.2, publish both, and consider deprecating any orphaned 3.0.1 package version.
+
+npm policy mechanism: registry data is immutable; once a package/version has been used, that version cannot be reused even if unpublished. Source: https://docs.npmjs.com/policies/unpublish/.
+
+### Finding 2 - MEDIUM - No explicit registry-state preflight before the irreversible tag
+
+20-02 adds a tag/version preflight, but it only checks local package versions against `GITHUB_REF_NAME` and each other (`20-02-PLAN.md:144-155`). 20-05 checks `npm view @localground/mcp@3.0.1 version` and `npm view @localground/cli@3.0.1 version` only after the release run (`20-05-PLAN.md:136-141`). There is no pre-tag or pre-publish registry-state matrix that asserts both 3.0.1 versions are absent before the first tag push.
+
+Mechanism: if either package version already exists before the tag, or exists after a failed partial run, the planned workflow cannot reason safely about retry. With the current ordered publishes, an already-live MCP version blocks the workflow before the CLI publish is attempted (`release.yml:37-41`). This matters especially because 20-05 already acknowledges npm's non-transactional publish behavior (`20-05-PLAN.md:159-170`).
+
+Add a required pre-tag check in 20-05 before `git push origin v3.0.1`:
+
+```bash
+npm view @localground/mcp@3.0.1 version
+npm view @localground/cli@3.0.1 version
+```
+
+Expected before first tag: both commands fail with no such version. After any failed release run, repeat the same matrix and choose recovery based on which package versions are live.
+
+### Finding 3 - MEDIUM - 20-04 does not verify CLI repository/license preservation
+
+20-04 / D-06 says the version bump must preserve the repository/license fields added by 20-01 (`20-04-PLAN.md:18-20`, `20-04-PLAN.md:83-88`). But the automated verification only checks `packages/mcp/package.json` for preserved repository URL and license (`20-04-PLAN.md:101`), and the acceptance criteria only mention MCP preservation (`20-04-PLAN.md:110`).
+
+This is too weak because D-04 is explicitly per-package. 20-01 requires repository/license on both MCP and CLI (`20-01-PLAN.md:15-18`, `20-01-PLAN.md:120-148`). The actual current CLI manifest lacks `repository` and `license` today (`packages/cli/package.json:1-34`), and the current MCP manifest does too (`packages/mcp/package.json:1-34`), so these fields are newly introduced and easy to clobber during the version edit.
+
+Why this can become partial: if CLI repository metadata is lost in 20-04 and the manual tag-content check in 20-05 is missed or misread, MCP can publish first and CLI can fail on npm's repository-match requirement. npm's trusted-publishing docs state the package `repository.url` must exactly match the GitHub repository for GitHub publishes: https://docs.npmjs.com/trusted-publishers/.
+
+Fix: extend the 20-04 verification to assert repository URL, `repository.directory`, and `license: "MIT"` for both `packages/mcp/package.json` and `packages/cli/package.json`.
+
+### Bottom Line (Codex app)
+
+The prior review's `Allowed actions` warning is correct and should be promoted from "verify at npm UI" to a hard 20-03 acceptance criterion: both packages need `Allowed actions: npm publish`. Beyond that, the main missed release-risk is not the happy path; it is recovery after a partial publish. Before pushing `v3.0.1`, tighten 20-05 with a registry-state matrix and a package-specific recovery path, and tighten 20-04 so both publishable manifests are automatically checked for repository/license preservation.
+
+---
+
+## Consensus Summary (reconciled across both Codex passes + orchestrator verification)
+
+Two independent Codex passes. The CLI pass found the "Allowed actions" gap but could not verify it; the app pass **confirmed it** (exact npm field name + doc) and surfaced a deeper partial-publish-recovery landmine the CLI pass missed. Every finding below was re-verified by the orchestrator against the actual files (status: ✅ confirmed via file read · ⚠ external-doc claim, verify at point-of-use).
+
+### Consolidated actionable findings (ranked)
+
+| # | Sev | Finding | Source | Status | Fix |
+|---|-----|---------|--------|--------|-----|
+| H1 | **HIGH** | D-03/20-03 trusted-publisher config omits npm's `Allowed actions (required)` field; both packages need `Allowed actions: npm publish` | CLI flagged + **app confirmed** (exact field name, doc, May-20-2026 cutoff) | ✅ doc-confirmed by app pass | Add "Allowed actions: npm publish" to BOTH packages + make it a hard 20-03 acceptance criterion |
+| H2 | **HIGH** | 20-05 partial-publish recovery is internally inconsistent: "3.0.2 for the failed package only" (line 139) conflicts with D-07's matched-version preflight; "auth failure = nothing published" (line 140) is false given MCP-then-CLI ordered publish | app pass | ✅ confirmed (release.yml:37-41 ordered; 20-05:139-140; 20-02 preflight requires mcp==cli) | Replace with the correct recovery matrix: (a) neither live → fix config/token + rerun same tag; (b) MCP live, CLI not → publish only the missing CLI after fixing auth, never republish MCP; (c) content change needed → bump BOTH to 3.0.2 |
+| M1 | MED | `npm publish --dry-run` validates pack/manifest only — NOT OIDC/auth | CLI pass | ✅ valid | Reword 20-02/20-05 so a green dry-run is not treated as auth proof |
+| M2 | MED | D-01 token fallback incomplete: release.yml has no `NODE_AUTH_TOKEN` wiring, so adding a secret alone won't rescue a failed OIDC run | CLI pass | ✅ confirmed (release.yml:37-41) | Document the workflow patch (`env: NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}`) + a written no-publish-confirmed runbook in 20-05 (ties to H2) |
+| M3 | MED | No pre-TAG registry-state check; 20-05 only runs `npm view` AFTER the run, so a retry after a partial failure can't reason about state | app pass | ✅ confirmed (20-05:136-141) | Add a required pre-tag matrix before `git push origin v3.0.1`: `npm view @localground/mcp@3.0.1 version` + cli — both must report "no such version" |
+| M4 | MED | 20-04 verify/acceptance checks only the MCP manifest's repository/license preservation, not the CLI manifest — D-04 is per-package, bump can clobber CLI silently | app pass | ✅ confirmed (20-04 `<automated>` + acceptance assert mcp only) | Extend 20-04 verify to assert repository.url + repository.directory + license:"MIT" for BOTH packages |
+| O1 | MED (owner) | Catch-up push publishes the full `.planning/` history (7→95 files, 61 commits); D-10's "gitignored = private" is false for tracked files | CLI pass | ✅ confirmed via git | OWNER DECISION (not a plan mechanic): accept publishing process docs, or untrack `.planning/` + disable GSD commit_docs before 20-03 |
+| L1 | LOW | Local `v3.0.0` tag exists (not on remote) — never `git push --tags`/`--follow-tags` before the deliberate v3.0.1 | CLI pass | ✅ confirmed (20-03 already uses plain push) | Make the no-`--tags` constraint explicit in 20-03 |
+
+### Agreed strengths (both passes)
+D-04 repository-field handling (20-01 adds case-exact URL + directory); D-02 scoping (release→Node22, CI stays 20); the core irreversible-publish sequence (push/CI → bump → CI-on-bump → tag-content `git show` → tag push); DOC-03 README readiness; lockfile-drift fix (20-04).
+
+### Divergent / corrected views
+- The CLI pass listed 20-04's field-preservation as a *strength* ("verifies the fields survive"). The app pass corrected this: 20-04 verifies **MCP only**, not CLI (M4). Treat M4 as the accurate read.
+- No genuine disagreements between the two passes — the app pass strictly extends and tightens the CLI pass.
+
+### Orchestrator recommendation
+H1, H2, M1, M2, M3, M4, L1 are all surgical plan/wording fixes → fold into the plans with `/gsd-plan-phase 20 --reviews` (reads this file). The two HIGH findings (Allowed-actions + recovery matrix) are the must-fix items before the irreversible publish. O1 is a separate one-time owner disclosure decision to resolve before executing 20-03.
