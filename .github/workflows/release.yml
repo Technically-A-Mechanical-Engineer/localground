@@ -33,6 +33,23 @@ jobs:
       - name: Run test suite
         run: npm test
 
+      - name: Preflight — assert tag matches package versions
+        run: |
+          MCP_VERSION=$(node -p "require('./packages/mcp/package.json').version")
+          CLI_VERSION=$(node -p "require('./packages/cli/package.json').version")
+          echo "Tag: $GITHUB_REF_NAME  mcp: $MCP_VERSION  cli: $CLI_VERSION"
+          if [ "$GITHUB_REF_NAME" != "v$MCP_VERSION" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match mcp version v$MCP_VERSION"; exit 1
+          fi
+          if [ "$MCP_VERSION" != "$CLI_VERSION" ]; then
+            echo "::error::mcp ($MCP_VERSION) and cli ($CLI_VERSION) versions differ"; exit 1
+          fi
+
+      - name: Dry-run publish both packages (pack/manifest guard — NOT an auth check)
+        run: |
+          npm publish -w @localground/mcp --provenance --access public --dry-run
+          npm publish -w @localground/cli --provenance --access public --dry-run
+
       - name: Publish @localground/mcp with provenance
         run: npm publish -w @localground/mcp --provenance --access public
 
