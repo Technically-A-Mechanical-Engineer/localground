@@ -8,18 +8,18 @@ A toolkit that helps Claude Code CLI users migrate project folders off cloud-syn
 
 Get Claude Code users off cloud-synced storage safely — no data loss, no silent failures, every action verified before and after.
 
-## Next Milestone: v3.1.0 (planning)
+## Current Milestone: v3.1.0 Hardening and Hygiene
 
-**Status:** v3.0.1 shipped 2026-06-29 (to npm as v3.0.2). No v3.1.0 scope locked yet — run `/gsd-new-milestone` to define it.
+**Goal:** Close the v3.0.1 carry-forward loop — drift-proof versioning, harden the release supply chain, and fix two decoder/audit correctness gaps — with no new feature surface.
 
-**Carry-forward candidates** (from the v3.0.1 close / 20-REVIEW.md):
+**Target features:**
+- **BUILD-01** — Seed `toolkitVersion` derived from `package.json` instead of a hardcoded literal (same drift class fixed for `--version` in v3.0.1)
+- **SEC-01** — SHA-pin GitHub Actions (`checkout`, `setup-node`) + exact-pin runner npm in the publish job (the `id-token: write` job is the repo's highest-privilege surface) — MD-01
+- **CLI-06** — Robust `--version` arg parsing in the mcp bin (handles `--version=foo` / `--Version`; replaces the hand-rolled `process.argv.includes('--version')`) — MD-02
+- **CORE-15** — Audit project-fingerprint filter so auto-discovery stops scanning all of `C:\Users\…` (debug `audit-includes-root-paths`)
+- **CORE-16** — Path-hash decode trailing-edge special-character round-trips correctly — 999.7
 
-- Drift-proof the seed `toolkitVersion` literal via host-injection — the same drift class fixed for the `--version` strings this milestone; `toolkitVersion` is still a hardcoded literal in `seed.ts`
-- MD-01: SHA-pin GitHub Actions (`checkout`, `setup-node`) + exact-pin runner npm in the publish job (the `id-token: write` job is the highest-privilege surface in the repo)
-- MD-02: robust `--version` arg parsing in the mcp bin (the hand-rolled `process.argv.includes('--version')` check mishandles `--version=foo` / `--Version`)
-- CLI-05 (999.5): TIER 2 streaming refactor of `spawnTool` for live MCP-driven copy progress
-- Audit project-fingerprint filter (debug `audit-includes-root-paths`): scope audit auto-discovery so it stops scanning all of `C:\Users\…`
-- 999.7: path-hash decode edge defect (trailing-edge special character)
+**Deferred to v3.2.0:** CLI-05 / 999.5 — TIER 2 streaming refactor of `spawnTool` for live MCP-driven copy progress (architectural change with real regression risk; TIER 1 stderr-status mitigation already shipped in Phase 14-11).
 
 ## Current State
 
@@ -102,7 +102,13 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 
 ### Active
 
-**v3.1.0 — not yet scoped.** Run `/gsd-new-milestone` to define it; carry-forward candidates are listed under "Next Milestone: v3.1.0" above.
+**v3.1.0 Hardening and Hygiene — scoped 2026-06-29.** Five requirements (see `.planning/REQUIREMENTS.md`); phases start at 21.
+
+- ◻ **BUILD-01** — Seed `toolkitVersion` derived from `package.json`, not a hardcoded literal
+- ◻ **SEC-01** — SHA-pin GitHub Actions + exact-pin runner npm in the publish job (MD-01)
+- ◻ **CLI-06** — Robust `--version` arg parsing in the mcp bin (MD-02)
+- ◻ **CORE-15** — Audit project-fingerprint filter (stop scanning all of `C:\Users\…`)
+- ◻ **CORE-16** — Path-hash decode trailing-edge special-character round-trip fix (999.7)
 
 ### Backlog (captured in ROADMAP.md `## Backlog`, 999.x numbering)
 
@@ -194,4 +200,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-29 after v3.0.1 milestone close — Phases 16-20 complete and verified; shipped to npm as v3.0.2 (SC5 fix-forward). Next: v3.1.0 (run /gsd-new-milestone).*
+*Last updated: 2026-06-29 — v3.1.0 "Hardening and Hygiene" milestone started; scoped to 5 requirements (BUILD-01, SEC-01, CLI-06, CORE-15, CORE-16); CLI-05 deferred to v3.2.0. Phases continue from 20 (start at 21). Next: define requirements → roadmap.*

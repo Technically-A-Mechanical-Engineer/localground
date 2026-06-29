@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v3.0.1
-milestone_name: Validation and Hardening
-status: completed
-stopped_at: "v3.0.1 milestone CLOSED 2026-06-29 — archived to milestones/v3.0.1-{ROADMAP,REQUIREMENTS}.md; shipped to npm as v3.0.2. Comprehension gates affirmed (Phases 19 + 20). Next: /gsd-new-milestone for v3.1.0."
-last_updated: "2026-06-29T15:37:37.217Z"
+milestone: v3.1.0
+milestone_name: Hardening and Hygiene
+status: planning
+last_updated: "2026-06-29T17:01:26.803Z"
 last_activity: 2026-06-29
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 21
-  completed_plans: 21
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -30,10 +29,10 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 ## Current Position
 
-**v3.0.1 milestone CLOSED 2026-06-29.** All 5 phases (16-20) complete and verified; archived to `milestones/v3.0.1-{ROADMAP,REQUIREMENTS}.md`; ROADMAP collapsed and PROJECT.md evolved. Shipped to npm as v3.0.2 (the SC5 fix-forward — v3.0.1 binaries misreported `3.0.0`; cli/mcp now derive `--version` from package.json and a verify-tarball version-equality gate guards CI). Comprehension gates AFFIRMED for Phases 19 and 20. Optional housekeeping still open: `npm deprecate @localground/{cli,mcp}@3.0.1` (blocked on passkey 2FA — needs an npm automation token; low value since `latest` = 3.0.2).
-
-**Next:** `/gsd-new-milestone` to scope v3.1.0 (carry-forward items below).
-Last activity: 2026-06-29 -- v3.0.1 milestone closed; archived; shipped as v3.0.2
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-06-29 — Milestone v3.1.0 started
 
 ## Roadmap Summary
 
