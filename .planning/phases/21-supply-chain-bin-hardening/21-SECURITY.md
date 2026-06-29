@@ -101,3 +101,9 @@ The code review in `21-REVIEW.md` (2026-06-29) independently confirmed: all 5 SH
 - [x] `status: verified` set in frontmatter
 
 **Approval:** verified 2026-06-29
+
+---
+
+## Post-Audit Update (2026-06-29, cross-model hardening)
+
+WR-01 (the `sort -V` prerelease-ordering edge on the T-21-04 floor-assert, previously a documented residual on the D-06-sanctioned idiom) was subsequently **CLOSED** by commit `dd27475`: `ge()` now rejects any non-release runtime version (fail-closed), so a prerelease toolchain can never pass the OIDC floor regardless of `sort -V` ordering — strengthening T-21-04's mitigation beyond what was audited above. The cross-model review (Codex + Claude panel) also bounded a positional version-flag false-positive on the CLI-06 predicate via commit `23a8ef2`. No threat status changes — all 14 remain CLOSED and `threats_open: 0` holds.

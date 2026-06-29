@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
-status: verifying
+status: ready_to_plan
 stopped_at: "Completed 21-02-PLAN.md — Phase 21 all plans done"
 last_updated: "2026-06-29T20:09:13.931Z"
 last_activity: 2026-06-29
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 2
   completed_plans: 2
-  percent: 100
+  percent: 67
 ---
 
 # Project State
 
-**Status:** Phase complete — ready for verification
+**Status:** Ready to plan
 **Last Activity:** 2026-06-29
 **Current focus:** Phase 21 — supply-chain-bin-hardening
 
@@ -30,8 +30,8 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 ## Current Position
 
-Phase: 21 (supply-chain-bin-hardening) — COMPLETE
-Plan: 2 of 2 (all plans done)
+Phase: 22
+Plan: Not started
 Status: Phase complete — ready for verification
 Last activity: 2026-06-29
 

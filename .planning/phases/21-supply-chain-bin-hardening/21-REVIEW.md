@@ -105,3 +105,14 @@ parsed.plan.chunks.length === parsed.plan.totalChunks &&
 _Reviewed: 2026-06-29T20:14:49Z_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_
+
+---
+
+## Post-Review Resolution (2026-06-29, cross-model hardening)
+
+A cross-model stress test (Codex GPT-5.4 + a Claude adversarial panel) re-examined these findings before phase closure:
+
+- **WR-01 — CLOSED** (commit `dd27475`). The originally-proposed `sort -V` suffix-strip was empirically a **no-op** (0/16 vectors changed; `22.14.0-rc.1` passed under both the old and stripped forms). It was replaced with a fail-closed guard in `ge()` — `case "$1" in *[!0-9.]*) return 1` — that rejects any non-release runtime version, so a prerelease/nightly/build-metadata toolchain can never pass the OIDC floor regardless of `sort -V` ordering. Re-verified against 17 vectors.
+- **WR-02 — UNCHANGED.** Pre-existing `decodeCopyToken` validation gap, out of scope for Phase 21; recorded as a backlog candidate.
+- **Cross-model addition (positional version-flag false-positive) — BOUNDED** (commit `23a8ef2`). `isVersionRequest` now stops scanning at the `--` end-of-options terminator. `--config --version` remains a documented residual that would require an argument-parser forbidden by D-14.
+- **IN-01, IN-02 — acknowledged, not actioned.** INFO/cosmetic, no reliability impact; left as advisory.
