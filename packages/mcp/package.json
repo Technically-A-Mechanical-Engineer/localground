@@ -4,6 +4,12 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Technically-A-Mechanical-Engineer/localground.git",
+    "directory": "packages/mcp"
+  },
+  "license": "MIT",
   "bin": {
     "localground-mcp": "dist/index.js"
   },
