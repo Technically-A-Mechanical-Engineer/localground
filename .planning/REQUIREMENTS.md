@@ -52,7 +52,7 @@ Decoder regex coverage gap closure. Source: backlog item 999.6.
 
 Per-package npm-page documentation visibility. Source: post-roadmap user clarification — `packages/mcp/README.md` and `packages/cli/README.md` were added in PR #11 (merged to master 2026-04-27) but were not part of the v3.0.0 publish, so npmjs.com currently shows the empty-state placeholder for both packages. Reference memory: `feedback_npm_package_readme.md`.
 
-- [ ] **DOC-03**: Per-package READMEs (`packages/mcp/README.md` and `packages/cli/README.md`) ship in the v3.0.1 tarballs published to npm and render on the `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` npmjs.com package pages, replacing the empty-state placeholder shown for v3.0.0 (extends v3.0.0 DOC-01, DOC-02)
+- [x] **DOC-03**: Per-package READMEs (`packages/mcp/README.md` and `packages/cli/README.md`) ship in the v3.0.1 tarballs published to npm and render on the `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` npmjs.com package pages, replacing the empty-state placeholder shown for v3.0.0 (extends v3.0.0 DOC-01, DOC-02)
 
 ## v3.1.0 Requirements
 
@@ -98,7 +98,7 @@ Which phases cover which requirements. Updated by the roadmapper.
 | UAT-05 | Phase 19 | Pending |
 | PIPE-01 | Phase 20 | Pending |
 | PIPE-02 | Phase 20 | Pending |
-| DOC-03 | Phase 20 | Pending |
+| DOC-03 | Phase 20 | Complete |
 
 **Coverage:**
 - v3.0.1 requirements: 16 total

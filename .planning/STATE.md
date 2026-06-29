@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: executing
-stopped_at: "Phase 20 (Release Pipeline Validation) PLANNED + REVIEWED + REPLANNED — 6 plans (20-01..20-06) in 5 waves; plan-checker VERIFICATION PASSED twice (initial + post-reviews replan); all 13 decisions (D-01..D-13) cited in plan truths; PIPE-01/PIPE-02/DOC-03 covered. Cross-AI review (2 Codex passes, 20-REVIEWS.md) folded in 7 findings via /gsd-plan-phase 20 --reviews: H1 trusted-publisher 'Allowed actions: npm publish' (20-03), H2 corrected partial-publish recovery matrix (20-05), M1 dry-run-not-auth-guard wording (20-02/05), M2 token-fallback needs release.yml NODE_AUTH_TOKEN patch (20-05), M3 pre-tag npm-view registry-state check (20-05), M4 20-04 verifies BOTH manifests' repository/license, L1 no --tags on catch-up push (20-03). O1 (.planning/ exposure) RESOLVED=accept/publish (security-clean; identity/employer already public since v3.0.0 incl. shipped npm source). Waves enforce D-10 irreversibility-safe sequence. REPO-STATE: origin/master EXISTS (78 behind, fast-forward catch-up — NOT first push); v3.0.1 still first tag to fire release.yml. Next: /gsd-execute-phase 20"
-last_updated: "2026-06-29T04:47:50.000Z"
+stopped_at: "Completed Phase 20 Plan 01 — D-04/D-05/D-13 manifest metadata pre-flight (3/3 tasks, 3 commits). Next: Plan 20-02 (release.yml hardening)"
+last_updated: "2026-06-29T05:07:41.782Z"
 last_activity: 2026-06-29
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 21
-  completed_plans: 15
-  percent: 71
+  completed_plans: 16
+  percent: 76
 ---
 
 # Project State
 
 **Status:** Ready to execute
 **Last Activity:** 2026-06-29
-**Current focus:** Phase 20 — Release Pipeline Validation
+**Current focus:** Phase 20 — release-pipeline-validation
 
 ## Project Reference
 
@@ -30,10 +30,10 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 ## Current Position
 
-Phase: 20 (Release Pipeline Validation) — PLANNED (6 plans, 5 waves); ready to execute. Milestone-closing phase.
-Plan: 0 of 6 complete — Phase 20 plans created (20-01..20-06) covering PIPE-01/PIPE-02/DOC-03; plan-checker VERIFICATION PASSED (twice); all D-01..D-13 cited in plan truths. Cross-AI reviewed (20-REVIEWS.md, 2 Codex passes) and REPLANNED — 7 findings folded in (H1/H2 HIGH + M1-M4 + L1); O1 .planning-exposure resolved=accept. (Phase 19 CLOSED.)
+Phase: 20 (release-pipeline-validation) — EXECUTING
+Plan: 2 of 6
 Status: Ready to execute
-Last activity: 2026-06-29 -- Phase 20 planned → cross-AI reviewed → replanned (--reviews); ready to execute
+Last activity: 2026-06-29
 
 ## Roadmap Summary
 
@@ -73,6 +73,9 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase 18-01]: Rule 3 deviation — transient `/tmp/verify-pack.mjs` required `shell: true` on Windows for `npm.cmd` resolution (Node 20+ EINVAL on direct .cmd spawn); persistent CI-wired script in Plan 18-02 will use the production-grade Windows-aware spawn pattern
 - [Phase ?]: [Phase 18-02]: PKG-02 closed under automated regression test — scripts/verify-tarball.mjs CI-wired into ci.yml step 'Verify tarball shape (npm pack + clean install)'; mcp --version short-circuit added before StdioServerTransport boot for deterministic non-server smoke-check exit path
 - [Phase ?]: [Phase 18-02]: Rule 3 deviation — replaced plan-body's literal 'npm.cmd' spawn with process.execPath + npm-cli.js resolution (npm_execpath / require.resolve / fs fallback). Plan-body pattern hits EINVAL on Windows + Node 20+ without shell:true (CVE-2024-27980); shell:true forbidden by D-02. Resolution fallback retains process.platform === 'win32' branch per acceptance criteria.
+- [Phase ?]: D-04 closed: repository.url set case-exact in both published manifests — E422 blocker removed
+- [Phase ?]: D-05 closed: license MIT added to both published manifests
+- [Phase ?]: D-13 closed: PROJECT.md updated to describe three distribution forms (MCP server, CLI, paste-prompts) plus plugin
 
 ### Pending Todos
 
@@ -94,7 +97,7 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-06-29T03:01:26.024Z
-Stopped at: Phase 20 (Release Pipeline Validation) context gathered — 13 decisions locked (OIDC-primary publish + 5 must-fix-before-tag prerequisites incl. repository-field E422 blocker; incremental exact-commit sequencing; Windows CI verified-clean; SC5+documented-MCP install). Cross-model verified (Codex + 3-agent re-verification). Next: /gsd-plan-phase 20
+Last session: 2026-06-29T05:07:41.768Z
+Stopped at: Completed Phase 20 Plan 01 — D-04/D-05/D-13 manifest metadata pre-flight (3/3 tasks, 3 commits). Next: Plan 20-02 (release.yml hardening)
 Last commit: 07eddff (19-06) → 19-07 finalize commit lands this cycle (Phase 19 close)
-Resume file: .planning/phases/20-release-pipeline-validation/20-CONTEXT.md
+Resume file: None
