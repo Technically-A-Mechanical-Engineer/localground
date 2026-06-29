@@ -94,7 +94,13 @@
   3. Both published packages show provenance attestation visible on npmjs.com via the "Provenance" badge on the package page
   4. Both `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` npmjs.com pages render the per-package README content (`packages/mcp/README.md` and `packages/cli/README.md` respectively) — not the empty-state placeholder shown for v3.0.0
   5. A clean machine running `npx -y @localground/cli@3.0.1 detect` resolves and executes successfully against the published artifacts
-**Plans:** TBD
+**Plans:** 6 plans
+- [ ] 20-01-PLAN.md (Wave 1) — Manifest pre-flight: repository + license on both published manifests (D-04/D-05) + PROJECT.md three-forms (D-13) + README render-readiness verify (DOC-03)
+- [ ] 20-02-PLAN.md (Wave 1) — release.yml OIDC hardening: Node 22 release job (D-02), tag↔version preflight (D-07), dry-run-both gate (D-08), drop release-job cache (D-09), pure-OIDC kept (D-01); D-11 Windows no-op
+- [ ] 20-03-PLAN.md (Wave 2) — Push master → first ci.yml GREEN on 3 OSes (PIPE-01/SC1, D-10 push gate) + per-package npm trusted-publisher config (D-03)
+- [ ] 20-04-PLAN.md (Wave 3) — Version bump 3.0.0→3.0.1 across all five manifests + lockfile regen in one post-CI-green commit (D-06)
+- [ ] 20-05-PLAN.md (Wave 4) — CI green on bump commit + annotated v3.0.1 tag + git show tag-content verify + tag push → release.yml OIDC publish both packages (PIPE-02/SC2, D-10/D-01)
+- [ ] 20-06-PLAN.md (Wave 5) — Post-publish verify: provenance badges (SC3) + README render (SC4/DOC-03) + npx detect smoke (SC5) + one documented MCP-add check, no bundled .mcp.json (D-12)
 
 ## Phases (v1.2.0 -- Completed)
 
@@ -160,7 +166,7 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 17. Core Decoder Calibration | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
 | 18. Packaging Polish | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
 | 19. Skill Runtime UAT | v3.0.1 | 7/7 | Complete | 2026-06-28 |
-| 20. Release Pipeline Validation | v3.0.1 | 0/0 | Not Started | - |
+| 20. Release Pipeline Validation | v3.0.1 | 0/6 | Planned | - |
 
 ## Backlog
 
