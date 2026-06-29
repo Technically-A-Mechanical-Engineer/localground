@@ -28,7 +28,10 @@
   3. A Dependabot `github-actions` ecosystem config is present so the pins stay updatable.
   4. The release still publishes via OIDC with no stored npm token, retains `id-token: write`, and produces a surviving SLSA-provenance attestation (none of these are trimmed by the pinning work).
   5. The mcp bin robustly recognizes a `--version` request — `--version`, `--version=…`, and the `-v`/`-V` alias — prints the version string to stdout, exits 0, and NEVER boots the stdio transport; `--Version`/`--VERSION` are case-sensitively NOT version requests and fall through to normal startup; the pre-transport short-circuit + `process.exit(0)` + exact-string contract that `verify-tarball.mjs` depends on is preserved; no argument-parser dependency is added to the mcp package.
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 21-01-PLAN.md — SHA-pin both workflows + pinact --verify --check gate, exact-pin npm@11.18.0 + Node floor + runtime floor-assert + manual-bump note, add github-actions Dependabot config, preserve OIDC/provenance (SEC-01)
+- [ ] 21-02-PLAN.md — Robustify the mcp bin --version predicate (--version/--version=/-v/-V; --Version falls through), no parser dependency, preserve the verify-tarball contract (CLI-06)
 
 ### Phase 22: Core Versioning & Audit Filter
 **Goal**: The seed manifest version can no longer drift from the package version, and audit auto-discovery excludes system/home/drive roots while still finding marker-less plain-folder projects.
@@ -146,7 +149,7 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 18. Packaging Polish | v3.0.1 | 2/2 | Complete | 2026-04-27 |
 | 19. Skill Runtime UAT | v3.0.1 | 7/7 | Complete | 2026-06-28 |
 | 20. Release Pipeline Validation | v3.0.1→3.0.2 | 7/7 | Complete | 2026-06-29 |
-| 21. Supply-Chain & Bin Hardening | v3.1.0 | 0/? | Not started | - |
+| 21. Supply-Chain & Bin Hardening | v3.1.0 | 0/2 | Planned | - |
 | 22. Core Versioning & Audit Filter | v3.1.0 | 0/? | Not started | - |
 | 23. Decoder Trailing-Edge Fix | v3.1.0 | 0/? | Not started | - |
 
