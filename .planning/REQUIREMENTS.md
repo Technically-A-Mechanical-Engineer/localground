@@ -58,21 +58,24 @@ Explicitly excluded from v3.1.0. Documented to prevent scope creep mid-milestone
 
 ## Traceability
 
-Which phases cover which requirements. Filled by the roadmapper.
+Which phases cover which requirements.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SEC-01 | TBD | Pending |
-| BUILD-01 | TBD | Pending |
-| CLI-06 | TBD | Pending |
-| CORE-15 | TBD | Pending |
-| CORE-16 | TBD | Pending |
+| SEC-01 | Phase 21 — Supply-Chain & Bin Hardening | Pending |
+| CLI-06 | Phase 21 — Supply-Chain & Bin Hardening | Pending |
+| BUILD-01 | Phase 22 — Core Versioning & Audit Filter | Pending |
+| CORE-15 | Phase 22 — Core Versioning & Audit Filter | Pending |
+| CORE-16 | Phase 23 — Decoder Trailing-Edge Fix | Pending |
 
 **Coverage:**
 - v3.1.0 requirements: 5 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 5
+- Mapped to phases: 5 (Phases 21-23) ✓
+- Unmapped: 0
+
+Build order preserved across phases: SEC-01 → CLI-06 → BUILD-01 → CORE-15 → CORE-16.
 
 ---
 *Requirements defined: 2026-06-29 — five carry-forward items from the v3.0.1 close (Hardening and Hygiene). CLI-05 deferred to v3.2.0.*
 *Cross-model reviewed 2026-06-29 (Codex / GPT-5, read-only): applied SEC-01 Node ≥22.14.0 floor + SHA↔tag verification, CLI-06 case-sensitivity contract, and BUILD-01/SEC-01 wording precision. No blockers raised; structure confirmed sound.*
+*Traceability mapped 2026-06-29 — all 5 requirements mapped to Phases 21-23 (5/5 coverage).*

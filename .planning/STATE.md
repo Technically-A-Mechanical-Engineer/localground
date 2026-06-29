@@ -6,7 +6,7 @@ status: planning
 last_updated: "2026-06-29T17:01:26.803Z"
 last_activity: 2026-06-29
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -15,9 +15,9 @@ progress:
 
 # Project State
 
-**Status:** v3.0.1 milestone CLOSED — shipped to npm as v3.0.2
+**Status:** v3.1.0 milestone — roadmap created (Phases 21-23), planning pending
 **Last Activity:** 2026-06-29
-**Current focus:** Planning next milestone (v3.1.0) — run `/gsd-new-milestone`
+**Current focus:** v3.1.0 Hardening and Hygiene — roadmap done; next `/gsd-plan-phase 21`
 
 ## Project Reference
 
@@ -29,30 +29,28 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Not started (roadmap created; plan-phase pending)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-06-29 — Milestone v3.1.0 started
+Status: Roadmap created — Phases 21-23 mapped, 5/5 requirements covered
+Last activity: 2026-06-29 — v3.1.0 roadmap created
 
 ## Roadmap Summary
 
 | Phase | Name | Requirements |
 |-------|------|--------------|
-| 16 | Test Infrastructure Hardening | TEST-01, TEST-02, TEST-03, TEST-04 |
-| 17 | Core Decoder Calibration | CORE-13, CORE-14 |
-| 18 | Packaging Polish | PKG-01, PKG-02 |
-| 19 | Skill Runtime UAT | UAT-01, UAT-02, UAT-03, UAT-04, UAT-05 |
-| 20 | Release Pipeline Validation | PIPE-01, PIPE-02 |
+| 21 | Supply-Chain & Bin Hardening | SEC-01, CLI-06 |
+| 22 | Core Versioning & Audit Filter | BUILD-01, CORE-15 |
+| 23 | Decoder Trailing-Edge Fix | CORE-16 |
 
-Sequencing rationale: Test infrastructure first (hardened gate amplifies confidence in subsequent codebase changes including TEST-01's own D-18 implicit-any fix). Decoder calibration second (regex changes land under restored tsc gate; closes WR-01 before UAT exercises decode). Packaging third (independent; lands before UAT so `npm pack --dry-run` validation reflects final tarball shape). UAT fourth (validates v3.0.0 codebase plus v3.0.1 fixes against registered MCP server). Release pipeline last (PIPE-02 fires only on v3.0.1 tag push, which is the milestone close; PIPE-01 monitored throughout and validated as green at close).
+Sequencing rationale: Ordered by risk isolation, not data dependency — no item hard-blocks another, and the build order is preserved (SEC-01 → CLI-06 → BUILD-01 → CORE-15 → CORE-16). Phase 21 lands first because SEC-01 is pure workflow YAML that hardens the pipeline validating everything else, and CLI-06 is an isolated single-predicate mcp-bin change that batches at zero cost. Phase 22 settles the core build-config change (BUILD-01's tsup `define`) before the risky decode edit, and pairs it with the additive CORE-15 audit-filter (reproduce-first — may resolve to a regression-lock test). Phase 23 isolates CORE-16, the highest-risk item, last: it touches the load-bearing v3.0.0 OneDrive `buildCandidates` fix, so it lands with the full hardened suite as its safety net and nothing blocked behind it. The cross-cutting v3.0.1 lesson — assert the VALUE, not the shape — is encoded as a value assertion in every phase's success criteria.
 
 ## Backlog
 
-One unsequenced item remaining in ROADMAP.md `## Backlog` section after v3.0.1 promotion:
+One unsequenced item remaining in ROADMAP.md `## Backlog` section:
 
-- **999.5** TIER 2 streaming refactor of spawnTool — captured as **CLI-05** under v3.1.0 Requirements in REQUIREMENTS.md; deferred to v3.1.0 (architectural change with real risk surface; TIER 1 mitigation already shipped in Phase 14-11)
+- **999.5** TIER 2 streaming refactor of spawnTool — captured as **CLI-05** under `## Future Requirements` in REQUIREMENTS.md; deferred to **v3.2.0** (architectural change with real risk surface; TIER 1 mitigation already shipped in Phase 14-11).
 
-Promoted into v3.0.1 Active scope (see ROADMAP.md and REQUIREMENTS.md): 999.1, 999.2, 999.3, 999.4, 999.6.
+Promoted into v3.1.0 (see ROADMAP.md and REQUIREMENTS.md): **999.7 → CORE-16 → Phase 23** (path-hash decode trailing-edge fix).
 
 ## Accumulated Context
 
@@ -92,7 +90,7 @@ None. Both pipeline validations are CLOSED:
 - PIPE-01: ci.yml green on the 3-OS matrix (run 28357130168 on 26659c8).
 - PIPE-02: release.yml OIDC + provenance published 3.0.1 then 3.0.2 (run 28370544899); SC5 re-verified at 3.0.2.
 
-Carry-forward to v3.1.0 (from 20-REVIEW.md / 20-07): (1) drift-proof seed `toolkitVersion` via host-injection; (2) SHA-pin GitHub Actions + exact-pin runner npm in release.yml (MD-01); (3) robust `--version` arg parsing in the mcp bin (MD-02). Optional now: `npm deprecate` 3.0.1 (needs local npm login).
+Carry-forward to v3.1.0 (from 20-REVIEW.md / 20-07), now scoped into Phases 21-23: (1) drift-proof seed `toolkitVersion` (BUILD-01 → Phase 22); (2) SHA-pin GitHub Actions + exact-pin runner npm in release.yml (SEC-01/MD-01 → Phase 21); (3) robust `--version` arg parsing in the mcp bin (CLI-06/MD-02 → Phase 21); plus CORE-15 (audit filter → Phase 22) and CORE-16 (decode trailing-edge → Phase 23). Optional housekeeping: `npm deprecate` 3.0.1 (needs local npm login).
 
 ### Quick Tasks Completed
 
@@ -107,8 +105,8 @@ Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-clo
 
 | Category | Item | Status / disposition |
 |----------|------|----------------------|
-| debug | cli-silent-long-operations | diagnosed → **v3.1.0** (this IS CLI-05 / 999.5 streaming refactor; already tracked) |
-| debug | audit-includes-root-paths | diagnosed → **v3.1.0** candidate (minor: audit scans all of `C:\Users\…`; fix = project-fingerprint filter in core, used by both CLI + MCP audit; diagnosis-only, no fix applied) |
+| debug | cli-silent-long-operations | diagnosed → **v3.2.0** (this IS CLI-05 / 999.5 streaming refactor; deferred from v3.1.0) |
+| debug | audit-includes-root-paths | diagnosed → **v3.1.0** (now CORE-15 → Phase 22; reproduce against master first — may resolve to a regression-lock test) |
 | quick_task | 260411-8t0-fix-four-nec-evaluation-findings-in-clou | missing — stale v1.2.0/v2.0-era orphan reference |
 | quick_task | 260411-91n-fix-five-loose-ends-after-phase-2-comple | missing — stale v1.2.0/v2.0-era orphan reference |
 | quick_task | 260411-vbq-rename-design-spec-file-from-cloud-sync- | missing — stale v1.2.0/v2.0-era orphan reference |
@@ -120,6 +118,6 @@ Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-clo
 ## Session Continuity
 
 Last session: 2026-06-29
-Stopped at: v3.0.1 milestone CLOSED — archived + ROADMAP collapsed + PROJECT.md evolved; shipped to npm as v3.0.2; comprehension gates (19 + 20) affirmed. Milestone summary generated for team onboarding (`.planning/reports/MILESTONE_SUMMARY-v3.0.1.md`, commit a5e289f). Next: `/gsd-new-milestone` for v3.1.0.
+Stopped at: v3.1.0 roadmap created — Phases 21-23 mapped (SEC-01 + CLI-06 → 21; BUILD-01 + CORE-15 → 22; CORE-16 → 23); 5/5 requirements covered; 999.7 promoted to CORE-16, 999.5 corrected to CLI-05 → v3.2.0. Next: `/gsd-plan-phase 21`.
 Last commit: a5e289f docs(v3.0.1): generate milestone summary for onboarding
 Resume file: None

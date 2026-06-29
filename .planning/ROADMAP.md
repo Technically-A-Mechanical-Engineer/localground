@@ -6,6 +6,58 @@
 - ✅ **v2.0.0 Five-Prompt Toolkit with Unified Versioning** -- Phases 5-11 (shipped 2026-04-12) -- [archive](milestones/v2.0.0-ROADMAP.md)
 - ✅ **v3.0.0 MCP Server + CLI Tooling** -- Phases 12-15 (shipped 2026-04-26) -- [archive](milestones/v3.0.0-ROADMAP.md)
 - ✅ **v3.0.1 Validation and Hardening** -- Phases 16-20 (shipped 2026-06-29 as v3.0.2) -- [archive](milestones/v3.0.1-ROADMAP.md)
+- **v3.1.0 Hardening and Hygiene** -- Phases 21-23 (active) -- 5 carry-forward correctness/supply-chain fixes, no new feature surface
+
+## Phases (v3.1.0 -- Active)
+
+**Milestone goal:** Close the v3.0.1 carry-forward loop — drift-proof versioning, harden the release supply chain, and fix two decoder/audit correctness gaps — with no new feature surface. The cross-cutting v3.0.1 lesson governs every phase: **assert the VALUE, not the shape** (a shape-only CI check shipped an immutable bad version in v3.0.1). Every requirement carries a value assertion.
+
+**Sequencing rationale:** Ordered by risk isolation, not data dependency — no item hard-blocks another. Build order preserved: SEC-01 → CLI-06 → BUILD-01 → CORE-15 → CORE-16. SEC-01 (pure YAML) hardens the pipeline that validates everything else, so it lands first; CORE-16 (the load-bearing OneDrive `buildCandidates` fix, highest regression risk) lands last with the full hardened suite as its safety net.
+
+- [ ] **Phase 21: Supply-Chain & Bin Hardening** -- SHA-pin both GitHub Actions workflows + exact-pin runner npm in the OIDC publish job, and robustify the mcp bin `--version` parser (SEC-01, CLI-06)
+- [ ] **Phase 22: Core Versioning & Audit Filter** -- Derive the seed manifest version from package.json (no hardcoded literal) and stop audit from surfacing system/home roots while keeping plain-folder projects discoverable (BUILD-01, CORE-15)
+- [ ] **Phase 23: Decoder Trailing-Edge Fix** -- Fix the `buildCandidates` trailing-hyphen-strip asymmetry so a special char at the trailing edge of an intermediate path component round-trips losslessly, with no regression to the 17/17 path-hashes or the load-bearing OneDrive fix (CORE-16)
+
+### Phase 21: Supply-Chain & Bin Hardening
+**Goal**: The release supply chain is pinned and verifiable, and the mcp bin reports its version robustly without ever booting the transport.
+**Depends on**: Nothing (first v3.1.0 phase; pure config + isolated bin predicate)
+**Requirements**: SEC-01, CLI-06
+**Success Criteria** (what must be TRUE):
+  1. Every third-party Actions `uses:` in BOTH `.github/workflows/ci.yml` and `.github/workflows/release.yml` is pinned to a full 40-character commit SHA carrying a `# vX.Y.Z` version comment, and each pinned SHA is verified to actually resolve to its commented tag (e.g. via `pinact`/`zizmor` or a CI check — a SHA can point at a fork/wrong commit, so verify the VALUE).
+  2. The publish job exact-pins the runner npm to a specific version ≥ 11.5.1 AND runs on Node ≥ 22.14.0 (the paired OIDC floors), and asserts both at runtime (a runtime floor-assert, not a shape-only declaration).
+  3. A Dependabot `github-actions` ecosystem config is present so the pins stay updatable.
+  4. The release still publishes via OIDC with no stored npm token, retains `id-token: write`, and produces a surviving SLSA-provenance attestation (none of these are trimmed by the pinning work).
+  5. The mcp bin robustly recognizes a `--version` request — `--version`, `--version=…`, and the `-v`/`-V` alias — prints the version string to stdout, exits 0, and NEVER boots the stdio transport; `--Version`/`--VERSION` are case-sensitively NOT version requests and fall through to normal startup; the pre-transport short-circuit + `process.exit(0)` + exact-string contract that `verify-tarball.mjs` depends on is preserved; no argument-parser dependency is added to the mcp package.
+**Plans**: TBD
+
+### Phase 22: Core Versioning & Audit Filter
+**Goal**: The seed manifest version can no longer drift from the package version, and audit auto-discovery excludes system/home/drive roots while still finding marker-less plain-folder projects.
+**Depends on**: Phase 21 (sequenced after to keep the supply chain hardened before core edits land; no hard data dependency)
+**Requirements**: BUILD-01, CORE-15
+**Success Criteria** (what must be TRUE):
+  1. The seed manifest's `toolkitVersion` always EQUALS the consuming package's version (`@localground/mcp` or `@localground/cli`) on BOTH the dev build AND the packaged tarball (assert the value, not merely that the literal was removed).
+  2. No hardcoded version literal remains in `packages/core/src/operations/seed.ts` (currently `toolkitVersion: '3.0.2'` at line 139).
+  3. `scripts/verify-tarball.mjs` is extended to assert the seed-path version VALUE (today it gates only the bin `--version`).
+  4. Audit auto-discovery no longer surfaces home/drive/system roots (e.g. `C:\Users\…`) as candidate projects, while plain-folder projects with NO `.git`/`package.json` marker stay discoverable (decision D-01 preserved — NO marker-file check).
+  5. The CORE-15 fix lives in shared `@localground/core` so the CLI `audit`/`detect` and the MCP `audit` tool inherit it identically, and a regression test locks BOTH invariants (root-rejection AND D-01 plain-folder-discovery).
+**Constraints**:
+  - CORE-15: Reproduce the `audit-includes-root-paths` symptom against current `master` FIRST — this may resolve to a regression-lock test rather than a logic change.
+  - BUILD-01: Do NOT copy the bins' runtime `readFileSync(new URL('../package.json', import.meta.url))` into the bundled `seed.ts` — after `noExternal` inlining, `import.meta.url` resolves to the consumer's `dist/`, giving the wrong semantics. Build-time `define` injection is the recommended mechanism (A-vs-B HOW decision settles at plan-phase).
+**Plans**: TBD
+
+### Phase 23: Decoder Trailing-Edge Fix
+**Goal**: A special character at the trailing edge of an intermediate path component round-trips losslessly through `encode()`/`decode()`, with the calibrated 17/17 path-hashes and the load-bearing OneDrive fix fully intact.
+**Depends on**: Phase 22 (sequenced last by blast radius; no hard data dependency, but lands with the full hardened suite as the safety net)
+**Requirements**: CORE-16
+**Success Criteria** (what must be TRUE):
+  1. A special char (`'`, `&`, `[`, `]`, `(`, `)`, `+`, `=`, `%`) at the trailing edge of an INTERMEDIATE path component round-trips through `encode()`/`decode()` losslessly.
+  2. The 17/17 currently-passing path-hashes do NOT regress.
+  3. The load-bearing v3.0.0 OneDrive `buildCandidates` fix does NOT regress (the canonical `OneDrive - ThermoTek, Inc/...` decode still passes).
+  4. Trailing-edge, leading-edge, and mid-component fixtures are added (the trailing-edge probes flip from the documented `no_candidates` failure to SUCCESS; an interior-occurrence guard proves no regression).
+**Constraints**:
+  - Fix the trailing-hyphen-strip asymmetry in `buildCandidates` (`packages/core/src/environment/decode.ts:~187-196`), NOT the Phase-17 character class (`decode.ts:89`). The recommended shape is an additive second prefix branch (`encodedName + '--'` alongside the existing `encodedName + '-'`) — additive so every currently-passing shape is untouched.
+  - Confirm against a real failing path-hash BEFORE implementation.
+**Plans**: TBD
 
 ## Phases
 
@@ -94,6 +146,9 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 18. Packaging Polish | v3.0.1 | 2/2 | Complete | 2026-04-27 |
 | 19. Skill Runtime UAT | v3.0.1 | 7/7 | Complete | 2026-06-28 |
 | 20. Release Pipeline Validation | v3.0.1→3.0.2 | 7/7 | Complete | 2026-06-29 |
+| 21. Supply-Chain & Bin Hardening | v3.1.0 | 0/? | Not started | - |
+| 22. Core Versioning & Audit Filter | v3.1.0 | 0/? | Not started | - |
+| 23. Decoder Trailing-Edge Fix | v3.1.0 | 0/? | Not started | - |
 
 ## Backlog
 
@@ -103,18 +158,23 @@ Unsequenced items remaining after v3.0.1 promotion. Promote with `/gsd-review-ba
 
 **Goal:** Phase 14-11 closed CLI silent operations at TIER 1 (three pre-operation stderr status lines). TIER 2 changes `spawnTool` from `spawnSync` with `stdio=['ignore','pipe','pipe']` to either inherited stdio (Option A) or async `spawn()` with line-streaming via `child.stdout('data')` (Option B). Surfaces robocopy/rsync per-line progress to the user during MCP-driven copy operations through the `/localground:migrate` skill.
 **Source:** `.planning/phases/14-standalone-cli-and-claude-code-skills/14-11-SUMMARY.md`; full diagnosis at `.planning/debug/cli-silent-long-operations.md` lines 148-158
-**Requirements:** CLI-05 (deferred to v3.1.0; see REQUIREMENTS.md `## v3.1.0 Requirements`)
+**Requirements:** CLI-05 (deferred to v3.2.0; see REQUIREMENTS.md `## Future Requirements`)
 **Plans:** 0 plans
-**Deferral note:** Captured under v3.1.0 Requirements in REQUIREMENTS.md — architectural change with real risk surface; TIER 1 mitigation already shipped. Will not be promoted into v3.0.1.
+**Deferral note:** Architectural change with real risk surface; TIER 1 mitigation already shipped in Phase 14-11. Deferred from v3.1.0 to v3.2.0 on 2026-06-29.
 
 Plans:
 - [ ] TBD (promote with /gsd-review-backlog when ready)
+
+### Phase 999.7: path-hash decode trailing-edge defect — PROMOTED to v3.1.0 (CORE-16, Phase 23)
+
+**Status:** PROMOTED into v3.1.0 scope on 2026-06-29 as **CORE-16 → Phase 23: Decoder Trailing-Edge Fix**. No longer a backlog item; tracked under `## Phases (v3.1.0 -- Active)` above. Original diagnosis: CORE-13 special char at the trailing edge of an intermediate component still fails decode due to the trailing-hyphen-strip asymmetry in `buildCandidates`.
 
 ---
 *Roadmap created: 2026-04-11*
 *v3.0.0 phases added: 2026-04-12*
 *v3.0.0 milestone closed: 2026-04-26*
 *Backlog seeded at v3.0.0 close: 2026-04-26*
-*v3.0.1 phases added: 2026-04-27 (promoted backlog 999.1, 999.2, 999.3, 999.4, 999.6 into Phases 16-20; 999.5 retained as backlog with v3.1.0 deferral note)*
+*v3.0.1 phases added: 2026-04-27 (promoted backlog 999.1, 999.2, 999.3, 999.4, 999.6 into Phases 16-20; 999.5 retained as backlog with deferral note)*
 *v3.0.1 amendment: 2026-04-27 — added DOC-03 (per-package READMEs visible on npmjs.com) mapped to Phase 20*
 *v3.0.1 milestone closed: 2026-06-29 — Phases 16-20 collapsed to archive; shipped to npm as v3.0.2 (SC5 fix-forward). Carry-forward to v3.1.0: seed toolkitVersion drift-proofing, MD-01 (SHA-pin actions), MD-02 (mcp --version parsing), CLI-05 (999.5).*
+*v3.1.0 phases added: 2026-06-29 — Phases 21-23 (SEC-01 + CLI-06 → 21; BUILD-01 + CORE-15 → 22; CORE-16 → 23). 5/5 requirements mapped. Backlog 999.7 PROMOTED to CORE-16 (Phase 23); 999.5 retained as backlog with its requirement pointer corrected to CLI-05 → v3.2.0.*
