@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: executing
-stopped_at: "Phase 20 (Release Pipeline Validation) context gathered — 13 decisions locked (OIDC-primary publish + 5 must-fix-before-tag prerequisites incl. repository-field E422 blocker; incremental exact-commit sequencing; Windows CI verified-clean; SC5+documented-MCP install). Cross-model verified (Codex + 3-agent re-verification). Next: /gsd-plan-phase 20"
-last_updated: "2026-06-29T03:01:26.038Z"
-last_activity: 2026-06-26
+stopped_at: "Phase 20 (Release Pipeline Validation) PLANNED — 6 plans (20-01..20-06) in 5 waves; plan-checker VERIFICATION PASSED; all 13 decisions (D-01..D-13) cited in plan truths; PIPE-01/PIPE-02/DOC-03 covered. Waves enforce D-10 irreversibility-safe sequence (pre-flight fixes → push master → CI green → version bump → CI green → tag-content verify → tag push → OIDC publish → post-publish verify). REPO-STATE correction baked into 20-03: origin/master EXISTS (78 commits behind, fast-forward catch-up push — NOT first push); v3.0.1 still first tag to fire release.yml. Next: /gsd-execute-phase 20"
+last_updated: "2026-06-29T03:36:06.369Z"
+last_activity: 2026-06-29
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 15
+  total_plans: 21
   completed_plans: 15
-  percent: 100
+  percent: 71
 ---
 
 # Project State
 
-**Status:** Executing Phase 19
-**Last Activity:** 2026-06-26
-**Current focus:** Phase 19 — Skill Runtime UAT
+**Status:** Ready to execute
+**Last Activity:** 2026-06-29
+**Current focus:** Phase 20 — Release Pipeline Validation
 
 ## Project Reference
 
@@ -30,10 +30,10 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 ## Current Position
 
-Phase: 19 (Skill Runtime UAT) — COMPLETE (status passed); milestone advances to Phase 20
-Plan: 7 of 7 complete — 19-07 finalized 19-UAT.md (status passed, verified 2026-06-28; Gaps Summary populated); gsd-verifier appended VERIFIED cross-check (D-09). Phase 19 CLOSED.
-Status: Phase 19 complete; Phase 20 (Release Pipeline Validation) not yet planned
-Last activity: 2026-06-28 -- 19-07 finalize + gsd-verifier cross-check; Phase 19 CLOSED (status passed)
+Phase: 20 (Release Pipeline Validation) — PLANNED (6 plans, 5 waves); ready to execute. Milestone-closing phase.
+Plan: 0 of 6 complete — Phase 20 plans created (20-01..20-06) covering PIPE-01/PIPE-02/DOC-03; plan-checker VERIFICATION PASSED; all D-01..D-13 cited in plan truths. (Phase 19 CLOSED — status passed, gsd-verifier VERIFIED.)
+Status: Ready to execute
+Last activity: 2026-06-29 -- Phase 20 planning complete
 
 ## Roadmap Summary
 
