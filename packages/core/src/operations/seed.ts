@@ -136,7 +136,7 @@ export async function seed(
   // Build manifest
   const manifest: SeedManifest = {
     version: 1,
-    toolkitVersion: '3.0.0',
+    toolkitVersion: '3.0.2',
     created: new Date().toISOString(),
     projectPath,
     projectName: path.basename(projectPath),
