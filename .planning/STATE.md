@@ -2,23 +2,23 @@
 gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
-status: executing
-stopped_at: "Completed Phase 20 Plan 04 — version bump 3.0.0->3.0.1 (all 5 manifests + lockfile regen, commit 4818cfb, D-06). Next: Plan 20-05 (push bump commit, CI-green wait, annotated v3.0.1 tag, release.yml OIDC publish)"
-last_updated: "2026-06-29T06:06:54.387Z"
+status: complete
+stopped_at: "Phase 20 COMPLETE — v3.0.2 published + verified. Validation caught an SC5 defect in 3.0.1 (binaries printed 3.0.0 from hardcoded literals); fixed forward to 3.0.2 (version derived from package.json + verify-tarball version-equality CI gate), re-published via OIDC (run 28370544899), SC5 re-verified PASS. All 5 phases done — milestone ready to close via /gsd-complete-milestone."
+last_updated: "2026-06-29T12:20:00Z"
 last_activity: 2026-06-29
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 21
-  completed_plans: 19
-  percent: 90
+  completed_plans: 21
+  percent: 100
 ---
 
 # Project State
 
-**Status:** Ready to execute
+**Status:** Milestone v3.0.1 complete — shipped as v3.0.2
 **Last Activity:** 2026-06-29
-**Current focus:** Phase 20 — release-pipeline-validation
+**Current focus:** Phase 20 complete; milestone ready to close
 
 ## Project Reference
 
@@ -30,10 +30,10 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 ## Current Position
 
-Phase: 20 (release-pipeline-validation) — EXECUTING
-Plan: 5 of 6
-Status: Wave 4 complete — **v3.0.1 PUBLISHED** (both @localground/mcp@3.0.1 + @localground/cli@3.0.1 live via OIDC+provenance; PIPE-02/SC2). Tag v3.0.1 -> commit 2a9034e. Publish took a 4-attempt recovery (confirmed root cause: Node 22.x bundles npm 10.9 < OIDC floor 11.5.1; fixed by `npm install -g npm@^11.5.1` on the runner — release.yml commits 8fe734e/de99207/2a9034e). Nothing burned (branch a). Next = Wave 5 (20-06 post-publish verification: provenance badge SC3, README render SC4/DOC-03, npx SC5, mcp-add D-12) + phase close.
-Last activity: 2026-06-29 -- v3.0.1 published to npm via OIDC trusted publishing
+Phase: 20 (release-pipeline-validation) — COMPLETE
+Plan: 7 of 7
+Status: **v3.0.2 PUBLISHED + VERIFIED.** Phase 20 validation worked as designed: it published v3.0.1, then caught an SC5 defect (both binaries printed 3.0.0 — `--version` was a hardcoded source literal the manifest bump never touched). Fixed forward to v3.0.2 (plan 20-07): cli/mcp derive `--version` from package.json at runtime; verify-tarball now asserts built `--version` == manifest version (the CI gate that would have blocked 3.0.1); seed toolkitVersion bumped. Re-published via OIDC (tag v3.0.2 → 26659c8, run 28370544899). Re-verification: SC3/SC4/SC5 all PASS at 3.0.2 (20-VERIFICATION.md); gsd-code-review 0 CRITICAL/HIGH. Remaining: formal milestone close (/gsd-complete-milestone) + optional `npm deprecate` 3.0.1 (needs npm login).
+Last activity: 2026-06-29 -- v3.0.2 published + verified; Phase 20 closed
 
 ## Roadmap Summary
 
@@ -88,10 +88,12 @@ None.
 
 ### Blockers/Concerns
 
-None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced into Phase 20:
+None. Both pipeline validations are CLOSED:
 
-- ci.yml first run will land on first push to master after this commit cycle (PIPE-01)
-- release.yml first OIDC + provenance run will land on first `vN.N.N` tag push (PIPE-02; v3.0.1 tag)
+- PIPE-01: ci.yml green on the 3-OS matrix (run 28357130168 on 26659c8).
+- PIPE-02: release.yml OIDC + provenance published 3.0.1 then 3.0.2 (run 28370544899); SC5 re-verified at 3.0.2.
+
+Carry-forward to v3.1.0 (from 20-REVIEW.md / 20-07): (1) drift-proof seed `toolkitVersion` via host-injection; (2) SHA-pin GitHub Actions + exact-pin runner npm in release.yml (MD-01); (3) robust `--version` arg parsing in the mcp bin (MD-02). Optional now: `npm deprecate` 3.0.1 (needs local npm login).
 
 ### Quick Tasks Completed
 
@@ -102,7 +104,7 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-06-29T06:06:54.372Z
-Stopped at: Completed Phase 20 Plan 04 — version bump 3.0.0->3.0.1 (all 5 manifests + lockfile regen, commit 4818cfb, D-06). Next: Plan 20-05 (push bump commit, CI-green wait, annotated v3.0.1 tag, release.yml OIDC publish)
-Last commit: 4818cfb (build(20): bump all manifests to 3.0.1 + regenerate lockfile (D-06))
+Last session: 2026-06-29
+Stopped at: Phase 20 COMPLETE — v3.0.2 published + verified (SC5 fix-forward). All 5 phases of the v3.0.1 milestone done. Next: formal milestone close via /gsd-complete-milestone.
+Last commit: 26659c8 (fix(20): bump seed toolkitVersion to 3.0.2 — SC5 fix-forward, pt 2)
 Resume file: None

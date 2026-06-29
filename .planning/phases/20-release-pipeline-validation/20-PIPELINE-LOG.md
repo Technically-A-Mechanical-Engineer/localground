@@ -84,3 +84,38 @@ D-03 satisfied. Review H1 (the must-fix-before-tag "Allowed actions: npm publish
 - `npm view @localground/cli@3.0.1 version` → **3.0.1** ✓
 - dist-tags `latest`: both **3.0.1** ✓. Both published via pure OIDC + provenance (D-01). No token, no partial state — H2 recovery never needed (branch (a) throughout: nothing was live until the successful run).
 - **4 release.yml iterations to reach success:** (1) base v4 → E404; (2) setup-node v6 → E404 (placeholder token persisted); (3) drop registry-url → ENEEDAUTH (no token, no OIDC); (4) `npm install -g npm@^11.5.1` → SUCCESS. **Confirmed root cause: Node 22.x bundles npm 10.9.x, below npm's 11.5.1 OIDC floor — the D-02 "Node 22.x ships npm >=11.5.1" assumption was false.**
+
+---
+
+## Plan 20-07 — SC5 Fix-Forward + Re-publish (v3.0.2)
+
+Wave-5 post-publish verification (20-06) ran an adversarial 4-lens workflow against the published 3.0.1 and FOUND A REAL DEFECT: **SC5 FAIL — `npx @localground/cli@3.0.1 --version` and `...mcp@3.0.1 --version` both printed `3.0.0`.** The release pipeline working as designed.
+
+### Root cause (confirmed, not guessed)
+- `packages/cli/src/index.ts` hardcoded `.version('3.0.0')`; `packages/mcp/src/index.ts` hardcoded `SERVER_VERSION = '3.0.0'`. The D-06 (20-04) bump updated package.json manifests + lockfile only. The runner built dist from the tagged commit (manifest 3.0.1, source 3.0.0), so the published binaries honestly emitted 3.0.0.
+- CI gap: `scripts/verify-tarball.mjs` only asserted `--version` matched a semver-shape regex (`/^\d+\.\d+\.\d+/`), never that it equaled the manifest — so 3.0.0 passed under a 3.0.1 manifest. npm 3.0.1 is immutable → fix forward.
+
+### The fix (commits 2ae1fab + 26659c8)
+- FIX-1 (root cause): cli + mcp derive `--version` from `package.json` at runtime via `readFileSync(new URL('../package.json', import.meta.url))` — drift-proof.
+- FIX-2 (defense-in-depth): verify-tarball.mjs asserts built `--version` **==** manifest version (string equality) — the gate that would have blocked 3.0.1.
+- FIX-3: all 5 manifests 3.0.1 → 3.0.2 + lockfile regen.
+- FIX-4: README de-staled; CHANGELOG [3.0.2] entry.
+- pt-2: seed.ts `toolkitVersion` 3.0.0 → 3.0.2 (adversarial build-grep catch; user-approved).
+
+### Build-verify (the gate the original release skipped)
+Before any commit: `node packages/{cli,mcp}/dist/index.js --version` → 3.0.2 for both; zero stale 3.0.0 in dist; `npm test` 85 pass / 2 skip; `verify-tarball` green with the new equality gate.
+
+### Re-publish (D-10 guards green)
+- CI green on 26659c8: run 28357130168 (3 OS).
+- M3 pre-tag registry matrix: 3.0.2 absent (E404) on both before tag push.
+- Annotated tag v3.0.2 → 26659c8; tag-content verified (3.0.2 + repository + MIT).
+- release.yml run **28370544899 — SUCCESS** (preflight → dry-run-both → publish mcp → publish cli, all with provenance). First attempt — the npm-OIDC-floor fix from 3.0.1 carried forward.
+
+### Re-verification (PASS) — adversarial 4-lens workflow against 3.0.2
+- SC3 provenance: PASS (SLSA-v1 attestations, OIDC publisher, gitHead 26659c8).
+- SC4/DOC-03 README: PASS (real READMEs in registry + tarballs).
+- **SC5: PASS — cli & mcp `--version` print 3.0.2; detect exit 0; the 3.0.0 regression did NOT recur.**
+- Tarball: PASS — README.md present; zero `3.0.0` in dist/index.js.
+- D-12: PASS — documented `claude mcp add` registered + connected (throwaway name); no .mcp.json created.
+
+**Outcome: v3.0.2 is the validated release. PIPE-02 fully closed.** gsd-verifier verdict PASS; gsd-code-review 0 CRITICAL/HIGH.

@@ -14,13 +14,13 @@
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 - 999.x: Backlog parking lot (unsequenced — see Backlog section)
 
-## Phases (v3.0.1 -- In Progress)
+## Phases (v3.0.1 -- Completed; shipped as v3.0.2 after the SC5 fix-forward)
 
 - [ ] **Phase 16: Test Infrastructure Hardening** -- Restore tsc gate, eliminate Vitest cleanup hang, close two LOW-severity test hygiene findings
 - [ ] **Phase 17: Core Decoder Calibration** -- Calibrate encode() regex against actual Claude Code CLI behavior; eliminate silent decode failures (WR-01)
 - [ ] **Phase 18: Packaging Polish** -- Restrict mcp/cli npm tarballs to dist/ only via `files: ["dist"]`
 - [x] **Phase 19: Skill Runtime UAT** -- Execute UAT Tests 12-16 end-to-end with `@localground/mcp` registered in Claude Code (status passed; local-dist + tarball-gate replay both verified)
-- [ ] **Phase 20: Release Pipeline Validation** -- ci.yml first green run on master + release.yml first OIDC + provenance publish on v3.0.1 tag
+- [x] **Phase 20: Release Pipeline Validation** -- ci.yml green on master + release.yml OIDC + provenance publish; validation caught an SC5 defect in 3.0.1 (binaries printed 3.0.0) and the fix-forward shipped v3.0.2
 
 ## Phase Details
 
@@ -94,13 +94,14 @@
   3. Both published packages show provenance attestation visible on npmjs.com via the "Provenance" badge on the package page
   4. Both `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` npmjs.com pages render the per-package README content (`packages/mcp/README.md` and `packages/cli/README.md` respectively) — not the empty-state placeholder shown for v3.0.0
   5. A clean machine running `npx -y @localground/cli@3.0.1 detect` resolves and executes successfully against the published artifacts
-**Plans:** 6 plans
+**Plans:** 7 plans (20-07 gap-closure added for the SC5 fix-forward)
 - [x] 20-01-PLAN.md (Wave 1) — Manifest pre-flight: repository + license on both published manifests (D-04/D-05) + PROJECT.md three-forms (D-13) + README render-readiness verify (DOC-03)
 - [x] 20-02-PLAN.md (Wave 1) — release.yml OIDC hardening: Node 22 release job (D-02), tag↔version preflight (D-07), dry-run-both gate (D-08), drop release-job cache (D-09), pure-OIDC kept (D-01); D-11 Windows no-op
 - [x] 20-03-PLAN.md (Wave 2) — Push master → first ci.yml GREEN on 3 OSes (PIPE-01/SC1, D-10 push gate) + per-package npm trusted-publisher config (D-03)
 - [x] 20-04-PLAN.md (Wave 3) — Version bump 3.0.0→3.0.1 across all five manifests + lockfile regen in one post-CI-green commit (D-06)
-- [ ] 20-05-PLAN.md (Wave 4) — CI green on bump commit + annotated v3.0.1 tag + git show tag-content verify + tag push → release.yml OIDC publish both packages (PIPE-02/SC2, D-10/D-01)
-- [ ] 20-06-PLAN.md (Wave 5) — Post-publish verify: provenance badges (SC3) + README render (SC4/DOC-03) + npx detect smoke (SC5) + one documented MCP-add check, no bundled .mcp.json (D-12)
+- [x] 20-05-PLAN.md (Wave 4) — CI green on bump commit + annotated v3.0.1 tag + tag-content verify + tag push → release.yml OIDC publish both packages (PIPE-02/SC2, D-10/D-01). Published 3.0.1 after a 4-attempt npm-OIDC-floor recovery
+- [x] 20-06-PLAN.md (Wave 5) — Post-publish verify (provenance SC3 + README SC4/DOC-03 + npx SC5 + MCP-add D-12). FOUND SC5 FAIL on 3.0.1 (binaries print 3.0.0)
+- [x] 20-07-PLAN.md (Wave 6, gap-closure) — SC5 fix-forward to 3.0.2: cli/mcp --version derived from package.json + verify-tarball version-equality CI gate + bump; OIDC re-publish; SC5 re-verified PASS at 3.0.2
 
 ## Phases (v1.2.0 -- Completed)
 
@@ -166,7 +167,7 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 17. Core Decoder Calibration | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
 | 18. Packaging Polish | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
 | 19. Skill Runtime UAT | v3.0.1 | 7/7 | Complete | 2026-06-28 |
-| 20. Release Pipeline Validation | v3.0.1 | 4/6 | In Progress|  |
+| 20. Release Pipeline Validation | v3.0.1→3.0.2 | 7/7 | Complete | 2026-06-29 |
 
 ## Backlog
 

@@ -12,18 +12,18 @@ Requirements for the v3.0.1 patch release. Each maps to a roadmap phase.
 
 End-to-end UAT against the registered `@localground/mcp` server. v3.0.0 verified static skill compliance; these requirements validate runtime behavior. Source: backlog item 999.1 (formerly Phase 14 UAT Tests 12-16, all blocked behind MCP-server registration).
 
-- [ ] **UAT-01**: `/localground:seed` skill executes end-to-end against the registered MCP server — calls `localground_seed`, presents a valid manifest, returns user-readable output
-- [ ] **UAT-02**: `/localground:migrate` skill orchestrates the two-session continuation-token loop — Session 1 writes `localground-migrate-state.json`, Session 2 picks it up after Claude Code restart, completes settings migration without state loss (CRITICAL — only test that exercises the continuation-token code path; defects here would silently strand users mid-migration)
-- [ ] **UAT-03**: `/localground:reap` skill executes end-to-end — calls `localground_verify` plus `localground_health_check`, generates a natural-language report
-- [ ] **UAT-04**: `/localground:cleanup` skill executes end-to-end — calls `localground_cleanup_scan`, presents per-item findings, collects per-item confirmation, executes deletions only on confirmed items
-- [ ] **UAT-05**: `/localground:verify` skill executes end-to-end — calls `localground_audit`, generates a traffic-light report with mapped recommendations
+- [x] **UAT-01**: `/localground:seed` skill executes end-to-end against the registered MCP server — calls `localground_seed`, presents a valid manifest, returns user-readable output
+- [x] **UAT-02**: `/localground:migrate` skill orchestrates the two-session continuation-token loop — Session 1 writes `localground-migrate-state.json`, Session 2 picks it up after Claude Code restart, completes settings migration without state loss (CRITICAL — only test that exercises the continuation-token code path; defects here would silently strand users mid-migration)
+- [x] **UAT-03**: `/localground:reap` skill executes end-to-end — calls `localground_verify` plus `localground_health_check`, generates a natural-language report
+- [x] **UAT-04**: `/localground:cleanup` skill executes end-to-end — calls `localground_cleanup_scan`, presents per-item findings, collects per-item confirmation, executes deletions only on confirmed items
+- [x] **UAT-05**: `/localground:verify` skill executes end-to-end — calls `localground_audit`, generates a traffic-light report with mapped recommendations
 
 ### Pipeline First-Run Validation
 
 Both GitHub Actions workflows shipped with v3.0.0 are structurally verified but unexecuted end-to-end. Source: backlog item 999.2.
 
-- [ ] **PIPE-01**: `ci.yml` first end-to-end run on master push lands green across the 3-OS matrix (Windows / macOS / Linux on Node 20.x); any platform-specific failures are diagnosed and resolved before milestone close
-- [x] **PIPE-02**: `release.yml` first end-to-end run on v3.0.1 tag publishes both `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` to npm with OIDC trusted-publisher provenance attestation visible on npmjs.com
+- [x] **PIPE-01**: `ci.yml` first end-to-end run on master push lands green across the 3-OS matrix (Windows / macOS / Linux on Node 20.x); any platform-specific failures are diagnosed and resolved before milestone close — run 28357130168 GREEN on 26659c8 (Windows/macOS/Linux)
+- [x] **PIPE-02**: `release.yml` OIDC trusted-publisher run publishes both packages to npm with provenance attestation visible on npmjs.com — published 3.0.1, then the SC5 fix-forward re-published `@localground/mcp@3.0.2` + `@localground/cli@3.0.2` (run 28370544899); see 20-VERIFICATION.md
 
 ### Test Infrastructure
 
@@ -91,12 +91,12 @@ Which phases cover which requirements. Updated by the roadmapper.
 | CORE-14 | Phase 17 | Complete |
 | PKG-01 | Phase 18 | Complete |
 | PKG-02 | Phase 18 | Complete |
-| UAT-01 | Phase 19 | Pending |
-| UAT-02 | Phase 19 | Pending |
-| UAT-03 | Phase 19 | Pending |
-| UAT-04 | Phase 19 | Pending |
-| UAT-05 | Phase 19 | Pending |
-| PIPE-01 | Phase 20 | Pending |
+| UAT-01 | Phase 19 | Complete |
+| UAT-02 | Phase 19 | Complete |
+| UAT-03 | Phase 19 | Complete |
+| UAT-04 | Phase 19 | Complete |
+| UAT-05 | Phase 19 | Complete |
+| PIPE-01 | Phase 20 | Complete |
 | PIPE-02 | Phase 20 | Complete |
 | DOC-03 | Phase 20 | Complete |
 
