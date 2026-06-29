@@ -160,6 +160,8 @@ function assertTarballShape(pkgName, files) {
 
 /** Run the smoke check for one package: dry-run shape, real pack, install, --version. */
 async function verifyOne(pkg) {
+  const expectedVersion = JSON.parse(await fs.readFile(path.join(pkg.dir, 'package.json'), 'utf8')).version;
+
   console.error(`[verify-tarball] ${pkg.name}: dry-run shape check`);
   const dryRunList = dryRunFiles(pkg.name);
   assertTarballShape(pkg.name, dryRunList);
@@ -205,10 +207,9 @@ async function verifyOne(pkg) {
         `STDOUT:\n${versionResult.stdout}\nSTDERR:\n${versionResult.stderr}`,
       );
     }
-    if (!/^\d+\.\d+\.\d+/.test(versionResult.stdout.trim())) {
-      throw new Error(
-        `${pkg.name}: --version stdout did not match semver pattern: ${JSON.stringify(versionResult.stdout)}`,
-      );
+    const actualVersion = versionResult.stdout.trim();
+    if (actualVersion !== expectedVersion) {
+      throw new Error(`${pkg.name}: --version printed "${actualVersion}" but manifest declares "${expectedVersion}" — version drift; the bin must derive its version from package.json`);
     }
 
     console.error(`[verify-tarball] ${pkg.name}: OK (version=${versionResult.stdout.trim()})`);

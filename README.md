@@ -1,6 +1,6 @@
 # LocalGround Toolkit for Claude Code
 
-A toolkit that helps Claude Code users migrate off cloud-synced storage — with pre-migration verification, migration, post-migration health checks, cleanup, and environment auditing. As of v3.0.0, ships in three forms: an MCP server (`@localground/mcp`) for native Claude Code tool calls, a standalone CLI (`@localground/cli`) for direct terminal use, and the original v2.0.0 paste-and-run prompts as a no-install fallback.
+A toolkit that helps Claude Code users migrate off cloud-synced storage — with pre-migration verification, migration, post-migration health checks, cleanup, and environment auditing. Since v3.0.0, ships in three forms: an MCP server (`@localground/mcp`) for native Claude Code tool calls, a standalone CLI (`@localground/cli`) for direct terminal use, and the original v2.0.0 paste-and-run prompts as a no-install fallback.
 
 ## The Problem
 
@@ -18,7 +18,7 @@ All three paths share the same safety model: migration never deletes, cleanup de
 
 > **Skills (plugin form):** The five workflows above are also exposed as Claude Code skills under the `localground` plugin namespace — `/localground:seed`, `/localground:migrate`, `/localground:reap`, `/localground:cleanup`, `/localground:verify` — which route to the same MCP tools. Packaged plugin distribution (marketplace install) is being finalized in a later release; until then, use the MCP server, CLI, or prompts above.
 
-## MCP Server (v3.0.0)
+## MCP Server
 
 Add the LocalGround MCP server to Claude Code to invoke all operations as native tool calls.
 
@@ -52,7 +52,7 @@ After registration, Claude Code can call these tools directly:
 | `localground_cleanup_scan` | Identify stale/orphan/source candidates without deleting | Yes |
 | `localground_placeholder_check` | Detect cloud placeholder files in a directory | Yes |
 
-## CLI (v3.0.0)
+## CLI
 
 Run LocalGround operations directly from your terminal without registering an MCP server. Useful when you want a one-off command, or when you are not running Claude Code interactively.
 

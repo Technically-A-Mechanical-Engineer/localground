@@ -4,6 +4,7 @@
 
 import { Command } from 'commander';
 import path from 'node:path';
+import { readFileSync } from 'node:fs';
 import {
   detect, seed, verify, copy, scan, gitCheck, placeholderDetect, detectPlatform,
   isPathCloudSynced, decode, classify, compare, looksLikeProject,
@@ -11,12 +12,16 @@ import {
 import type { EnvironmentInfo, Success, PathHashEntry, ProjectEntry } from '@localground/core';
 import { formatKeyValue, formatTable, formatSummary, formatError, formatStatus, EXIT_SUCCESS, EXIT_FAILURE, EXIT_ERROR } from './format.js';
 
+const VERSION = JSON.parse(
+  readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+).version as string;
+
 const program = new Command();
 
 program
   .name('localground')
   .description('LocalGround Toolkit — migrate Claude Code projects off cloud-synced storage')
-  .version('3.0.0')
+  .version(VERSION)
   .option('--json', 'Output as JSON instead of human-readable text');
 
 // --- detect ---

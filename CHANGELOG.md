@@ -5,6 +5,18 @@ All notable changes to the LocalGround Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.2] - 2026-06-29
+
+### Fixed
+- `@localground/cli` and `@localground/mcp` `--version` reported `3.0.0` in 3.0.1 because the version was a hardcoded source literal not updated by the version bump. Both now derive their version from `package.json` at runtime (single source of truth).
+- `scripts/verify-tarball.mjs` now asserts the built bin's `--version` output equals the package manifest version (previously only checked semver shape), so version drift fails CI.
+
+### Changed
+- README section headers are version-agnostic; version history is tracked in this file.
+
+### Note
+- 3.0.1 is superseded by 3.0.2 and should not be used (its published binaries misreport their version as 3.0.0).
+
 ## [3.0.0] - 2026-04-26
 
 ### Added

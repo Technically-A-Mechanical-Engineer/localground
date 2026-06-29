@@ -11,11 +11,14 @@ import type { Result, Success, ChunkPlan, CopyData, PathHashEntry } from '@local
 import { z } from 'zod';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 
 // --- Constants ---
 
 const SERVER_NAME = 'localground';
-const SERVER_VERSION = '3.0.0';
+const SERVER_VERSION = JSON.parse(
+  readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+).version as string;
 
 // --- Server Instance ---
 
