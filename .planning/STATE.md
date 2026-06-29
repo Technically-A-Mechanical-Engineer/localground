@@ -32,8 +32,8 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 
 Phase: 20 (release-pipeline-validation) — EXECUTING
 Plan: 3 of 6
-Status: Ready to execute
-Last activity: 2026-06-29
+Status: Executing — Waves 1-2 complete (manifests+release.yml hardened; first push; 3-OS CI green; npm trusted-publisher verified). A real CI build-pipeline defect was found+fixed (d531c2b: build:check tsc --build was clobbering tsup's bundled dist → ERR_MODULE_NOT_FOUND in verify-tarball; now flat non-emit). Next = Wave 3 (20-04 version bump → 3.0.1).
+Last activity: 2026-06-29 -- Wave 2 (20-03) complete: push origin/master, ci.yml run 28351195225 GREEN on 3 OSes (PIPE-01/SC1), trusted-publisher VERIFIED on mcp+cli (D-03/H1)
 
 ## Roadmap Summary
 
