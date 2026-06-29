@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A toolkit that helps Claude Code CLI users migrate project folders off cloud-synced storage, verify migration integrity, clean up stale artifacts, and audit environment health. As of v3.0.0, the toolkit ships in two forms: a hybrid Node.js architecture (MCP server + standalone CLI + Claude Code skills) for full-fidelity workflow integration, and the original v2.0.0 paste-and-run prompts as a no-install fallback. Target audience: Claude Code users hitting git errors, file lock failures, or sync conflicts from working in OneDrive, Dropbox, Google Drive, or iCloud folders.
+A toolkit that helps Claude Code CLI users migrate project folders off cloud-synced storage, verify migration integrity, clean up stale artifacts, and audit environment health. As of v3.0.0, the toolkit ships in three forms: (1) MCP server (`@localground/mcp`) — exposes 9 operations as native Claude Code tool calls via the Model Context Protocol; (2) standalone CLI (`@localground/cli`) — 7 commands for terminal or scripted use via `npx`; (3) paste-and-run prompts in `prompts/` — the original v2.0.0 no-install fallback. A Claude Code plugin packages the 5 workflow skills (`/localground:seed`, `/localground:migrate`, `/localground:reap`, `/localground:cleanup`, `/localground:verify`) for one-command installation. Target audience: Claude Code users hitting git errors, file lock failures, or sync conflicts from working in OneDrive, Dropbox, Google Drive, or iCloud folders.
 
 ## Core Value
 
