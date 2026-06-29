@@ -31,9 +31,9 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 ## Current Position
 
 Phase: 20 (release-pipeline-validation) — EXECUTING
-Plan: 4 of 6
-Status: Wave 3 complete — version bump committed (4818cfb). Next = Wave 4 (20-05: push, CI-green, tag, OIDC publish).
-Last activity: 2026-06-29
+Plan: 5 of 6
+Status: Wave 4 complete — **v3.0.1 PUBLISHED** (both @localground/mcp@3.0.1 + @localground/cli@3.0.1 live via OIDC+provenance; PIPE-02/SC2). Tag v3.0.1 -> commit 2a9034e. Publish took a 4-attempt recovery (confirmed root cause: Node 22.x bundles npm 10.9 < OIDC floor 11.5.1; fixed by `npm install -g npm@^11.5.1` on the runner — release.yml commits 8fe734e/de99207/2a9034e). Nothing burned (branch a). Next = Wave 5 (20-06 post-publish verification: provenance badge SC3, README render SC4/DOC-03, npx SC5, mcp-add D-12) + phase close.
+Last activity: 2026-06-29 -- v3.0.1 published to npm via OIDC trusted publishing
 
 ## Roadmap Summary
 
