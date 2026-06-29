@@ -37,6 +37,12 @@ jobs:
           NODE_VERSION=$(node -p "process.versions.node")
           echo "npm: $NPM_VERSION  node: $NODE_VERSION"
           ge() { # ge VERSION FLOOR -> exit 0 if VERSION >= FLOOR (numeric, dotted)
+            # WR-01 guard: reject any non-release runtime version (prerelease -rc/-nightly
+            # or +build metadata). A non-[0-9.] char means it is not a clean X.Y.Z release,
+            # so fail closed — never publish OIDC-attested on a prerelease toolchain. This
+            # closes the sort -V prerelease-ordering hole rather than relying on the exact
+            # node/npm pins to never present a prerelease (cross-model review, WR-01).
+            case "$1" in *[!0-9.]*) return 1 ;; esac
             [ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
           }
           ge "$NPM_VERSION" "11.5.1"  || { echo "::error::npm $NPM_VERSION is below the OIDC floor 11.5.1"; exit 1; }
