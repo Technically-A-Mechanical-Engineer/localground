@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
 status: executing
-stopped_at: "Completed Phase 20 Plan 02 — release.yml hardened (Node 22.x, no cache, preflight, dry-run-both). Next: Plan 20-03 (first push to GitHub / PIPE-01)"
-last_updated: "2026-06-29T05:11:24.019Z"
+stopped_at: "Completed Phase 20 Plan 04 — version bump 3.0.0->3.0.1 (all 5 manifests + lockfile regen, commit 4818cfb, D-06). Next: Plan 20-05 (push bump commit, CI-green wait, annotated v3.0.1 tag, release.yml OIDC publish)"
+last_updated: "2026-06-29T06:06:54.387Z"
 last_activity: 2026-06-29
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 21
-  completed_plans: 17
-  percent: 81
+  completed_plans: 19
+  percent: 90
 ---
 
 # Project State
@@ -31,9 +31,9 @@ See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
 ## Current Position
 
 Phase: 20 (release-pipeline-validation) — EXECUTING
-Plan: 3 of 6
-Status: Executing — Waves 1-2 complete (manifests+release.yml hardened; first push; 3-OS CI green; npm trusted-publisher verified). A real CI build-pipeline defect was found+fixed (d531c2b: build:check tsc --build was clobbering tsup's bundled dist → ERR_MODULE_NOT_FOUND in verify-tarball; now flat non-emit). Next = Wave 3 (20-04 version bump → 3.0.1).
-Last activity: 2026-06-29 -- Wave 2 (20-03) complete: push origin/master, ci.yml run 28351195225 GREEN on 3 OSes (PIPE-01/SC1), trusted-publisher VERIFIED on mcp+cli (D-03/H1)
+Plan: 4 of 6
+Status: Wave 3 complete — version bump committed (4818cfb). Next = Wave 4 (20-05: push, CI-green, tag, OIDC publish).
+Last activity: 2026-06-29
 
 ## Roadmap Summary
 
@@ -80,6 +80,7 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase 20-02]: D-09 applied: cache: npm removed from release setup-node (cache-poisoning hardening per actions/setup-node #1358)
 - [Phase 20-02]: D-07 applied: Preflight step asserts GITHUB_REF_NAME == v<mcp version> and mcp == cli version before any publish
 - [Phase 20-02]: D-08 applied: Dry-run-both gate precedes both real publishes; step name documents pack/manifest guard scope, NOT auth/OIDC (review M1)
+- [Phase 20-04]: D-06 satisfied — version bump 3.0.0->3.0.1 across all five manifests + lockfile regen in single commit 4818cfb; D-04/M4 per-package repository/license preserved on BOTH mcp+cli; D-10 bump-timing honored (post-CI-green, pre-tag)
 
 ### Pending Todos
 
@@ -101,7 +102,7 @@ None at v3.0.1 roadmap close. Two known-deferred validation items now sequenced 
 
 ## Session Continuity
 
-Last session: 2026-06-29T05:10:00Z
-Stopped at: Completed Phase 20 Plan 02 — release.yml hardened (Node 22.x, no cache, preflight, dry-run-both). Next: Plan 20-03 (first push to GitHub / PIPE-01)
-Last commit: f469174 (feat(20-02): add preflight and dry-run-both gate to release.yml)
+Last session: 2026-06-29T06:06:54.372Z
+Stopped at: Completed Phase 20 Plan 04 — version bump 3.0.0->3.0.1 (all 5 manifests + lockfile regen, commit 4818cfb, D-06). Next: Plan 20-05 (push bump commit, CI-green wait, annotated v3.0.1 tag, release.yml OIDC publish)
+Last commit: 4818cfb (build(20): bump all manifests to 3.0.1 + regenerate lockfile (D-06))
 Resume file: None
