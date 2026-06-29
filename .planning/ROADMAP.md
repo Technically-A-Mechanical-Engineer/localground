@@ -5,7 +5,7 @@
 - ✅ **v1.2.0 Cloud-Sync Toolkit** -- Phases 1-4 (shipped 2026-04-11) -- [archive](milestones/v1.2.0-ROADMAP.md)
 - ✅ **v2.0.0 Five-Prompt Toolkit with Unified Versioning** -- Phases 5-11 (shipped 2026-04-12) -- [archive](milestones/v2.0.0-ROADMAP.md)
 - ✅ **v3.0.0 MCP Server + CLI Tooling** -- Phases 12-15 (shipped 2026-04-26) -- [archive](milestones/v3.0.0-ROADMAP.md)
-- 🚧 **v3.0.1 Validation and Hardening** -- Phases 16-20 (in progress)
+- ✅ **v3.0.1 Validation and Hardening** -- Phases 16-20 (shipped 2026-06-29 as v3.0.2) -- [archive](milestones/v3.0.1-ROADMAP.md)
 
 ## Phases
 
@@ -14,94 +14,20 @@
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 - 999.x: Backlog parking lot (unsequenced — see Backlog section)
 
-## Phases (v3.0.1 -- Completed; shipped as v3.0.2 after the SC5 fix-forward)
+## Phases (v3.0.1 -- Completed)
 
-- [ ] **Phase 16: Test Infrastructure Hardening** -- Restore tsc gate, eliminate Vitest cleanup hang, close two LOW-severity test hygiene findings
-- [ ] **Phase 17: Core Decoder Calibration** -- Calibrate encode() regex against actual Claude Code CLI behavior; eliminate silent decode failures (WR-01)
-- [ ] **Phase 18: Packaging Polish** -- Restrict mcp/cli npm tarballs to dist/ only via `files: ["dist"]`
-- [x] **Phase 19: Skill Runtime UAT** -- Execute UAT Tests 12-16 end-to-end with `@localground/mcp` registered in Claude Code (status passed; local-dist + tarball-gate replay both verified)
-- [x] **Phase 20: Release Pipeline Validation** -- ci.yml green on master + release.yml OIDC + provenance publish; validation caught an SC5 defect in 3.0.1 (binaries printed 3.0.0) and the fix-forward shipped v3.0.2
+<details>
+<summary>✅ v3.0.1 Validation and Hardening (Phases 16-20) -- SHIPPED 2026-06-29 (published to npm as v3.0.2)</summary>
 
-## Phase Details
+- [x] Phase 16: Test Infrastructure Hardening (3/3 plans) -- completed 2026-04-27 — restored `tsc --build` strict gate over src+test, eliminated Vitest cleanup hang, closed two test-hygiene findings (TEST-01..04)
+- [x] Phase 17: Core Decoder Calibration (2/2 plans) -- completed 2026-04-27 — `encode()` regex widened to seven special-char classes; WR-01 closed with deleted-source diagnostic traceability (CORE-13, CORE-14)
+- [x] Phase 18: Packaging Polish (2/2 plans) -- completed 2026-04-27 — `files: ["dist"]` on both publishable packages + CI-wired `npm pack` regression guard (PKG-01, PKG-02)
+- [x] Phase 19: Skill Runtime UAT (7/7 plans) -- completed 2026-06-28 — all 5 `/localground:*` skills validated end-to-end vs the registered MCP server (incl. two-session migrate continuation loop across a restart), on both dev build and packaged tarball (UAT-01..05); comprehension AFFIRMED
+- [x] Phase 20: Release Pipeline Validation (7/7 plans) -- completed 2026-06-29 — first-ever `ci.yml` (3-OS green) + `release.yml` (OIDC + provenance) runs; validation caught an SC5 defect in 3.0.1 (binaries printed 3.0.0) → fix-forward shipped v3.0.2 (PIPE-01, PIPE-02, DOC-03); comprehension AFFIRMED
 
-### Phase 16: Test Infrastructure Hardening
-**Goal:** Restore the strict tsc quality gate and eliminate test-suite reliability defects so subsequent codebase changes (CORE-13/14, UAT validation) land under a hardened gate.
-**Depends on:** Nothing (first phase of v3.0.1; lands before codebase changes by design)
-**Requirements:** TEST-01, TEST-02, TEST-03, TEST-04
-**Success Criteria** (what must be TRUE):
-  1. `npm run typecheck` (or equivalent `tsc --build`) exits 0 in CI on Windows, macOS, and Linux without weakening strict mode
-  2. `npm test` exits with the same code Vitest reports (no hang on shutdown after suite completes)
-  3. Running the full Vitest suite against an intentionally-broken `placeholder.test.ts` precondition (e.g., forced `platformResult.success = false`) causes the dependent assertions to fail loudly instead of silently no-op
-  4. `decode.test.ts` no longer contains `expect(typeof result.success).toBe('boolean')` or any equivalent tautology that cannot fail given the discriminated union
-  5. CI run summary shows tsc + tsup + vitest all gating master pushes
-**Plans:** 3 plans
-- [x] 16-01-PLAN.md (Wave 1) — TEST-03 + TEST-04 test hygiene fixes (placeholder precondition guard, decode tautology replacement)
-- [x] 16-02-PLAN.md (Wave 1) — TEST-02 child-process cleanup via afterEach reapers in MCP and CLI smoke tests
-- [x] 16-03-PLAN.md (Wave 2) — TEST-01 strict gate restoration via tsconfig.test.json + ci.yml step + implicit-any fixes (core → mcp → cli)
+Full archive: [milestones/v3.0.1-ROADMAP.md](milestones/v3.0.1-ROADMAP.md)
 
-### Phase 17: Core Decoder Calibration
-**Goal:** Path-hash decoding round-trips correctly for the full set of special characters Claude Code actually encodes, eliminating silent `no_candidates` failures.
-**Depends on:** Phase 16 (regex calibration changes land under restored tsc gate)
-**Requirements:** CORE-13, CORE-14
-**Success Criteria** (what must be TRUE):
-  1. `encode()` followed by `decode()` round-trips folder names containing apostrophes, ampersands, brackets, parentheses, plus signs, equals signs, and percent signs without data loss
-  2. Re-running the user's original 23-path-hash reproduction case (or an equivalent reproduction case with documented coverage of the same encoding classes) returns zero unexplained `no_candidates` results — every `no_candidates` either resolves to an existing folder or has a documented reason (e.g., source folder deleted)
-  3. Decoder unit tests cover at least one case per newly-supported special character class and pass on Windows, macOS, and Linux
-  4. WR-01 entry in CONTEXT.md (or equivalent) is marked closed with a link to the verifying test cases
-**Plans:** 2 plans
-- [x] 17-01-PLAN.md (Wave 1) — CORE-13 regex widening + per-class round-trip tests in decode.ts and decode.test.ts (D-01, D-02, D-05, D-06, D-07)
-- [x] 17-02-PLAN.md (Wave 2) — CORE-14 closure: 17-VERIFICATION.md with deleted-source diagnostic table + PROJECT.md WR-01 row + v3.0.0-ROADMAP.md forward-pointer (D-03, D-04, D-08, D-09)
-
-### Phase 18: Packaging Polish
-**Goal:** Published `@localground/mcp` and `@localground/cli` tarballs contain only compiled output, cutting download size for end users.
-**Depends on:** Nothing (independent of TEST/CORE work; sequenced before UAT so UAT's `npm pack --dry-run` validation reflects the final tarball shape)
-**Requirements:** PKG-01, PKG-02
-**Success Criteria** (what must be TRUE):
-  1. `packages/mcp/package.json` and `packages/cli/package.json` both contain `"files": ["dist"]`
-  2. `npm pack --dry-run` (or equivalent) on each package shows `dist/` contents present and `src/`, `test/`, `tsconfig.json`, `tsup.config.ts`, and `vitest.config.ts` absent from the tarball file list
-  3. `npm pack --dry-run` on each package shows `README.md` and `package.json` present alongside `dist/` (npm always preserves these regardless of `files` config — verifies `files: ["dist"]` did not unintentionally strip them)
-  4. Local install from the packed tarball into a clean test directory still resolves all imports and exposes the documented entry points (smoke check that bundled `dist/` is self-sufficient)
-**Plans:** 2 plans
-- [x] 18-01-PLAN.md (Wave 1) — PKG-01 + initial PKG-02 verification: add files: ["dist"] to mcp/cli package.jsons, verify via npm pack --dry-run (D-04, D-05)
-- [x] 18-02-PLAN.md (Wave 2) — Full PKG-02 closure: scripts/verify-tarball.mjs + ci.yml step + mcp --version handler, persistent regression guard (D-01, D-02, D-03)
-
-### Phase 19: Skill Runtime UAT
-**Goal:** All five `/localground:*` skills route correctly through the registered `@localground/mcp` server and execute end-to-end against real filesystems — including the two-session continuation-token loop that no other test exercises.
-**Depends on:** Phase 17 (skills exercise decode-and-enrich code paths), Phase 18 (UAT runs against the same tarball shape that v3.0.1 will publish)
-**Requirements:** UAT-01, UAT-02, UAT-03, UAT-04, UAT-05
-**Success Criteria** (what must be TRUE):
-  1. `/localground:seed` produces a valid `.localground-seed-manifest.json` file plus a user-readable summary, with the underlying `localground_seed` MCP tool call visible in the transcript
-  2. `/localground:migrate` Session 1 writes `localground-migrate-state.json`, Claude Code restarts from the new path, Session 2 picks up the state file, completes settings migration, and exits without state loss or duplicate work
-  3. `/localground:reap` invokes both `localground_verify` and `localground_health_check` and produces a natural-language report mapping findings to recommendations
-  4. `/localground:cleanup` lists candidates from `localground_cleanup_scan`, requires per-item confirmation, and only deletes items the user explicitly confirms (zero deletions on items declined or skipped)
-  5. `/localground:verify` invokes `localground_audit` and produces a traffic-light report whose recommendations map to actionable next steps
-**Plans:** 7 plans
-- [x] 19-01-PLAN.md (Wave 1) - Setup MCP registration with --scope user + UAT-01 (/localground:seed) + 19-UAT.md skeleton
-- [x] 19-02-PLAN.md (Wave 2) - UAT-02 (/localground:migrate) Scenario C: 3 runs (happy + idempotency + missing-state-fallback)
-- [x] 19-03-PLAN.md (Wave 3) - UAT-03 (/localground:reap) on UAT-02 destination
-- [x] 19-04-PLAN.md (Wave 4) - UAT-04 (/localground:cleanup) synthetic stale-reference fixture, mixed yes/no/skip-all
-- [x] 19-05-PLAN.md (Wave 5) - UAT-05 (/localground:verify) environment-wide audit
-- [x] 19-06-PLAN.md (Wave 6) - Tarball-gate replay (D-04): 5 skills re-verified on packaged tarball across 2 relaunches; honesty gate 6/6; registration restored to local-dist; adversarially verified CLOSEOUT_SOUND
-- [x] 19-07-PLAN.md (Wave 7) - Finalize 19-UAT.md frontmatter (status passed, verified 2026-06-28) + Gaps Summary; gsd-verifier appended VERIFIED cross-check (D-09)
-
-### Phase 20: Release Pipeline Validation
-**Goal:** Both GitHub Actions workflows execute end-to-end for the first time — `ci.yml` green across the 3-OS matrix, and `release.yml` publishes both packages to npm with OIDC provenance and rendered per-package READMEs on the v3.0.1 tag push.
-**Depends on:** Phase 16, Phase 17, Phase 18, Phase 19 (all preceding work must be merged to master before the milestone-closing tag is pushed)
-**Requirements:** PIPE-01, PIPE-02, DOC-03
-**Success Criteria** (what must be TRUE):
-  1. The most recent `ci.yml` run on master shows green on Windows, macOS, and Linux jobs at Node 20.x; any platform-specific failures encountered earlier in the milestone are diagnosed and resolved with linked CI run IDs
-  2. Pushing the `v3.0.1` tag triggers `release.yml`, which publishes both `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` to npm
-  3. Both published packages show provenance attestation visible on npmjs.com via the "Provenance" badge on the package page
-  4. Both `@localground/mcp@3.0.1` and `@localground/cli@3.0.1` npmjs.com pages render the per-package README content (`packages/mcp/README.md` and `packages/cli/README.md` respectively) — not the empty-state placeholder shown for v3.0.0
-  5. A clean machine running `npx -y @localground/cli@3.0.1 detect` resolves and executes successfully against the published artifacts
-**Plans:** 7 plans (20-07 gap-closure added for the SC5 fix-forward)
-- [x] 20-01-PLAN.md (Wave 1) — Manifest pre-flight: repository + license on both published manifests (D-04/D-05) + PROJECT.md three-forms (D-13) + README render-readiness verify (DOC-03)
-- [x] 20-02-PLAN.md (Wave 1) — release.yml OIDC hardening: Node 22 release job (D-02), tag↔version preflight (D-07), dry-run-both gate (D-08), drop release-job cache (D-09), pure-OIDC kept (D-01); D-11 Windows no-op
-- [x] 20-03-PLAN.md (Wave 2) — Push master → first ci.yml GREEN on 3 OSes (PIPE-01/SC1, D-10 push gate) + per-package npm trusted-publisher config (D-03)
-- [x] 20-04-PLAN.md (Wave 3) — Version bump 3.0.0→3.0.1 across all five manifests + lockfile regen in one post-CI-green commit (D-06)
-- [x] 20-05-PLAN.md (Wave 4) — CI green on bump commit + annotated v3.0.1 tag + tag-content verify + tag push → release.yml OIDC publish both packages (PIPE-02/SC2, D-10/D-01). Published 3.0.1 after a 4-attempt npm-OIDC-floor recovery
-- [x] 20-06-PLAN.md (Wave 5) — Post-publish verify (provenance SC3 + README SC4/DOC-03 + npx SC5 + MCP-add D-12). FOUND SC5 FAIL on 3.0.1 (binaries print 3.0.0)
-- [x] 20-07-PLAN.md (Wave 6, gap-closure) — SC5 fix-forward to 3.0.2: cli/mcp --version derived from package.json + verify-tarball version-equality CI gate + bump; OIDC re-publish; SC5 re-verified PASS at 3.0.2
+</details>
 
 ## Phases (v1.2.0 -- Completed)
 
@@ -163,9 +89,9 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 13. MCP Server | v3.0.0 | 6/6 | Complete | 2026-04-13 |
 | 14. Standalone CLI and Claude Code Skills | v3.0.0 | 11/11 | Complete | 2026-04-26 |
 | 15. Testing, CI, Publishing, and Documentation | v3.0.0 | 6/6 | Complete | 2026-04-26 |
-| 16. Test Infrastructure Hardening | v3.0.1 | 3/3 | Complete    | 2026-04-27 |
-| 17. Core Decoder Calibration | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
-| 18. Packaging Polish | v3.0.1 | 2/2 | Complete    | 2026-04-27 |
+| 16. Test Infrastructure Hardening | v3.0.1 | 3/3 | Complete | 2026-04-27 |
+| 17. Core Decoder Calibration | v3.0.1 | 2/2 | Complete | 2026-04-27 |
+| 18. Packaging Polish | v3.0.1 | 2/2 | Complete | 2026-04-27 |
 | 19. Skill Runtime UAT | v3.0.1 | 7/7 | Complete | 2026-06-28 |
 | 20. Release Pipeline Validation | v3.0.1→3.0.2 | 7/7 | Complete | 2026-06-29 |
 
@@ -190,4 +116,5 @@ Plans:
 *v3.0.0 milestone closed: 2026-04-26*
 *Backlog seeded at v3.0.0 close: 2026-04-26*
 *v3.0.1 phases added: 2026-04-27 (promoted backlog 999.1, 999.2, 999.3, 999.4, 999.6 into Phases 16-20; 999.5 retained as backlog with v3.1.0 deferral note)*
-*v3.0.1 amendment: 2026-04-27 — added DOC-03 (per-package READMEs visible on npmjs.com) mapped to Phase 20; augmented Phase 18 SC-3 to verify README inclusion in tarball; augmented Phase 20 SC-4 to verify rendered README on package pages*
+*v3.0.1 amendment: 2026-04-27 — added DOC-03 (per-package READMEs visible on npmjs.com) mapped to Phase 20*
+*v3.0.1 milestone closed: 2026-06-29 — Phases 16-20 collapsed to archive; shipped to npm as v3.0.2 (SC5 fix-forward). Carry-forward to v3.1.0: seed toolkitVersion drift-proofing, MD-01 (SHA-pin actions), MD-02 (mcp --version parsing), CLI-05 (999.5).*

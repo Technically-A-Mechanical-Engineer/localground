@@ -8,19 +8,18 @@ A toolkit that helps Claude Code CLI users migrate project folders off cloud-syn
 
 Get Claude Code users off cloud-synced storage safely — no data loss, no silent failures, every action verified before and after.
 
-## Current Milestone: v3.0.1 — Validation and Hardening
+## Next Milestone: v3.1.0 (planning)
 
-**Goal:** Validate that v3.0.0 actually works end-to-end at runtime (skills + pipelines), close the known correctness gap in path-hash decoding, and reduce npm tarball weight — all while v3.0.0 implementation context is still warm.
+**Status:** v3.0.1 shipped 2026-06-29 (to npm as v3.0.2). No v3.1.0 scope locked yet — run `/gsd-new-milestone` to define it.
 
-**Target features:**
+**Carry-forward candidates** (from the v3.0.1 close / 20-REVIEW.md):
 
-- Execute UAT Tests 12-16 against the registered `@localground/mcp` server — Test 15 (`/localground:migrate` two-session orchestration) is the only test that exercises the continuation-token loop and `localground-migrate-state.json` handoff
-- Land first end-to-end runs of `ci.yml` (3-OS matrix on master push) and `release.yml` (OIDC + provenance on v3.0.1 tag)
-- Restore `tsc --build` as a CI quality gate, eliminate the Vitest cleanup hang on `npm test` exit, and close two LOW-severity test hygiene findings (L-01, L-02)
-- Trim npm tarball download size by adding `"files": ["dist"]` to `packages/mcp/package.json` and `packages/cli/package.json`
-- Calibrate the `encode()` regex in `packages/core/src/environment/decode.ts` against actual Claude Code CLI behavior so silent decode failures stop slipping through (WR-01)
-
-**Key context:** v3.0.0 closed with two pipelines structurally verified but unexecuted, five UAT tests blocked behind MCP-server registration, and one regex correctness gap (6 of 23 path-hashes returned `no_candidates` on the user's machine, root cause undetermined). The TIER 2 streaming refactor of `spawnTool` (999.5) is deliberately deferred to v3.1.0 — TIER 1 mitigation already shipped, and the architectural change carries enough risk surface to belong in a minor release.
+- Drift-proof the seed `toolkitVersion` literal via host-injection — the same drift class fixed for the `--version` strings this milestone; `toolkitVersion` is still a hardcoded literal in `seed.ts`
+- MD-01: SHA-pin GitHub Actions (`checkout`, `setup-node`) + exact-pin runner npm in the publish job (the `id-token: write` job is the highest-privilege surface in the repo)
+- MD-02: robust `--version` arg parsing in the mcp bin (the hand-rolled `process.argv.includes('--version')` check mishandles `--version=foo` / `--Version`)
+- CLI-05 (999.5): TIER 2 streaming refactor of `spawnTool` for live MCP-driven copy progress
+- Audit project-fingerprint filter (debug `audit-includes-root-paths`): scope audit auto-discovery so it stops scanning all of `C:\Users\…`
+- 999.7: path-hash decode edge defect (trailing-edge special character)
 
 ## Current State
 
@@ -33,9 +32,13 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 
 **Quality gates:** 79-test Vitest suite (real-fs fixtures, no mocks) — clean exit, no teardown hang; `tsc --build` strict gate covering both src AND test files via `tsconfig.test.json`; 3-OS GitHub Actions CI (Win/Mac/Linux on Node 20.x) with Build → Strict type check → Test ordering; tag-triggered OIDC release workflow with provenance attestation (configured for v3.0.1+; v3.0.0 was published manually due to npm/cli#8544).
 
-**v3.0.1 progress:** Phases 16-18 complete 2026-04-27 — TEST-01..04 (test infra), CORE-13 (decoder calibration), PKG-01..02 (packaging polish) validated. Phases 19-20 (skill UAT, release pipeline validation) remain.
+**v3.0.1 shipped 2026-06-29** (published to npm as **v3.0.2** after the SC5 fix-forward):
+- `@localground/mcp@3.0.2` + `@localground/cli@3.0.2` live as `latest` with **SLSA-v1 provenance** — the first packages in the project's history to carry provenance (v3.0.0 was a manual, provenance-less publish)
+- Both GitHub Actions workflows ran end-to-end for the first time: `ci.yml` green on the 3-OS matrix; `release.yml` OIDC-published both packages. Phase-20 validation caught a real immutable-publish defect (3.0.1 binaries misreported `3.0.0`) → fixed-forward to v3.0.2 with runtime version derivation + a CI version-equality gate
+- All 5 `/localground:*` skills runtime-UAT'd against the registered MCP server (Phase 19); test infra hardened, decoder calibrated, tarballs trimmed (Phases 16-18)
+- Comprehension gates AFFIRMED for Phases 19 and 20
 
-**Codebase:** 5,877 LOC TypeScript across 47 `.ts` files in `packages/`. Result-typed core (no exceptions thrown), strict TypeScript, tsup bundled.
+**Codebase:** ~7,100 LOC TypeScript across `packages/`. Result-typed core (no exceptions thrown), strict TypeScript (tsc gate over src+test), tsup bundled; bins derive `--version` from `package.json` at runtime.
 
 ## Requirements
 
@@ -88,17 +91,23 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 - ✓ `packages/mcp/package.json` and `packages/cli/package.json` declare `"files": ["dist"]`; tarballs ship 5 files only (README, package.json, dist/index.{js,d.ts,js.map}) (PKG-01) — v3.0.1 Phase 18
 - ✓ `npm pack --dry-run` regression guard scripted as `scripts/verify-tarball.mjs` and wired into `.github/workflows/ci.yml` after Build, before Test (PKG-02) — v3.0.1 Phase 18
 
+**v3.0.1 — Phase 19 Skill Runtime UAT (completed 2026-06-28):**
+- ✓ All 5 `/localground:*` skills route correctly through the registered `@localground/mcp` server and execute end-to-end against real filesystems (UAT-01..05) — proven on both the dev build and the packaged tarball (process-identity honesty gate 6/6) — v3.0.1 Phase 19
+- ✓ Two-session `/localground:migrate` continuation-token loop validated across a real Claude Code restart — the only path no automated test covers (UAT-02) — v3.0.1 Phase 19
+
+**v3.0.1 — Phase 20 Release Pipeline Validation (completed 2026-06-29, shipped as v3.0.2):**
+- ✓ `ci.yml` first end-to-end run green across the 3-OS matrix on Node 20.x (PIPE-01) — v3.0.1 Phase 20
+- ✓ `release.yml` OIDC-published both packages with SLSA-v1 provenance; validation caught the 3.0.1 version-misreport defect → fixed-forward to v3.0.2 (PIPE-02) — v3.0.1 Phase 20
+- ✓ Per-package READMEs render on both npmjs.com pages, replacing the v3.0.0 empty-state placeholder (DOC-03) — v3.0.1 Phase 20
+
 ### Active
 
-**v3.0.1 — Validation and Hardening (in progress):**
-
-- [ ] UAT Tests 12-16 executed end-to-end with `@localground/mcp` registered in Claude Code; Test 15 validates two-session continuation-token loop and state-file handoff (promoted from 999.1)
-- [ ] `ci.yml` first run on master green across the 3-OS matrix on Node 20.x (promoted from 999.2)
-- [ ] `release.yml` first OIDC + provenance publish lands successfully on v3.0.1 tag (promoted from 999.2)
+**v3.1.0 — not yet scoped.** Run `/gsd-new-milestone` to define it; carry-forward candidates are listed under "Next Milestone: v3.1.0" above.
 
 ### Backlog (captured in ROADMAP.md `## Backlog`, 999.x numbering)
 
 - **999.5** TIER 2 streaming refactor of spawnTool — deferred to v3.1.0 (architectural change; TIER 1 mitigation already shipped)
+- **999.7** path-hash decode edge defect (trailing-edge special character) — deferred to v3.1.0
 
 ### Out of Scope
 
@@ -163,6 +172,9 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 | Filesystem-listing reverse-encode decoder — v3.0.0 | Sidesteps separator-guessing; any folder that physically exists decodes correctly. | ✓ Validated in v3.0.0 (closed UAT Defect B) |
 | Path-shape-only `looksLikeProject` predicate — v3.0.0 | No `.git`/`package.json` marker check. Supports plain-folder projects (D-01) without polluting audit with root paths. | ✓ Validated in v3.0.0 |
 | WR-01 (encode regex calibration) closed via Phase 17 — regex widened to cover seven CORE-13 char classes (apostrophe, ampersand, brackets, plus, equals, percent) | Defensive/forward-looking widening; 17/17 currently-extant path-hashes already round-trip and 6/6 `no_candidates` failures are documented as deleted source folders. Targeted, not catch-all (D-01). | ✓ Validated in v3.0.1 — see [`.planning/phases/17-core-decoder-calibration/17-VERIFICATION.md`](phases/17-core-decoder-calibration/17-VERIFICATION.md) |
+| OIDC trusted publishing (no stored token) + Node 22 / npm≥11.5.1 on the release job — v3.0.1 | Write-enabled npm tokens now expire ≤90 days (a maintenance trap for a non-dev maintainer); a failed OIDC attempt publishes nothing and is retryable. Node 22 bundles npm 10.9.x — BELOW npm's 11.5.1 OIDC floor — so the publish job must `npm install -g npm@^11.5.1`. | ✓ Validated in v3.0.1 (4-attempt recovery confirmed the floor; pure-OIDC publish + provenance) |
+| Runtime `--version` derivation from `package.json` + CI version-equality gate — v3.0.1 | A manifest-only bump left hardcoded `--version` literals emitting the old version (3.0.1 binaries printed 3.0.0). Derive, don't duplicate; assert built-version == manifest in verify-tarball. | ✓ Validated in v3.0.1 (the gate that would have blocked 3.0.1; clean v3.0.2) |
+| Fix-forward over unpublish on the bad 3.0.1 — v3.0.1 | Published npm versions are immutable — cannot replace or republish a version. Fixing forward to 3.0.2 is the only correct recovery. | ✓ Validated in v3.0.1 |
 
 ## Evolution
 
@@ -182,4 +194,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-27 after Phase 18 (Packaging Polish) complete — PKG-01 and PKG-02 satisfied; tarball regression guard wired into ci.yml; remaining v3.0.1 work covers Phases 19-20 (skill UAT, release pipeline validation).*
+*Last updated: 2026-06-29 after v3.0.1 milestone close — Phases 16-20 complete and verified; shipped to npm as v3.0.2 (SC5 fix-forward). Next: v3.1.0 (run /gsd-new-milestone).*

@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v3.0.1
 milestone_name: Validation and Hardening
-status: complete
-stopped_at: "Phase 20 COMPLETE — v3.0.2 published + verified. Validation caught an SC5 defect in 3.0.1 (binaries printed 3.0.0 from hardcoded literals); fixed forward to 3.0.2 (version derived from package.json + verify-tarball version-equality CI gate), re-published via OIDC (run 28370544899), SC5 re-verified PASS. All 5 phases done — milestone ready to close via /gsd-complete-milestone."
-last_updated: "2026-06-29T12:20:00Z"
+status: completed
+stopped_at: "v3.0.1 milestone CLOSED 2026-06-29 — archived to milestones/v3.0.1-{ROADMAP,REQUIREMENTS}.md; shipped to npm as v3.0.2. Comprehension gates affirmed (Phases 19 + 20). Next: /gsd-new-milestone for v3.1.0."
+last_updated: "2026-06-29T15:37:37.217Z"
 last_activity: 2026-06-29
 progress:
   total_phases: 5
@@ -16,24 +16,24 @@ progress:
 
 # Project State
 
-**Status:** Milestone v3.0.1 complete — shipped as v3.0.2
+**Status:** v3.0.1 milestone CLOSED — shipped to npm as v3.0.2
 **Last Activity:** 2026-06-29
-**Current focus:** Phase 20 complete; milestone ready to close
+**Current focus:** Planning next milestone (v3.1.0) — run `/gsd-new-milestone`
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-04-26 after v3.0.1 milestone start)
+See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 **Core value:** Get Claude Code users off cloud-synced storage safely — no data loss, no silent failures, every action verified before and after.
 
-**Last shipped:** v3.0.0 MCP Server + CLI Tooling (2026-04-26) — `@localground/mcp@3.0.0` + `@localground/cli@3.0.0` live on npm; full archive at `.planning/milestones/v3.0.0-ROADMAP.md`.
+**Last shipped:** v3.0.1 Validation and Hardening (2026-06-29) — published to npm as `@localground/mcp@3.0.2` + `@localground/cli@3.0.2` (`latest`, SLSA-v1 provenance) after the SC5 fix-forward; full archive at `.planning/milestones/v3.0.1-ROADMAP.md`.
 
 ## Current Position
 
-Phase: 20 (release-pipeline-validation) — COMPLETE
-Plan: 7 of 7
-Status: **v3.0.2 PUBLISHED + VERIFIED.** Phase 20 validation worked as designed: it published v3.0.1, then caught an SC5 defect (both binaries printed 3.0.0 — `--version` was a hardcoded source literal the manifest bump never touched). Fixed forward to v3.0.2 (plan 20-07): cli/mcp derive `--version` from package.json at runtime; verify-tarball now asserts built `--version` == manifest version (the CI gate that would have blocked 3.0.1); seed toolkitVersion bumped. Re-published via OIDC (tag v3.0.2 → 26659c8, run 28370544899). Re-verification: SC3/SC4/SC5 all PASS at 3.0.2 (20-VERIFICATION.md); gsd-code-review 0 CRITICAL/HIGH. Remaining: formal milestone close (/gsd-complete-milestone) + optional `npm deprecate` 3.0.1 (needs npm login).
-Last activity: 2026-06-29 -- v3.0.2 published + verified; Phase 20 closed
+**v3.0.1 milestone CLOSED 2026-06-29.** All 5 phases (16-20) complete and verified; archived to `milestones/v3.0.1-{ROADMAP,REQUIREMENTS}.md`; ROADMAP collapsed and PROJECT.md evolved. Shipped to npm as v3.0.2 (the SC5 fix-forward — v3.0.1 binaries misreported `3.0.0`; cli/mcp now derive `--version` from package.json and a verify-tarball version-equality gate guards CI). Comprehension gates AFFIRMED for Phases 19 and 20. Optional housekeeping still open: `npm deprecate @localground/{cli,mcp}@3.0.1` (blocked on passkey 2FA — needs an npm automation token; low value since `latest` = 3.0.2).
+
+**Next:** `/gsd-new-milestone` to scope v3.1.0 (carry-forward items below).
+Last activity: 2026-06-29 -- v3.0.1 milestone closed; archived; shipped as v3.0.2
 
 ## Roadmap Summary
 
@@ -102,9 +102,25 @@ Carry-forward to v3.1.0 (from 20-REVIEW.md / 20-07): (1) drift-proof seed `toolk
 | 260428-lya | Mark decoder-defects debug session resolved with pointers to 17-VERIFICATION and 999.7 backlog | 2026-04-28 | 9ae8881 | [260428-lya-mark-decoder-defects-debug-session-resol](./quick/260428-lya-mark-decoder-defects-debug-session-resol/) |
 | 260609-hcb | Dependency vulnerability hardening v3.0.1 — bump vitest + SDK-scoped overrides (npm audit 7→0; all 4 gates green) | 2026-06-09 | 087ff05 | [260609-hcb-dependency-vulnerability-hardening-v3-0-](./quick/260609-hcb-dependency-vulnerability-hardening-v3-0-/) |
 
+## Deferred Items
+
+Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-close `audit-open` surfaced 9; all assessed non-blocking):
+
+| Category | Item | Status / disposition |
+|----------|------|----------------------|
+| debug | cli-silent-long-operations | diagnosed → **v3.1.0** (this IS CLI-05 / 999.5 streaming refactor; already tracked) |
+| debug | audit-includes-root-paths | diagnosed → **v3.1.0** candidate (minor: audit scans all of `C:\Users\…`; fix = project-fingerprint filter in core, used by both CLI + MCP audit; diagnosis-only, no fix applied) |
+| quick_task | 260411-8t0-fix-four-nec-evaluation-findings-in-clou | missing — stale v1.2.0/v2.0-era orphan reference |
+| quick_task | 260411-91n-fix-five-loose-ends-after-phase-2-comple | missing — stale v1.2.0/v2.0-era orphan reference |
+| quick_task | 260411-vbq-rename-design-spec-file-from-cloud-sync- | missing — stale v1.2.0/v2.0-era orphan reference |
+| quick_task | 260411-vp6-address-all-46-nec-evaluation-findings-a | missing — stale v1.2.0/v2.0-era orphan reference |
+| quick_task | 260428-lya-mark-decoder-defects-debug-session-resol | missing — already completed (commit 9ae8881; see Quick Tasks Completed) |
+| quick_task | 260609-hcb-dependency-vulnerability-hardening-v3-0- | missing — already completed (commit 087ff05; see Quick Tasks Completed) |
+| uat_gap | (phase UAT) | status "passed" — not an open gap |
+
 ## Session Continuity
 
 Last session: 2026-06-29
-Stopped at: Phase 20 COMPLETE — v3.0.2 published + verified (SC5 fix-forward). All 5 phases of the v3.0.1 milestone done. Next: formal milestone close via /gsd-complete-milestone.
-Last commit: 26659c8 (fix(20): bump seed toolkitVersion to 3.0.2 — SC5 fix-forward, pt 2)
+Stopped at: v3.0.1 milestone CLOSED — archived + ROADMAP collapsed + PROJECT.md evolved; shipped to npm as v3.0.2; comprehension gates (19 + 20) affirmed. Next: `/gsd-new-milestone` for v3.1.0.
+Last commit: (milestone-close commits — see git log)
 Resume file: None
