@@ -16,7 +16,7 @@
 
 - [x] **Phase 21: Supply-Chain & Bin Hardening** -- SHA-pin both GitHub Actions workflows + exact-pin runner npm in the OIDC publish job, and robustify the mcp bin `--version` parser (SEC-01, CLI-06)
 - [x] **Phase 22: Core Versioning & Audit Filter** -- Derive the seed manifest version from package.json (no hardcoded literal) and stop audit from surfacing system/home roots while keeping plain-folder projects discoverable (BUILD-01, CORE-15)
-- [ ] **Phase 23: Decoder Trailing-Edge Fix** -- Fix the `buildCandidates` trailing-hyphen-strip asymmetry so a special char at the trailing edge of an intermediate path component round-trips losslessly, with no regression to the 17/17 path-hashes or the load-bearing OneDrive fix (CORE-16)
+- [x] **Phase 23: Decoder Trailing-Edge Fix** -- Fix the `buildCandidates` trailing-hyphen-strip asymmetry so a special char at the trailing edge of an intermediate path component round-trips losslessly, with no regression to the 17/17 path-hashes or the load-bearing OneDrive fix (CORE-16)
 
 ### Phase 21: Supply-Chain & Bin Hardening
 **Goal**: The release supply chain is pinned and verifiable, and the mcp bin reports its version robustly without ever booting the transport.

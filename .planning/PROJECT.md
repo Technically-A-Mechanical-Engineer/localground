@@ -38,7 +38,7 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 - All 5 `/localground:*` skills runtime-UAT'd against the registered MCP server (Phase 19); test infra hardened, decoder calibrated, tarballs trimmed (Phases 16-18)
 - Comprehension gates AFFIRMED for Phases 19 and 20
 
-**v3.1.0 Hardening and Hygiene — in progress (Phases 21-22 of 23 complete, 2026-06-30):** Supply chain SHA-pinned with a `pinact` CI verify-pins gate + paired OIDC floors, and the mcp `--version` parser hardened (Phase 21); the seed manifest version now derives from each package's runtime version with a tarball-level value gate, and audit *and* detect filter out home/drive/system/AppData/other-user roots via the shared `looksLikeProject` predicate while keeping marker-less plain folders discoverable (Phase 22). Only CORE-16 (decoder trailing-edge fix, Phase 23) remains.
+**v3.1.0 Hardening and Hygiene — fully implemented (Phases 21-23 complete, 2026-06-30):** Supply chain SHA-pinned with a `pinact` CI verify-pins gate + paired OIDC floors, and the mcp `--version` parser hardened (Phase 21); the seed manifest version now derives from each package's runtime version with a tarball-level value gate, and audit *and* detect filter out home/drive/system/AppData/other-user roots via the shared `looksLikeProject` predicate while keeping marker-less plain folders discoverable (Phase 22); the path-hash decoder's trailing-edge asymmetry is fixed with an additive `encodedName + '--'` recovery branch + case-insensitive verify-then-return (`encode()` byte-unchanged), locked by a 9×5 special-char×position matrix and an explicit OneDrive value re-assertion (Phase 23). All five requirements validated; milestone ready to close.
 
 **Codebase:** ~7,100 LOC TypeScript across `packages/`. Result-typed core (no exceptions thrown), strict TypeScript (tsc gate over src+test), tsup bundled; bins derive `--version` from `package.json` at runtime.
 
@@ -110,16 +110,17 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 - ✓ Seed manifest `toolkitVersion` derives from the consuming package's runtime version (hardcoded `'3.0.2'` literal removed from `seed.ts`); both bins wired through shared `@localground/core`; `scripts/verify-tarball.mjs` extended to assert the seed-path version *value* through each package's real consumer surface (cli `seed --json` bin, mcp `localground_seed` JSON-RPC tool) on the packaged tarball (BUILD-01) — v3.1.0 Phase 22
 - ✓ `looksLikeProject` tightened with two path-shape-only rejections (other-user home roots; the AppData tree via first-segment-below-home logic) while preserving D-01 marker-less plain-folder discovery; `detect` wired to `.filter(looksLikeProject)` on both consumers so audit and detect filter identically; a 12-test regression-lock suite locks root-rejection AND plain-folder discovery (CORE-15) — v3.1.0 Phase 22
 
+**v3.1.0 — Phase 23 Decoder Trailing-Edge Fix (completed 2026-06-30):**
+- ✓ A single special character (`'`, `&`, `[`, `]`, `(`, `)`, `+`, `=`, `%`) at the trailing edge of an intermediate path component round-trips losslessly: `buildCandidates` gained an additive `encodedName + '--'` recovery branch and `decode()` returns only a candidate whose re-encode matches the input hash (case-insensitive verify-then-return; `candidates[0]` best-guess removed); `encode()` byte-unchanged (no character-class widening) and the load-bearing OneDrive decode non-regressed; locked by a 9×5 special-char×position matrix, an explicit canonical OneDrive value re-assertion, and a documented `Foo&&` out-of-scope boundary guard (CORE-16) — v3.1.0 Phase 23
+
 ### Active
 
-**v3.1.0 Hardening and Hygiene — scoped 2026-06-29.** Five requirements (see `.planning/REQUIREMENTS.md`); phases start at 21. Four of five validated — SEC-01 + CLI-06 (Phase 21) and BUILD-01 + CORE-15 (Phase 22); see ### Validated above. One remains:
-
-- ◻ **CORE-16** — Path-hash decode trailing-edge special-character round-trip fix (999.7) — Phase 23 (next)
+**v3.1.0 Hardening and Hygiene — scoped 2026-06-29, fully implemented 2026-06-30.** All five requirements validated — SEC-01 + CLI-06 (Phase 21), BUILD-01 + CORE-15 (Phase 22), CORE-16 (Phase 23); see ### Validated above. No active requirements remain; milestone ready to close via `/gsd-complete-milestone`.
 
 ### Backlog (captured in ROADMAP.md `## Backlog`, 999.x numbering)
 
 - **999.5** TIER 2 streaming refactor of spawnTool — deferred to v3.1.0 (architectural change; TIER 1 mitigation already shipped)
-- **999.7** path-hash decode edge defect (trailing-edge special character) — deferred to v3.1.0
+- ~~**999.7** path-hash decode edge defect (trailing-edge special character)~~ — RESOLVED as CORE-16, validated in v3.1.0 Phase 23 (2026-06-30)
 
 ### Out of Scope
 
@@ -206,4 +207,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-30 — v3.1.0 Phase 22 (Core Versioning & Audit Filter) complete; BUILD-01 + CORE-15 validated. Four of five v3.1.0 requirements done (SEC-01/CLI-06 Phase 21; BUILD-01/CORE-15 Phase 22); only CORE-16 remains (Phase 23). Reconciled the Active block that Phase 21's completion left stale. Next: plan Phase 23.*
+*Last updated: 2026-06-30 — v3.1.0 Phase 23 (Decoder Trailing-Edge Fix) complete; CORE-16 validated (6/6 must-haves). All five v3.1.0 requirements done (SEC-01/CLI-06 Phase 21; BUILD-01/CORE-15 Phase 22; CORE-16 Phase 23) — milestone fully implemented. Code review surfaced WR-01 (lossy-encode sibling-collision edge, out of CORE-16 scope) as a follow-up backlog candidate. Next: /gsd-complete-milestone.*
