@@ -18,6 +18,15 @@ import path from 'node:path';
  *   - Paths that don't have at least 2 segments below the filesystem root
  *     (catches the case where home isn't an ancestor — e.g. `C:\foo`
  *     would be rejected; `C:\Projects\my-app` accepted)
+ *   - Direct children of the OS users-container (other-user home roots such as
+ *     `C:\Users\someoneelse` on win32 or `/home/<x>` on posix) — these are
+ *     sibling home directories, never projects. INTENTIONAL EXCEPTION: this
+ *     rejects ALL direct children of the users-container, including a plain
+ *     folder placed directly there (e.g. `C:\Users\SharedProjects`). That
+ *     shape is pathological — a real project lives >=2 below home, never as a
+ *     direct sibling of the home dir — so the over-rejection is by design (D-06).
+ *   - The AppData tree via first-segment-below-home logic (rejects both
+ *     `<home>\AppData` and `<home>\AppData\Local`). Denylist is `AppData` only.
  *
  * Does NOT check for `.git/`, `package.json`, or other marker files —
  * the toolkit explicitly supports plain-folder projects (per Phase 14 D-01).
@@ -32,6 +41,10 @@ import path from 'node:path';
  *   looksLikeProject('/')                                       => false (root)
  *   looksLikeProject('/home/bob')                               => false (home)
  *   looksLikeProject('/home/bob/Projects/my-app')               => true  (2 below home)
+ *   looksLikeProject('C:\\Users\\someoneelse')                  => false (other-user home root)
+ *   looksLikeProject('C:\\Users\\SharedProjects')               => false (INTENTIONAL: direct child of users-container)
+ *   looksLikeProject('C:\\Users\\bob\\AppData')                 => false (first segment below home is AppData)
+ *   looksLikeProject('C:\\Users\\bob\\AppData\\Local')          => false (first segment below home is still AppData)
  */
 export function looksLikeProject(absolutePath: string): boolean {
   if (!absolutePath || typeof absolutePath !== 'string') {
@@ -51,6 +64,33 @@ export function looksLikeProject(absolutePath: string): boolean {
   // Reject literal home directory
   if (caseEqual(resolved, home)) {
     return false;
+  }
+
+  // Reject other-user home roots: a direct child of the OS users-container
+  // (the parent dir of this user's home — e.g. C:\Users, /home, /Users).
+  // These are sibling homes, never projects. Cross-platform via os.homedir().
+  // INTENTIONAL EXCEPTION: this rejects ALL direct children of the users-container,
+  // including a plain folder placed directly there (e.g. C:\Users\SharedProjects).
+  // That shape is pathological — a real project lives >=2 below home, never as a
+  // direct sibling of the home dir — so the over-rejection is by design (D-06).
+  const usersContainer = path.dirname(home);
+  const parentOfResolved = path.dirname(resolved);
+  if (caseEqual(parentOfResolved, usersContainer) && !caseEqual(resolved, home)) {
+    return false;
+  }
+
+  // Reject the AppData tree by FIRST segment below home (path-shape-only — NOT a
+  // marker check, NOT a final-basename check). Rejects both <home>\AppData and
+  // <home>\AppData\Local (the "AppData\Local" stale-noise class). Denylist = AppData only.
+  if (isUnder(resolved, home)) {
+    const firstSegment = path.relative(home, resolved).split(path.sep).filter((s) => s.length > 0)[0];
+    const appDataMatches =
+      process.platform === 'win32'
+        ? (firstSegment ?? '').toLowerCase() === 'appdata'
+        : firstSegment === 'AppData';
+    if (appDataMatches) {
+      return false;
+    }
   }
 
   // If under home: require at least 2 segments below home
