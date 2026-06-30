@@ -4,21 +4,21 @@ milestone: v3.1.0
 milestone_name: Hardening and Hygiene
 status: executing
 stopped_at: Phase 21 context gathered
-last_updated: "2026-06-30T16:37:40.979Z"
+last_updated: "2026-06-30T16:52:28.727Z"
 last_activity: 2026-06-30
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 4
-  completed_plans: 2
-  percent: 50
+  completed_plans: 3
+  percent: 75
 ---
 
 # Project State
 
-**Status:** Ready to execute
+**Status:** Executing Phase 22
 **Last Activity:** 2026-06-30
-**Current focus:** v3.1.0 — Phase 21 complete; next: plan Phase 22 (Core Versioning & Audit Filter)
+**Current focus:** Phase 22 Plan 02 (CORE-15 — audit root filter regression-lock)
 
 ## Project Reference
 
@@ -30,10 +30,10 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 ## Current Position
 
-Phase: 22
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-06-30 -- Phase 22 planning complete
+Phase: 22 (core-versioning-audit-filter) — EXECUTING
+Plan: 2 of 2
+Status: Executing Phase 22 Plan 02
+Last activity: 2026-06-30 — Phase 22 Plan 01 (BUILD-01) completed
 
 ## Roadmap Summary
 
@@ -84,6 +84,10 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase ?]: [Phase 21-01]: D-08 .github/dependabot.yml created; github-actions weekly grouped; run: literal gap documented with manual-bump note
 - [Phase ?]: [Phase 21-01]: D-11 SLSA-provenance attestation closure is a next-real-release obligation (not CI-on-push)
 - [Phase 21-02]: D-12/D-13/D-14 closed: isVersionRequest() helper matches --version, --version=…, -v, -V; case-sensitive --Version/--VERSION/--versions/--versioned fall through; no commander/yargs added; verify-tarball contract intact; positive-handshake proof locks fall-through behavior
+- [Phase 22-01]: D-01 Option A — seed() parameterized with toolkitVersion: string; mcp/index.ts:294 passes SERVER_VERSION, cli/index.ts:136 passes VERSION; '3.0.2' literal removed; no build-config change, no ambient global, no runtime package.json read in core
+- [Phase 22-01]: D-02 — all 7 existing seed() calls updated to 2-arg form; TOOLKIT_VERSION='9.9.9-test' constant; new value-equality test: expect(result.data.toolkitVersion).toBe(TOOLKIT_VERSION)
+- [Phase 22-01]: D-03 — verify-tarball.mjs extended with seed-path value gate; CLI branch invokes bin seed --json; MCP branch uses JSON-RPC StdioClientTransport driver; both assert manifestVersion === expectedVersion; both tarballs passed (version=3.0.2, seedManifest=3.0.2)
+- [Phase 22-01]: Rule 1 auto-fix — verify.test.ts 3 seed() calls updated to 2-arg form (not in plan scope; arity change caused TS2554 errors in build:check)
 
 ### Pending Todos
 
@@ -123,7 +127,7 @@ Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-clo
 
 ## Session Continuity
 
-Last session: 2026-06-29T20:09:13.918Z
+Last session: 2026-06-30T16:52:28.713Z
 Stopped at: Phase 21 context gathered
 Last commit: a5e289f docs(v3.0.1): generate milestone summary for onboarding
 Resume file: None

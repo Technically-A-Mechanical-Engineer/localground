@@ -18,7 +18,7 @@ Harden the release pipeline — the `id-token: write` publish job is the repo's 
 
 Eliminate the last hardcoded version literal so the seed manifest cannot drift from the package version — the same drift class fixed for the bins' `--version` in v3.0.1. Source: carry-forward #1. Research: `research/ARCHITECTURE.md`, `research/PITFALLS.md`.
 
-- [ ] **BUILD-01**: The seed manifest's `toolkitVersion` always equals the consuming package's version (`@localground/mcp` or `@localground/cli`) in both the dev build and the packaged tarball, with no hardcoded version literal remaining in `seed.ts`; `scripts/verify-tarball.mjs` is extended to assert the seed-path version *value* (today it gates only the bin `--version`)
+- [x] **BUILD-01**: The seed manifest's `toolkitVersion` always equals the consuming package's version (`@localground/mcp` or `@localground/cli`) in both the dev build and the packaged tarball, with no hardcoded version literal remaining in `seed.ts`; `scripts/verify-tarball.mjs` is extended to assert the seed-path version *value* (today it gates only the bin `--version`)
 
 ### CLI / Bin Robustness
 
@@ -64,7 +64,7 @@ Which phases cover which requirements.
 |-------------|-------|--------|
 | SEC-01 | Phase 21 — Supply-Chain & Bin Hardening | Complete |
 | CLI-06 | Phase 21 — Supply-Chain & Bin Hardening | Complete |
-| BUILD-01 | Phase 22 — Core Versioning & Audit Filter | Pending |
+| BUILD-01 | Phase 22 — Core Versioning & Audit Filter | Complete |
 | CORE-15 | Phase 22 — Core Versioning & Audit Filter | Pending |
 | CORE-16 | Phase 23 — Decoder Trailing-Edge Fix | Pending |
 
