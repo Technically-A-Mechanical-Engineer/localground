@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
-status: executing
-stopped_at: Phase 21 context gathered
-last_updated: "2026-06-30T16:52:28.727Z"
+status: verifying
+stopped_at: Completed 22-02-PLAN.md
+last_updated: "2026-06-30T17:01:55.097Z"
 last_activity: 2026-06-30
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
-  percent: 75
+  completed_plans: 4
+  percent: 100
 ---
 
 # Project State
 
-**Status:** Executing Phase 22
+**Status:** Phase complete — ready for verification
 **Last Activity:** 2026-06-30
 **Current focus:** Phase 22 Plan 02 (CORE-15 — audit root filter regression-lock)
 
@@ -32,8 +32,8 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 Phase: 22 (core-versioning-audit-filter) — EXECUTING
 Plan: 2 of 2
-Status: Executing Phase 22 Plan 02
-Last activity: 2026-06-30 — Phase 22 Plan 01 (BUILD-01) completed
+Status: Phase complete — ready for verification
+Last activity: 2026-06-30
 
 ## Roadmap Summary
 
@@ -88,6 +88,10 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase 22-01]: D-02 — all 7 existing seed() calls updated to 2-arg form; TOOLKIT_VERSION='9.9.9-test' constant; new value-equality test: expect(result.data.toolkitVersion).toBe(TOOLKIT_VERSION)
 - [Phase 22-01]: D-03 — verify-tarball.mjs extended with seed-path value gate; CLI branch invokes bin seed --json; MCP branch uses JSON-RPC StdioClientTransport driver; both assert manifestVersion === expectedVersion; both tarballs passed (version=3.0.2, seedManifest=3.0.2)
 - [Phase 22-01]: Rule 1 auto-fix — verify.test.ts 3 seed() calls updated to 2-arg form (not in plan scope; arity change caused TS2554 errors in build:check)
+- [Phase ?]: D-04: regression-lock test looksLikeProject.test.ts created (12 tests)
+- [Phase ?]: D-05: no marker check — plain-folder discovery tripwire test locked; looksLikeProject stays pure string->boolean
+- [Phase ?]: D-06 (a+b): users-container guard rejects other-user homes; AppData first-segment rejects both AppData and AppData/Local; denylist AppData only; intentional exception documented
+- [Phase ?]: D-07 HIGH-3 fix: detect enrichedProjects now .filter(looksLikeProject) on both CLI and MCP (2 filter sites per file; audit + detect)
 
 ### Pending Todos
 
@@ -127,7 +131,7 @@ Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-clo
 
 ## Session Continuity
 
-Last session: 2026-06-30T16:52:28.713Z
-Stopped at: Phase 21 context gathered
+Last session: 2026-06-30T17:01:55.085Z
+Stopped at: Completed 22-02-PLAN.md
 Last commit: a5e289f docs(v3.0.1): generate milestone summary for onboarding
 Resume file: None
