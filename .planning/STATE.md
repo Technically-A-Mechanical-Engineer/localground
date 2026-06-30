@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
-status: executing
-stopped_at: Phase 23 Plan 01 (CORE-16 RED/GREEN) complete
-last_updated: "2026-06-30T19:19:55.186Z"
+status: verifying
+stopped_at: Phase 23 complete (Plan 23-02 CORE-16 exhaustive matrix done) -- ready for verification
+last_updated: "2026-06-30T19:30:40.984Z"
 last_activity: 2026-06-30
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
-  percent: 83
+  completed_plans: 6
+  percent: 100
 ---
 
 # Project State
 
-**Status:** Executing Phase 23
+**Status:** Phase complete — ready for verification
 **Last Activity:** 2026-06-30
 **Current focus:** Phase 23 — decoder-trailing-edge-fix
 
@@ -32,8 +32,8 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 Phase: 23 (decoder-trailing-edge-fix) — EXECUTING
 Plan: 2 of 2 (23-01 CORE-16 RED/GREEN fix complete; 23-02 9x5 matrix next)
-Status: Executing Phase 23
-Last activity: 2026-06-30 -- Plan 23-01 executed (additive '--' branch + verify-then-return)
+Status: Phase complete — ready for verification
+Last activity: 2026-06-30
 
 ## Roadmap Summary
 
@@ -97,6 +97,8 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase 23-01]: D-01 — decode() verify-then-return: `candidates.find((c) => encode(c).toLowerCase() === hashDirName.toLowerCase())` replaces best-guess-first `candidates[0]`; no match falls back to `no_candidates`
 - [Phase 23-01]: L-02 — encode() left byte-unchanged; confirmed via direct grep against the original character-class and hyphen-strip regex text
 - [Phase 23-01]: Step 4 — maxCandidates cap (20) left unchanged; additive branch adds at most one extra recursion per matching entry and the D-01 filter scans the full candidate list, not positional order; escalation deferred to 23-02 if the exhaustive matrix proves otherwise
+- [Phase 23-02]: Both matrix and OneDrive/Foo&& guard tasks landed in one commit (91b4867) since the plan's code blocks place them in the same describe block; no content deviation
+- [Phase 23-02]: Confirmed both trailing-edge AND leading-edge matrix rows are flips repaired by the 23-01 additive '--' branch (master returns no_candidates for both); only mid-component, interior-with-child, and leaf are non-regression guards
 
 ### Pending Todos
 
@@ -136,7 +138,7 @@ Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-clo
 
 ## Session Continuity
 
-Last session: 2026-06-30T19:19:55.173Z
-Stopped at: Plan 23-01 (CORE-16 RED/GREEN fix) complete
+Last session: 2026-06-30T19:30:40.970Z
+Stopped at: Phase 23 complete (Plan 23-02 CORE-16 exhaustive matrix done) -- ready for verification
 Last commit: b89c3e7 docs(23-01): append self-check result to summary
-Resume file: .planning/phases/23-decoder-trailing-edge-fix/23-02-PLAN.md
+Resume file: None

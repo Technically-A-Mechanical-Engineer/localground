@@ -31,7 +31,7 @@ Replace the brittle one-flag check in the mcp bin without over-engineering. Sour
 Two pure-`@localground/core` fixes; both land in the shared library so the CLI `audit`/`detect` and the MCP `audit`/`decode_path_hash` tools inherit them identically. Source: carry-forward #4 (CORE-15) and backlog 999.7 (CORE-16). Research: `research/ARCHITECTURE.md`, `research/FEATURES.md`, `research/PITFALLS.md`.
 
 - [x] **CORE-15**: Audit auto-discovery does not surface home, drive, or system roots (e.g. `C:\Users\…`) as candidate projects, while plain-folder projects that have no `.git`/`package.json` marker remain discoverable (decision D-01 preserved — no marker-file check); the fix lives in shared core so CLI and MCP audit behave identically; a regression test locks both the root-rejection and the D-01 plain-folder-discovery invariants. *(Reproduce the `audit-includes-root-paths` symptom against current `master` first — this may resolve to a regression-lock test rather than a logic change.)*
-- [ ] **CORE-16**: A special character (`'`, `&`, `[`, `]`, `(`, `)`, `+`, `=`, `%`) at the trailing edge of an intermediate path component round-trips through `encode()` / `decode()` losslessly; the 17/17 currently-passing path-hashes and the load-bearing v3.0.0 OneDrive `buildCandidates` fix do not regress; trailing-edge, leading-edge, and mid-component fixtures are added. *(Fix the trailing-hyphen-strip asymmetry in `buildCandidates`; do not widen the Phase-17 character class to a catch-all.)*
+- [x] **CORE-16**: A special character (`'`, `&`, `[`, `]`, `(`, `)`, `+`, `=`, `%`) at the trailing edge of an intermediate path component round-trips through `encode()` / `decode()` losslessly; the 17/17 currently-passing path-hashes and the load-bearing v3.0.0 OneDrive `buildCandidates` fix do not regress; trailing-edge, leading-edge, and mid-component fixtures are added. *(Fix the trailing-hyphen-strip asymmetry in `buildCandidates`; do not widen the Phase-17 character class to a catch-all.)*
 
 ## Future Requirements
 
@@ -66,7 +66,7 @@ Which phases cover which requirements.
 | CLI-06 | Phase 21 — Supply-Chain & Bin Hardening | Complete |
 | BUILD-01 | Phase 22 — Core Versioning & Audit Filter | Complete |
 | CORE-15 | Phase 22 — Core Versioning & Audit Filter | Complete |
-| CORE-16 | Phase 23 — Decoder Trailing-Edge Fix | Pending |
+| CORE-16 | Phase 23 — Decoder Trailing-Edge Fix | Complete |
 
 **Coverage:**
 - v3.1.0 requirements: 5 total
