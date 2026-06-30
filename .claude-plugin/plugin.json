@@ -1,7 +1,7 @@
 {
   "name": "localground",
   "description": "Migrate Claude Code projects off cloud-synced storage (OneDrive, Dropbox, Google Drive, iCloud) with verifiable, no-data-loss seed -> migrate -> reap -> cleanup -> verify workflows, routed through the @localground/mcp server.",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "author": {
     "name": "Robert LaSalle"
   }
