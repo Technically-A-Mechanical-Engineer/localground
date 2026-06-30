@@ -59,8 +59,25 @@ export async function decode(
     };
   }
 
-  // Return the first (most likely) candidate
-  const decodedPath = candidates[0];
+  // D-01: verify-then-return. The additive '--' branch (Case 3) can surface a plausible-but-wrong
+  // candidate (a sibling whose name happens to prefix-match). Return ONLY a candidate that actually
+  // round-trips: re-encoding the candidate path reproduces the INPUT hash. The compare is
+  // CASE-INSENSITIVE because decode() upper-cases the drive letter while readdir returns on-disk
+  // casing (a strict compare would falsely reject a correct decode and regress L-03). Compare against
+  // the raw hashDirName argument, not a reconstructed-from-segments string.
+  const verified = candidates.find(
+    (c) => encode(c).toLowerCase() === hashDirName.toLowerCase(),
+  );
+
+  if (verified === undefined) {
+    return {
+      success: false,
+      reason: 'no_candidates',
+      detail: `Could not decode path-hash "${hashDirName}" — no candidate round-trips to the input hash`,
+    };
+  }
+
+  const decodedPath = verified;
   let exists = false;
   try {
     await fs.access(decodedPath);
@@ -187,6 +204,23 @@ async function buildCandidates(
     const prefix = encodedName + '-';
     if (remainingHash.startsWith(prefix)) {
       const nextRemaining = remainingHash.slice(prefix.length);
+      const subResults = await buildCandidates(
+        path.join(currentPath, entry.name),
+        nextRemaining,
+        maxCandidates - results.length,
+      );
+      results.push(...subResults);
+    }
+
+    // Case 3 (CORE-16): trailing-hyphen-strip recovery. encode() strips a trailing special char's
+    // hyphen (e.g. encode("Trailing&") === "Trailing"), so an intermediate component ending in a
+    // special char produces TWO hyphens at the boundary ("...-Trailing--sub"). Try the double-hyphen
+    // prefix in addition to the single-hyphen one. ADDITIVE — the single-hyphen branch above is
+    // unchanged, so no currently-passing shape regresses. A plausible-but-wrong candidate this branch
+    // surfaces is rejected by decode()'s round-trip verification (D-01).
+    const prefixTrailing = encodedName + '--';
+    if (remainingHash.startsWith(prefixTrailing)) {
+      const nextRemaining = remainingHash.slice(prefixTrailing.length);
       const subResults = await buildCandidates(
         path.join(currentPath, entry.name),
         nextRemaining,

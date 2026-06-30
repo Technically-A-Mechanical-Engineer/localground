@@ -222,10 +222,13 @@ describe('decode', () => {
     const hash = encode(leaf);
     const result = await decode(hash);
 
-    // RED commit: confirm the defect is reproduced on a real-fs fixture before the fix lands.
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.reason).toBe('no_candidates');
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.hashDirName).toBe(hash);
+      expect(result.data.decodedPath).not.toBeNull();
+      if (result.data.decodedPath !== null) {
+        expect(result.data.decodedPath.toLowerCase()).toBe(leaf.toLowerCase());
+      }
     }
   });
 
