@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
-status: ready_to_plan
-stopped_at: Completed 22-02-PLAN.md
-last_updated: "2026-06-30T17:01:55.097Z"
+status: planning
+stopped_at: Phase 23 context gathered
+last_updated: "2026-06-30T18:04:04.722Z"
 last_activity: 2026-06-30
 progress:
   total_phases: 3
-  completed_phases: 3
+  completed_phases: 2
   total_plans: 4
   completed_plans: 4
   percent: 100
@@ -131,7 +131,7 @@ Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-clo
 
 ## Session Continuity
 
-Last session: 2026-06-30T17:01:55.085Z
-Stopped at: Completed 22-02-PLAN.md
+Last session: 2026-06-30T18:04:04.709Z
+Stopped at: Phase 23 context gathered
 Last commit: a5e289f docs(v3.0.1): generate milestone summary for onboarding
-Resume file: None
+Resume file: .planning/phases/23-decoder-trailing-edge-fix/23-CONTEXT.md
