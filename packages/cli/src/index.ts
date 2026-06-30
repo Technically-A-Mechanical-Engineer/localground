@@ -133,7 +133,7 @@ program
       process.exit(EXIT_ERROR);
     }
 
-    const result = await seed(projectPath);
+    const result = await seed(projectPath, VERSION);
 
     if (!result.success) {
       if (jsonMode) {

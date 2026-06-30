@@ -34,7 +34,7 @@ describe('verify', () => {
 
   it('returns success with allPassed: true for a freshly-seeded fixture', async () => {
     initGitRepo(tmpDir);
-    const seedResult = await seed(tmpDir);
+    const seedResult = await seed(tmpDir, '9.9.9-test');
     expect(seedResult.success).toBe(true);
 
     // verify() auto-resolves manifest path to projectPath/.localground-seed-manifest.json
@@ -54,7 +54,7 @@ describe('verify', () => {
 
   it('includes the manifestPath in the result', async () => {
     initGitRepo(tmpDir);
-    await seed(tmpDir);
+    await seed(tmpDir, '9.9.9-test');
 
     const result = await verify(tmpDir);
     expect(result.success).toBe(true);
@@ -86,7 +86,7 @@ describe('verify', () => {
 
   it('accepts an explicit manifestPath argument', async () => {
     initGitRepo(tmpDir);
-    await seed(tmpDir);
+    await seed(tmpDir, '9.9.9-test');
 
     // Pass the manifest path explicitly (same as default)
     const explicitManifestPath = path.join(tmpDir, '.localground-seed-manifest.json');

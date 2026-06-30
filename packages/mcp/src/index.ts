@@ -291,7 +291,7 @@ server.registerTool('localground_seed', {
     idempotentHint: false,
   },
 }, async ({ projectPath }, _extra) => {
-  const result = await seed(projectPath);
+  const result = await seed(projectPath, SERVER_VERSION);
   return resultToMcp(result);
 });
 

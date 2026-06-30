@@ -44,9 +44,12 @@ const SEED_MANIFEST_FILE_NAME = '.localground-seed-manifest.json';
  * 1. Test file: .localground-seed-test (exact content, known checksum)
  * 2. Git tag: localground/seed/{timestamp} (lightweight tag at HEAD)
  * 3. Manifest: .localground-seed-manifest.json (records all markers for verification)
+ *
+ * @param toolkitVersion - The consuming package's version, written verbatim to the manifest (BUILD-01 / D-01).
  */
 export async function seed(
   projectPath: string,
+  toolkitVersion: string,
 ): Promise<Result<SeedManifest, SeedFailureReason>> {
   // Validate: directory exists
   try {
@@ -136,7 +139,7 @@ export async function seed(
   // Build manifest
   const manifest: SeedManifest = {
     version: 1,
-    toolkitVersion: '3.0.2',
+    toolkitVersion,
     created: new Date().toISOString(),
     projectPath,
     projectName: path.basename(projectPath),
