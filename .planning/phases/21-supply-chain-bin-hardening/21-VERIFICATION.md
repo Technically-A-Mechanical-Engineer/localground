@@ -1,9 +1,10 @@
 ---
 phase: 21-supply-chain-bin-hardening
 verified: 2026-06-29T21:00:00Z
-status: human_needed
+status: passed
 score: 5/5 must-haves verified
 overrides_applied: 0
+human_verification_resolved: "2026-06-30 — both items closed at the v3.1.0 release. (1) pinact live run: the verify-pins CI job ran green on the release-arc pushes (CI runs 28474832184 / 28476101573 / 28478278176), confirming live tag->SHA resolution on a hosted runner. (2) SLSA-provenance read-back (D-11): Release run 28478299477 published @localground/mcp@3.1.0 + @localground/cli@3.1.0 via OIDC; registry dist.attestations shows SLSA-v1 provenance for both, and `npm audit signatures` on a clean install verified all registry signatures (97/97) and attestations with zero failures. CORRECTION: npmjs.com-published provenance is verified via `npm audit signatures`, NOT the `oci://npm.pkg.github.com/...` form noted below (that targets GitHub Packages, a different registry)."
 human_verification:
   - test: "Push the current branch to origin and confirm the verify-pins CI job passes"
     expected: "The verify-pins job (ubuntu-latest) runs pinact run --verify --check against live GitHub API and exits 0, confirming each pinned SHA resolves to its commented tag (v7.0.0, v6.4.0)"

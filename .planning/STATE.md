@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
 status: completed
-stopped_at: v3.1.0 milestone close-out complete — release tag v3.1.0 pending push
+stopped_at: v3.1.0 SHIPPED to npm (3.1.0, OIDC + SLSA-v1 provenance verified) — milestone fully closed
 last_updated: "2026-06-30T21:21:56.490Z"
 last_activity: 2026-06-30
 progress:
@@ -16,9 +16,9 @@ progress:
 
 # Project State
 
-**Status:** v3.1.0 milestone complete — release tag `v3.1.0` pending push (triggers OIDC publish)
+**Status:** v3.1.0 SHIPPED — `@localground/mcp@3.1.0` + `@localground/cli@3.1.0` live on npm (`latest`, OIDC + SLSA-v1 provenance verified); milestone fully closed
 **Last Activity:** 2026-06-30
-**Current focus:** v3.1.0 close-out done; awaiting go-ahead to push the `v3.1.0` tag → npm publish, then the SLSA read-back, then `/gsd-new-milestone`
+**Current focus:** v3.1.0 done. Next: `/gsd-new-milestone` when ready (lead backlog item: CLI-05 streaming refactor → v3.2.0)
 
 ## Project Reference
 
@@ -26,13 +26,13 @@ See: `.planning/PROJECT.md` (updated 2026-06-30 after v3.1.0 milestone close)
 
 **Core value:** Get Claude Code users off cloud-synced storage safely — no data loss, no silent failures, every action verified before and after.
 
-**Last shipped:** v3.0.1 Validation and Hardening (2026-06-29) — published to npm as `@localground/mcp@3.0.2` + `@localground/cli@3.0.2` (`latest`, SLSA-v1 provenance). **v3.1.0 "Hardening and Hygiene" is complete and bumped to 3.1.0 with CI green (3-OS + pinact); the release tag is pending push — pushing `v3.1.0` publishes `@localground/mcp@3.1.0` + `@localground/cli@3.1.0` via OIDC + provenance.** Full v3.1.0 archive at `.planning/milestones/v3.1.0-ROADMAP.md`.
+**Last shipped:** **v3.1.0 Hardening and Hygiene (2026-06-30)** — published to npm as `@localground/mcp@3.1.0` + `@localground/cli@3.1.0` (`latest`, SLSA-v1 provenance, verified via `npm audit signatures`); Release workflow run 28478299477. Full archive at `.planning/milestones/v3.1.0-ROADMAP.md`. (Prior: v3.0.1 → npm 3.0.2 on 2026-06-29.)
 
 ## Current Position
 
-Milestone: v3.1.0 Hardening and Hygiene — CLOSED (3 phases, 6 plans, 5 requirements validated)
-Release: tag `v3.1.0` pending push — the only remaining step; pushing it publishes to npm
-Last activity: 2026-06-30 - v3.1.0 milestone close-out (audit acknowledged; PROJECT/ROADMAP/MILESTONES/RETROSPECTIVE updated; REQUIREMENTS archived + removed)
+Milestone: v3.1.0 Hardening and Hygiene — SHIPPED & CLOSED (3 phases, 6 plans, 5 requirements validated)
+Release: tag `v3.1.0` pushed → Release run 28478299477 published both packages (OIDC + provenance); npm `latest` = 3.1.0
+Last activity: 2026-06-30 - v3.1.0 released to npm; SLSA-v1 provenance cryptographically verified; milestone fully closed
 
 ## Roadmap Summary
 
@@ -107,9 +107,9 @@ None.
 
 ### Blockers/Concerns
 
-None. v3.1.0 fully implemented; CI green on the 3-OS matrix + the pinact verify-pins gate (runs 28474832184 and 28476101573 on the Stage 1/2 pushes). All carry-forward items delivered (SEC-01/CLI-06 Phase 21; BUILD-01/CORE-15 Phase 22; CORE-16 Phase 23).
+None. v3.1.0 shipped and verified end-to-end: CI green (3-OS + pinact), both packages published via OIDC with SLSA-v1 provenance (Release run 28478299477), provenance cryptographically verified via `npm audit signatures`. All Phase 21 human-UAT items now closed (21-HUMAN-UAT.md status: passed; 21-VERIFICATION.md status: passed).
 
-Remaining (post-tag, none blocking): (1) push `v3.1.0` tag → OIDC publish; (2) SLSA-provenance read-back via `gh attestation verify` (the D-11 obligation); (3) optional `npm deprecate @localground/*@3.0.1` (needs local npm login).
+Optional housekeeping (needs local npm login, not blocking): `npm deprecate @localground/*@3.0.1`.
 
 ### Quick Tasks Completed
 
@@ -128,15 +128,15 @@ Items acknowledged and deferred at v3.1.0 milestone close on 2026-06-30 (pre-clo
 |----------|------|----------------------|
 | debug | audit-includes-root-paths | diagnosed → **RESOLVED in v3.1.0** as CORE-15 (Phase 22 — shared `looksLikeProject` filter on audit + detect); debug-session file status was not auto-flipped to resolved |
 | debug | cli-silent-long-operations | diagnosed → **deferred to v3.2.0** as CLI-05 / 999.5 streaming refactor; TIER 1 stderr-status mitigation already shipped (Phase 14-11) |
-| uat_gap | Phase 21 21-HUMAN-UAT (2 pending) | release-gated read-backs, not code gaps: **#1 pinact live run is SATISFIED** by the Stage 1/2 pushes (verify-pins CI job green twice); **#2 SLSA-provenance attestation (D-11)** is a post-v3.1.0-publish read-back — run `gh attestation verify` against both published packages after the tag publishes |
+| uat_gap | Phase 21 21-HUMAN-UAT | **RESOLVED at the v3.1.0 release (2026-06-30)**: #1 pinact live run green on the release-arc CI pushes; #2 SLSA-provenance read-back done — both packages published with SLSA-v1 provenance, cryptographically verified via `npm audit signatures`. File now status: passed |
 | uat_gap | Phase 19 19-UAT | status "passed", 0 pending scenarios — not an open gap |
-| verification_gap | Phase 21 21-VERIFICATION | status "human_needed" with **5/5 must-haves verified, 0 code gaps**; the two human items are the release-gated read-backs above |
+| verification_gap | Phase 21 21-VERIFICATION | **RESOLVED**: status flipped human_needed → passed (5/5 must-haves + both human items closed at the v3.1.0 release) |
 | quick_task | 260411-8t0 / -91n / -vbq / -vp6 | missing — stale v1.2.0/v2.0-era orphan references |
 | quick_task | 260428-lya / 260609-hcb / 260630-lhs / 260630-m1i | missing — already completed (see Quick Tasks Completed table above) |
 
 ## Session Continuity
 
-Last session: 2026-06-30 — v3.1.0 release arc
-Stopped at: v3.1.0 milestone close-out complete; STOPPED before the `v3.1.0` tag push (publish trigger) per user request — awaiting explicit go-ahead
-Next action: push `origin master` (close-out commits) → create + push `v3.1.0` tag → release.yml OIDC publish → `gh attestation verify` read-back
-Resume file: .planning/notes/2026-06-30-v3.1.0-release-arc-coord-state.md
+Last session: 2026-06-30 — v3.1.0 release arc (COMPLETE)
+Stopped at: v3.1.0 SHIPPED — tag `v3.1.0` pushed, Release run 28478299477 published `@localground/mcp@3.1.0` + `@localground/cli@3.1.0` (OIDC + SLSA provenance verified). Milestone fully closed.
+Next action: `/gsd-new-milestone` when ready to start v3.2.0 (lead backlog item: CLI-05 streaming refactor, 999.5). Optional: `npm deprecate @localground/*@3.0.1`.
+Resume file: None (release arc complete; snapshot at .planning/notes/2026-06-30-v3.1.0-release-arc-coord-state.md is historical)
