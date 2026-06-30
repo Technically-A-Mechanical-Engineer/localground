@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
 status: executing
-stopped_at: Phase 23 context gathered
-last_updated: "2026-06-30T18:41:05.090Z"
+stopped_at: Phase 23 Plan 01 (CORE-16 RED/GREEN) complete
+last_updated: "2026-06-30T19:19:55.186Z"
 last_activity: 2026-06-30
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 6
-  completed_plans: 4
-  percent: 67
+  completed_plans: 5
+  percent: 83
 ---
 
 # Project State
 
-**Status:** Ready to execute
+**Status:** Executing Phase 23
 **Last Activity:** 2026-06-30
-**Current focus:** Phase 22 Plan 02 (CORE-15 — audit root filter regression-lock)
+**Current focus:** Phase 23 — decoder-trailing-edge-fix
 
 ## Project Reference
 
@@ -30,10 +30,10 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 ## Current Position
 
-Phase: 23
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-06-30 -- Phase 23 planning complete
+Phase: 23 (decoder-trailing-edge-fix) — EXECUTING
+Plan: 2 of 2 (23-01 CORE-16 RED/GREEN fix complete; 23-02 9x5 matrix next)
+Status: Executing Phase 23
+Last activity: 2026-06-30 -- Plan 23-01 executed (additive '--' branch + verify-then-return)
 
 ## Roadmap Summary
 
@@ -92,6 +92,11 @@ Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era 
 - [Phase ?]: D-05: no marker check — plain-folder discovery tripwire test locked; looksLikeProject stays pure string->boolean
 - [Phase ?]: D-06 (a+b): users-container guard rejects other-user homes; AppData first-segment rejects both AppData and AppData/Local; denylist AppData only; intentional exception documented
 - [Phase ?]: D-07 HIGH-3 fix: detect enrichedProjects now .filter(looksLikeProject) on both CLI and MCP (2 filter sites per file; audit + detect)
+- [Phase 23-01]: D-03 — RED-proven real-fs trailing-edge fixture (tmpDir/Trailing&/sub) committed first; confirmed `no_candidates` on master before any fix code landed
+- [Phase 23-01]: L-01 — additive `encodedName + '--'` Case 3 branch added inside buildCandidates' existing loop, immediately after the unmodified single-hyphen Case 2 branch; no generalization to N hyphens
+- [Phase 23-01]: D-01 — decode() verify-then-return: `candidates.find((c) => encode(c).toLowerCase() === hashDirName.toLowerCase())` replaces best-guess-first `candidates[0]`; no match falls back to `no_candidates`
+- [Phase 23-01]: L-02 — encode() left byte-unchanged; confirmed via direct grep against the original character-class and hyphen-strip regex text
+- [Phase 23-01]: Step 4 — maxCandidates cap (20) left unchanged; additive branch adds at most one extra recursion per matching entry and the D-01 filter scans the full candidate list, not positional order; escalation deferred to 23-02 if the exhaustive matrix proves otherwise
 
 ### Pending Todos
 
@@ -131,7 +136,7 @@ Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-clo
 
 ## Session Continuity
 
-Last session: 2026-06-30T18:04:04.709Z
-Stopped at: Phase 23 context gathered
-Last commit: a5e289f docs(v3.0.1): generate milestone summary for onboarding
-Resume file: .planning/phases/23-decoder-trailing-edge-fix/23-CONTEXT.md
+Last session: 2026-06-30T19:19:55.173Z
+Stopped at: Plan 23-01 (CORE-16 RED/GREEN fix) complete
+Last commit: b89c3e7 docs(23-01): append self-check result to summary
+Resume file: .planning/phases/23-decoder-trailing-edge-fix/23-02-PLAN.md

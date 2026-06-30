@@ -67,7 +67,7 @@ Plans:
   - Fix the trailing-hyphen-strip asymmetry in `buildCandidates` (`packages/core/src/environment/decode.ts:~187-196`), NOT the Phase-17 character class (`decode.ts:89`). The recommended shape is an additive second prefix branch (`encodedName + '--'` alongside the existing `encodedName + '-'`) — additive so every currently-passing shape is untouched.
   - Confirm against a real failing path-hash BEFORE implementation.
 **Plans**: 2 plans
-- [ ] 23-01-PLAN.md — RED reproduce CORE-16 trailing-edge no_candidates (D-03), then additive `--` branch (L-01) + case-insensitive verify-then-return (D-01)
+- [x] 23-01-PLAN.md — RED reproduce CORE-16 trailing-edge no_candidates (D-03), then additive `--` branch (L-01) + case-insensitive verify-then-return (D-01)
 - [ ] 23-02-PLAN.md — exhaustive 9×5 special-char position matrix (D-02) + explicit canonical OneDrive value re-assertion (L-03) + documented Foo&& boundary guard
 
 ## Phases
@@ -159,7 +159,7 @@ Full archive: [milestones/v3.0.0-ROADMAP.md](milestones/v3.0.0-ROADMAP.md)
 | 20. Release Pipeline Validation | v3.0.1→3.0.2 | 7/7 | Complete | 2026-06-29 |
 | 21. Supply-Chain & Bin Hardening | v3.1.0 | 2/2 | Complete    | 2026-06-29 |
 | 22. Core Versioning & Audit Filter | v3.1.0 | 2/2 | Complete    | 2026-06-30 |
-| 23. Decoder Trailing-Edge Fix | v3.1.0 | 0/? | Not started | - |
+| 23. Decoder Trailing-Edge Fix | v3.1.0 | 1/2 | In Progress|  |
 
 ## Backlog
 
