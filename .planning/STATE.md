@@ -33,7 +33,7 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 Phase: 23
 Plan: Not started
 Status: Phase complete — ready for verification
-Last activity: 2026-06-30
+Last activity: 2026-06-30 - Completed quick task 260630-m1i: bump version 3.0.2 → 3.1.0 for the v3.1.0 release
 
 ## Roadmap Summary
 
@@ -120,6 +120,7 @@ Carry-forward to v3.1.0 (from 20-REVIEW.md / 20-07), now scoped into Phases 21-2
 | 260428-lya | Mark decoder-defects debug session resolved with pointers to 17-VERIFICATION and 999.7 backlog | 2026-04-28 | 9ae8881 | [260428-lya-mark-decoder-defects-debug-session-resol](./quick/260428-lya-mark-decoder-defects-debug-session-resol/) |
 | 260609-hcb | Dependency vulnerability hardening v3.0.1 — bump vitest + SDK-scoped overrides (npm audit 7→0; all 4 gates green) | 2026-06-09 | 087ff05 | [260609-hcb-dependency-vulnerability-hardening-v3-0-](./quick/260609-hcb-dependency-vulnerability-hardening-v3-0-/) |
 | 260630-lhs | Add Ask DeepWiki badge to repo-root README.md | 2026-06-30 | ce73157 | [260630-lhs-add-ask-deepwiki-badge-to-repo-root-read](./quick/260630-lhs-add-ask-deepwiki-badge-to-repo-root-read/) |
+| 260630-m1i | Bump version 3.0.2 → 3.1.0 across 5 manifests (4 workspace + plugin.json) + lockfile for the v3.1.0 release; build + 156 tests green | 2026-06-30 | 7565f4d | [260630-m1i-bump-version-3-0-2-to-3-1-0-for-v3-1-0-r](./quick/260630-m1i-bump-version-3-0-2-to-3-1-0-for-v3-1-0-r/) |
 
 ## Deferred Items
 
