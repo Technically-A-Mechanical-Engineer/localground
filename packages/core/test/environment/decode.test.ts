@@ -209,6 +209,50 @@ describe('decode', () => {
       }
     }
   });
+
+  it('CORE-16: special char at trailing edge of intermediate component round-trips', async () => {
+    // RED on master: encode("Trailing&") strips the trailing hyphen -> "Trailing", so the hash
+    // tail "...-Trailing--sub" carries two hyphens (the '&' hyphen + the path-separator hyphen),
+    // which the single-hyphen prefix branch cannot consume. 17-VERIFICATION.md:135-161 reproduced this.
+    const parent = path.join(tmpDir, 'Trailing&');
+    await fs.mkdir(parent);
+    const leaf = path.join(parent, 'sub');
+    await fs.mkdir(leaf);
+
+    const hash = encode(leaf);
+    const result = await decode(hash);
+
+    // RED commit: confirm the defect is reproduced on a real-fs fixture before the fix lands.
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.reason).toBe('no_candidates');
+    }
+  });
+
+  it('CORE-16/D-01: verify-then-return picks the round-tripping sibling, not a spurious one', async () => {
+    // hash "Foo--bar": both "Foo&"/bar (correct) and plain "Foo"/bar (spurious) can be reached by the
+    // additive '--' branch on disk. encode("Foo/bar")="Foo-bar" (one hyphen) != "Foo--bar", so the
+    // round-trip verification must reject the plain sibling and return the "Foo&" path.
+    const correctParent = path.join(tmpDir, 'Foo&');
+    await fs.mkdir(correctParent);
+    const correctLeaf = path.join(correctParent, 'bar');
+    await fs.mkdir(correctLeaf);
+
+    const spuriousParent = path.join(tmpDir, 'Foo');
+    await fs.mkdir(spuriousParent);
+    await fs.mkdir(path.join(spuriousParent, 'bar'));
+
+    const hash = encode(correctLeaf);
+    const result = await decode(hash);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.decodedPath).not.toBeNull();
+      if (result.data.decodedPath !== null) {
+        expect(result.data.decodedPath.toLowerCase()).toBe(correctLeaf.toLowerCase());
+      }
+    }
+  });
 });
 
 describe('encode', () => {
