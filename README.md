@@ -1,5 +1,7 @@
 # LocalGround Toolkit for Claude Code
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Technically-A-Mechanical-Engineer/localground)
+
 A toolkit that helps Claude Code users migrate off cloud-synced storage — with pre-migration verification, migration, post-migration health checks, cleanup, and environment auditing. Since v3.0.0, ships in three forms: an MCP server (`@localground/mcp`) for native Claude Code tool calls, a standalone CLI (`@localground/cli`) for direct terminal use, and the original v2.0.0 paste-and-run prompts as a no-install fallback.
 
 ## The Problem
