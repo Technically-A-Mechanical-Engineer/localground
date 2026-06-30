@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
-status: verifying
+status: milestone_complete
 stopped_at: Phase 23 complete (Plan 23-02 CORE-16 exhaustive matrix done) -- ready for verification
 last_updated: "2026-06-30T19:30:40.984Z"
 last_activity: 2026-06-30
 progress:
   total_phases: 3
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 6
   completed_plans: 6
-  percent: 100
+  percent: 133
 ---
 
 # Project State
 
-**Status:** Phase complete — ready for verification
+**Status:** Milestone complete
 **Last Activity:** 2026-06-30
 **Current focus:** Phase 23 — decoder-trailing-edge-fix
 
@@ -30,8 +30,8 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 ## Current Position
 
-Phase: 23 (decoder-trailing-edge-fix) — EXECUTING
-Plan: 2 of 2 (23-01 CORE-16 RED/GREEN fix complete; 23-02 9x5 matrix next)
+Phase: 23
+Plan: Not started
 Status: Phase complete — ready for verification
 Last activity: 2026-06-30
 
