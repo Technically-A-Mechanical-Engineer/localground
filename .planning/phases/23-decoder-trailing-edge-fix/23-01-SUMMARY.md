@@ -106,3 +106,12 @@ None — no external service configuration required.
 ---
 *Phase: 23-decoder-trailing-edge-fix*
 *Completed: 2026-06-30*
+
+## Self-Check: PASSED
+
+- FOUND: .planning/phases/23-decoder-trailing-edge-fix/23-01-SUMMARY.md
+- FOUND: packages/core/src/environment/decode.ts
+- FOUND: packages/core/test/environment/decode.test.ts
+- FOUND: commit 0742622 (test RED)
+- FOUND: commit 66f6331 (feat GREEN)
+- FOUND: commit 266c77b (docs summary)
