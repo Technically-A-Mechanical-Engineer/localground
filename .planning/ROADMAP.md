@@ -46,7 +46,10 @@ Plans:
 **Constraints**:
   - CORE-15: Reproduce the `audit-includes-root-paths` symptom against current `master` FIRST — this may resolve to a regression-lock test rather than a logic change.
   - BUILD-01: Do NOT copy the bins' runtime `readFileSync(new URL('../package.json', import.meta.url))` into the bundled `seed.ts` — after `noExternal` inlining, `import.meta.url` resolves to the consumer's `dist/`, giving the wrong semantics. Build-time `define` injection is the recommended mechanism (A-vs-B HOW decision settles at plan-phase).
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 22-01-PLAN.md — Parameterize seed() with toolkitVersion (Option A), wire both bins, 2-arg + value-equality tests, verify-tarball seed-value gate (BUILD-01)
+- [ ] 22-02-PLAN.md — Path-shape-only tighten looksLikeProject (other-user home + AppData denylist) + NEW regression-lock test (root-rejection + plain-folder discovery) (CORE-15)
 
 ### Phase 23: Decoder Trailing-Edge Fix
 **Goal**: A special character at the trailing edge of an intermediate path component round-trips losslessly through `encode()`/`decode()`, with the calibrated 17/17 path-hashes and the load-bearing OneDrive fix fully intact.
