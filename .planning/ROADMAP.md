@@ -66,7 +66,9 @@ Plans:
 **Constraints**:
   - Fix the trailing-hyphen-strip asymmetry in `buildCandidates` (`packages/core/src/environment/decode.ts:~187-196`), NOT the Phase-17 character class (`decode.ts:89`). The recommended shape is an additive second prefix branch (`encodedName + '--'` alongside the existing `encodedName + '-'`) — additive so every currently-passing shape is untouched.
   - Confirm against a real failing path-hash BEFORE implementation.
-**Plans**: TBD
+**Plans**: 2 plans
+- [ ] 23-01-PLAN.md — RED reproduce CORE-16 trailing-edge no_candidates (D-03), then additive `--` branch (L-01) + case-insensitive verify-then-return (D-01)
+- [ ] 23-02-PLAN.md — exhaustive 9×5 special-char position matrix (D-02) + explicit canonical OneDrive value re-assertion (L-03) + documented Foo&& boundary guard
 
 ## Phases
 
