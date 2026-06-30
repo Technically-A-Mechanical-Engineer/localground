@@ -211,8 +211,9 @@ server.registerTool('localground_detect', {
 
   const enrichedProjects = decodedResults
     .filter((r): r is Success<PathHashEntry> => r.success && r.data.decodedPath !== null && r.data.exists)
-    .map((r) => {
-      const p = r.data.decodedPath as string;
+    .map((r) => r.data.decodedPath as string)
+    .filter(looksLikeProject)
+    .map((p) => {
       const name = path.basename(p);
       const synced = isPathCloudSynced(p, result.data.cloud.syncRoot);
       return {

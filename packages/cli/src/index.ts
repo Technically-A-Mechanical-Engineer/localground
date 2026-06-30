@@ -59,11 +59,13 @@ program
     });
 
     // Auto-populate projects[] from successful decodes whose paths exist.
-    // Same filter as audit (decode-success + exists) — see plan 14-10 for project-shape scoping.
+    // Same filter as audit (decode-success + exists + looksLikeProject) — see plan 14-10 for
+    // project-shape scoping and plan 22-02 for the detect-surface wiring (D-07).
     const enrichedProjects: ProjectEntry[] = decodedResults
       .filter((r): r is Success<PathHashEntry> => r.success && r.data.decodedPath !== null && r.data.exists)
-      .map((r) => {
-        const p = r.data.decodedPath as string;
+      .map((r) => r.data.decodedPath as string)
+      .filter(looksLikeProject)
+      .map((p) => {
         const name = path.basename(p);
         const synced = isPathCloudSynced(p, result.data.cloud.syncRoot);
         return {
