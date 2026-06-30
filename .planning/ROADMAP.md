@@ -191,6 +191,17 @@ Plans:
 Plans:
 - [ ] TBD (promote with /gsd-review-backlog when ready)
 
+### Phase 999.9: decoder sibling-collision disambiguation — lossy-encode round-trip ambiguity (BACKLOG)
+
+**Goal:** Phase 23 (CORE-16) added a case-insensitive verify-then-return filter (D-01) to `decode()`: only a candidate whose `encode(c).toLowerCase()` matches the input hash is returned. Because `encode()` is intentionally lossy (many distinct paths collapse to the same hash — e.g. `Foo&\bar`, `Foo&-bar`, `Foo-\bar`, and a literal folder named `Foo--bar` all encode to `Foo--bar`), the filter rejects *non*-round-tripping siblings but CANNOT uniquely resolve two on-disk siblings that BOTH round-trip to the same hash — `candidates.find()` returns whichever `readdir`/recursion order surfaces first, not provably the intended path (Code review WR-01). The D-01 comment's "ONLY a candidate that actually round-trips" overstates uniqueness. A fix would either (a) return all colliding round-trippers as an ambiguous result the caller disambiguates (e.g. by `exists`/mtime/explicit prompt), or (b) accept the ambiguity and at minimum correct the comment + add a true-collision test. WR-03 variant: the case-insensitive compare (required for the Windows drive-letter upcasing) additionally widens the wrong-path surface on case-sensitive filesystems where `Foo/` and `foo/` are distinct but collide under `.toLowerCase()`.
+**Source:** `.planning/phases/23-decoder-trailing-edge-fix/23-REVIEW.md` (gsd-code-reviewer, standard depth, 2026-06-30) — WR-01 (Warning), WR-02 (the shipped D-01 spurious-sibling test uses `Foo/bar`, which encodes to a *different* hash `Foo-bar`, so it is rejected by prefix arithmetic and never constructs a true collision — the documented risk is unguarded), WR-03. Verifier (23-VERIFICATION.md) reviewed and correctly did not treat it as a phase gap.
+**Requirements:** none yet (a new CORE-NN would be assigned on promotion).
+**Active-environment impact:** Low/unknown — requires two sibling directories on disk that encode-collide; field frequency in real `~/.claude/projects/` is unquantified (the live machine has zero path-hashes hitting even the simpler CORE-16 shape per the Phase-17 diagnostic). Surfaced by, not caused by, the CORE-16 additive branch (it is a pre-existing property of lossy `encode()`); the additive branch widens the candidate set, raising the chance a collision is reachable.
+**Deferral note:** Advisory (0 critical, not a regression); reviewer and verifier both declined to block. Out of CORE-16's single-char scope. Pairs with adding a true-collision test (the WR-02 gap). Promote via `/gsd-review-backlog` if collisions are observed in the wild, or before relying on `decode()` for write-side path resolution.
+
+Plans:
+- [ ] TBD (promote with /gsd-review-backlog when ready)
+
 ---
 *Roadmap created: 2026-04-11*
 *v3.0.0 phases added: 2026-04-12*
@@ -201,3 +212,4 @@ Plans:
 *v3.0.1 milestone closed: 2026-06-29 — Phases 16-20 collapsed to archive; shipped to npm as v3.0.2 (SC5 fix-forward). Carry-forward to v3.1.0: seed toolkitVersion drift-proofing, MD-01 (SHA-pin actions), MD-02 (mcp --version parsing), CLI-05 (999.5).*
 *v3.1.0 phases added: 2026-06-29 — Phases 21-23 (SEC-01 + CLI-06 → 21; BUILD-01 + CORE-15 → 22; CORE-16 → 23). 5/5 requirements mapped. Backlog 999.7 PROMOTED to CORE-16 (Phase 23); 999.5 retained as backlog with its requirement pointer corrected to CLI-05 → v3.2.0.*
 *Backlog 999.8 added: 2026-06-30 — multi-trailing-special-character decode (out of CORE-16 scope); surfaced at Phase 23 plan time, guarded in 23-02-PLAN.md.*
+*Backlog 999.9 added: 2026-06-30 — decoder lossy-encode sibling-collision disambiguation (WR-01/WR-02/WR-03 from 23-REVIEW.md); advisory code-review finding, out of CORE-16 scope.*

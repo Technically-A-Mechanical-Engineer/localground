@@ -119,8 +119,10 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 
 ### Backlog (captured in ROADMAP.md `## Backlog`, 999.x numbering)
 
-- **999.5** TIER 2 streaming refactor of spawnTool — deferred to v3.1.0 (architectural change; TIER 1 mitigation already shipped)
+- **999.5** TIER 2 streaming refactor of spawnTool — deferred to v3.2.0 as CLI-05 (architectural change; TIER 1 mitigation already shipped)
 - ~~**999.7** path-hash decode edge defect (trailing-edge special character)~~ — RESOLVED as CORE-16, validated in v3.1.0 Phase 23 (2026-06-30)
+- **999.8** multi-trailing-special-character decode (e.g. `Foo&&/sub`) — out of CORE-16 scope; documented passing boundary guard in 23-02 (added 2026-06-30)
+- **999.9** decoder lossy-encode sibling-collision disambiguation — WR-01/WR-02/WR-03 from 23-REVIEW.md; advisory, out of CORE-16 scope (added 2026-06-30)
 
 ### Out of Scope
 
