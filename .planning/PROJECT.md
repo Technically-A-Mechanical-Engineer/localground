@@ -38,6 +38,8 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 - All 5 `/localground:*` skills runtime-UAT'd against the registered MCP server (Phase 19); test infra hardened, decoder calibrated, tarballs trimmed (Phases 16-18)
 - Comprehension gates AFFIRMED for Phases 19 and 20
 
+**v3.1.0 Hardening and Hygiene — in progress (Phases 21-22 of 23 complete, 2026-06-30):** Supply chain SHA-pinned with a `pinact` CI verify-pins gate + paired OIDC floors, and the mcp `--version` parser hardened (Phase 21); the seed manifest version now derives from each package's runtime version with a tarball-level value gate, and audit *and* detect filter out home/drive/system/AppData/other-user roots via the shared `looksLikeProject` predicate while keeping marker-less plain folders discoverable (Phase 22). Only CORE-16 (decoder trailing-edge fix, Phase 23) remains.
+
 **Codebase:** ~7,100 LOC TypeScript across `packages/`. Result-typed core (no exceptions thrown), strict TypeScript (tsc gate over src+test), tsup bundled; bins derive `--version` from `package.json` at runtime.
 
 ## Requirements
@@ -100,15 +102,19 @@ Get Claude Code users off cloud-synced storage safely — no data loss, no silen
 - ✓ `release.yml` OIDC-published both packages with SLSA-v1 provenance; validation caught the 3.0.1 version-misreport defect → fixed-forward to v3.0.2 (PIPE-02) — v3.0.1 Phase 20
 - ✓ Per-package READMEs render on both npmjs.com pages, replacing the v3.0.0 empty-state placeholder (DOC-03) — v3.0.1 Phase 20
 
+**v3.1.0 — Phase 21 Supply-Chain & Bin Hardening (completed 2026-06-29):**
+- ✓ Both GitHub Actions workflows SHA-pinned (40-char SHA + `# vX.Y.Z` comment) with a `pinact` CI verify-pins gate; publish job exact-pins runner npm ≥11.5.1 and runs on Node ≥22.14.0 (paired OIDC floors, asserted at runtime); Dependabot `github-actions` config keeps pins updatable (SEC-01) — v3.1.0 Phase 21
+- ✓ mcp bin `--version` parser robustified — recognizes `--version`, `--version=…`, `-v`, `-V`; prints the version and exits 0 without booting the stdio transport; long-form flags case-sensitive (`--Version`/`--VERSION` fall through); no arg-parser dependency added (CLI-06) — v3.1.0 Phase 21
+
+**v3.1.0 — Phase 22 Core Versioning & Audit Filter (completed 2026-06-30):**
+- ✓ Seed manifest `toolkitVersion` derives from the consuming package's runtime version (hardcoded `'3.0.2'` literal removed from `seed.ts`); both bins wired through shared `@localground/core`; `scripts/verify-tarball.mjs` extended to assert the seed-path version *value* through each package's real consumer surface (cli `seed --json` bin, mcp `localground_seed` JSON-RPC tool) on the packaged tarball (BUILD-01) — v3.1.0 Phase 22
+- ✓ `looksLikeProject` tightened with two path-shape-only rejections (other-user home roots; the AppData tree via first-segment-below-home logic) while preserving D-01 marker-less plain-folder discovery; `detect` wired to `.filter(looksLikeProject)` on both consumers so audit and detect filter identically; a 12-test regression-lock suite locks root-rejection AND plain-folder discovery (CORE-15) — v3.1.0 Phase 22
+
 ### Active
 
-**v3.1.0 Hardening and Hygiene — scoped 2026-06-29.** Five requirements (see `.planning/REQUIREMENTS.md`); phases start at 21.
+**v3.1.0 Hardening and Hygiene — scoped 2026-06-29.** Five requirements (see `.planning/REQUIREMENTS.md`); phases start at 21. Four of five validated — SEC-01 + CLI-06 (Phase 21) and BUILD-01 + CORE-15 (Phase 22); see ### Validated above. One remains:
 
-- ◻ **BUILD-01** — Seed `toolkitVersion` derived from `package.json`, not a hardcoded literal
-- ◻ **SEC-01** — SHA-pin GitHub Actions + exact-pin runner npm in the publish job (MD-01)
-- ◻ **CLI-06** — Robust `--version` arg parsing in the mcp bin (MD-02)
-- ◻ **CORE-15** — Audit project-fingerprint filter (stop scanning all of `C:\Users\…`)
-- ◻ **CORE-16** — Path-hash decode trailing-edge special-character round-trip fix (999.7)
+- ◻ **CORE-16** — Path-hash decode trailing-edge special-character round-trip fix (999.7) — Phase 23 (next)
 
 ### Backlog (captured in ROADMAP.md `## Backlog`, 999.x numbering)
 
@@ -200,4 +206,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-29 — v3.1.0 "Hardening and Hygiene" milestone started; scoped to 5 requirements (BUILD-01, SEC-01, CLI-06, CORE-15, CORE-16); CLI-05 deferred to v3.2.0. Phases continue from 20 (start at 21). Next: define requirements → roadmap.*
+*Last updated: 2026-06-30 — v3.1.0 Phase 22 (Core Versioning & Audit Filter) complete; BUILD-01 + CORE-15 validated. Four of five v3.1.0 requirements done (SEC-01/CLI-06 Phase 21; BUILD-01/CORE-15 Phase 22); only CORE-16 remains (Phase 23). Reconciled the Active block that Phase 21's completion left stale. Next: plan Phase 23.*
