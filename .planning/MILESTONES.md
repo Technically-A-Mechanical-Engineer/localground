@@ -1,5 +1,20 @@
 # Milestones
 
+## v3.1.0 Hardening and Hygiene (Shipped: 2026-06-30)
+
+**Phases completed:** 3 phases, 6 plans, 10 tasks
+
+**Key accomplishments:**
+
+- [Environment Constraint] Pinact fail-closed live reproduction not executed locally
+- Task 1 — `packages/mcp/src/index.ts`
+- One-liner:
+- Path-shape-only looksLikeProject tightening (AppData first-segment + other-user-home guards), regression-lock test (12 assertions), and detect-surface filter wiring on both CLI and MCP so audit and detect behave identically.
+- Additive `encodedName + '--'` branch in `buildCandidates()` paired with a case-insensitive verify-then-return filter in `decode()`, fixing the trailing-special-character round-trip defect without touching `encode()` or regressing the existing 17/17 path-hash suite.
+- 45-case real-fs value-asserted regression matrix (9 special chars x 5 positions) plus an explicit canonical-OneDrive value re-assertion and a documented Foo&& boundary guard, locking the 23-01 decoder fix with zero production code changes.
+
+---
+
 ## v3.0.1 Validation and Hardening (Shipped: 2026-06-29 — published to npm as v3.0.2)
 
 **Phases completed:** 5 phases (16-20), 21 plans

@@ -2,38 +2,37 @@
 gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
-status: milestone_complete
-stopped_at: Phase 23 complete (Plan 23-02 CORE-16 exhaustive matrix done) -- ready for verification
-last_updated: "2026-06-30T19:30:40.984Z"
+status: completed
+stopped_at: v3.1.0 milestone close-out complete — release tag v3.1.0 pending push
+last_updated: "2026-06-30T21:21:56.490Z"
 last_activity: 2026-06-30
 progress:
   total_phases: 3
-  completed_phases: 4
+  completed_phases: 3
   total_plans: 6
   completed_plans: 6
-  percent: 133
+  percent: 100
 ---
 
 # Project State
 
-**Status:** Milestone complete
+**Status:** v3.1.0 milestone complete — release tag `v3.1.0` pending push (triggers OIDC publish)
 **Last Activity:** 2026-06-30
-**Current focus:** Phase 23 — decoder-trailing-edge-fix
+**Current focus:** v3.1.0 close-out done; awaiting go-ahead to push the `v3.1.0` tag → npm publish, then the SLSA read-back, then `/gsd-new-milestone`
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
+See: `.planning/PROJECT.md` (updated 2026-06-30 after v3.1.0 milestone close)
 
 **Core value:** Get Claude Code users off cloud-synced storage safely — no data loss, no silent failures, every action verified before and after.
 
-**Last shipped:** v3.0.1 Validation and Hardening (2026-06-29) — published to npm as `@localground/mcp@3.0.2` + `@localground/cli@3.0.2` (`latest`, SLSA-v1 provenance) after the SC5 fix-forward; full archive at `.planning/milestones/v3.0.1-ROADMAP.md`.
+**Last shipped:** v3.0.1 Validation and Hardening (2026-06-29) — published to npm as `@localground/mcp@3.0.2` + `@localground/cli@3.0.2` (`latest`, SLSA-v1 provenance). **v3.1.0 "Hardening and Hygiene" is complete and bumped to 3.1.0 with CI green (3-OS + pinact); the release tag is pending push — pushing `v3.1.0` publishes `@localground/mcp@3.1.0` + `@localground/cli@3.1.0` via OIDC + provenance.** Full v3.1.0 archive at `.planning/milestones/v3.1.0-ROADMAP.md`.
 
 ## Current Position
 
-Phase: 23
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-06-30 - Completed quick task 260630-m1i: bump version 3.0.2 → 3.1.0 for the v3.1.0 release
+Milestone: v3.1.0 Hardening and Hygiene — CLOSED (3 phases, 6 plans, 5 requirements validated)
+Release: tag `v3.1.0` pending push — the only remaining step; pushing it publishes to npm
+Last activity: 2026-06-30 - v3.1.0 milestone close-out (audit acknowledged; PROJECT/ROADMAP/MILESTONES/RETROSPECTIVE updated; REQUIREMENTS archived + removed)
 
 ## Roadmap Summary
 
@@ -47,17 +46,19 @@ Sequencing rationale: Ordered by risk isolation, not data dependency — no item
 
 ## Backlog
 
-One unsequenced item remaining in ROADMAP.md `## Backlog` section:
+Three unsequenced items in ROADMAP.md `## Backlog` (preserved across the v3.1.0 close):
 
-- **999.5** TIER 2 streaming refactor of spawnTool — captured as **CLI-05** under `## Future Requirements` in REQUIREMENTS.md; deferred to **v3.2.0** (architectural change with real risk surface; TIER 1 mitigation already shipped in Phase 14-11).
+- **999.5** TIER 2 streaming refactor of spawnTool — **CLI-05**, deferred to **v3.2.0** (architectural change with real risk surface; TIER 1 mitigation already shipped in Phase 14-11; see `milestones/v3.1.0-REQUIREMENTS.md` Future Requirements).
+- **999.8** multi-trailing-special-character decode (e.g. `Foo&&/sub`) — out of CORE-16 scope; documented passing boundary guard in 23-02 (added 2026-06-30).
+- **999.9** decoder lossy-encode sibling-collision disambiguation — WR-01/WR-02/WR-03 from 23-REVIEW.md; advisory, out of CORE-16 scope (added 2026-06-30).
 
-Promoted into v3.1.0 (see ROADMAP.md and REQUIREMENTS.md): **999.7 → CORE-16 → Phase 23** (path-hash decode trailing-edge fix).
+Resolved in v3.1.0: **999.7 → CORE-16 → Phase 23** (path-hash decode trailing-edge fix).
 
 ## Accumulated Context
 
 ### Decisions
 
-Full decision log moved to PROJECT.md `## Key Decisions` section (15 v3.0.0-era decisions added at milestone close).
+Full decision log lives in PROJECT.md `## Key Decisions` (now includes the six v3.1.0 decisions) and the archived `milestones/v3.1.0-ROADMAP.md`. Per-phase entries below retained as raw execution history.
 
 - [Phase 16]: Per D-Claude-1: decode.test.ts replacement asserts data.decodedPath/hashDirName on the success branch only — no failure-branch assertion to preserve test's documented 'must NOT throw' invariant
 - [Phase 16]: Per D-01: no opportunistic edits — both 16-01 tasks stayed surgical inside their respective it() blocks (1-line and 5-line deltas)
@@ -106,12 +107,9 @@ None.
 
 ### Blockers/Concerns
 
-None. Both pipeline validations are CLOSED:
+None. v3.1.0 fully implemented; CI green on the 3-OS matrix + the pinact verify-pins gate (runs 28474832184 and 28476101573 on the Stage 1/2 pushes). All carry-forward items delivered (SEC-01/CLI-06 Phase 21; BUILD-01/CORE-15 Phase 22; CORE-16 Phase 23).
 
-- PIPE-01: ci.yml green on the 3-OS matrix (run 28357130168 on 26659c8).
-- PIPE-02: release.yml OIDC + provenance published 3.0.1 then 3.0.2 (run 28370544899); SC5 re-verified at 3.0.2.
-
-Carry-forward to v3.1.0 (from 20-REVIEW.md / 20-07), now scoped into Phases 21-23: (1) drift-proof seed `toolkitVersion` (BUILD-01 → Phase 22); (2) SHA-pin GitHub Actions + exact-pin runner npm in release.yml (SEC-01/MD-01 → Phase 21); (3) robust `--version` arg parsing in the mcp bin (CLI-06/MD-02 → Phase 21); plus CORE-15 (audit filter → Phase 22) and CORE-16 (decode trailing-edge → Phase 23). Optional housekeeping: `npm deprecate` 3.0.1 (needs local npm login).
+Remaining (post-tag, none blocking): (1) push `v3.1.0` tag → OIDC publish; (2) SLSA-provenance read-back via `gh attestation verify` (the D-11 obligation); (3) optional `npm deprecate @localground/*@3.0.1` (needs local npm login).
 
 ### Quick Tasks Completed
 
@@ -124,23 +122,21 @@ Carry-forward to v3.1.0 (from 20-REVIEW.md / 20-07), now scoped into Phases 21-2
 
 ## Deferred Items
 
-Items acknowledged and deferred at v3.0.1 milestone close on 2026-06-29 (pre-close `audit-open` surfaced 9; all assessed non-blocking):
+Items acknowledged and deferred at v3.1.0 milestone close on 2026-06-30 (pre-close `audit-open` surfaced 13; all assessed non-blocking):
 
 | Category | Item | Status / disposition |
 |----------|------|----------------------|
-| debug | cli-silent-long-operations | diagnosed → **v3.2.0** (this IS CLI-05 / 999.5 streaming refactor; deferred from v3.1.0) |
-| debug | audit-includes-root-paths | diagnosed → **v3.1.0** (now CORE-15 → Phase 22; reproduce against master first — may resolve to a regression-lock test) |
-| quick_task | 260411-8t0-fix-four-nec-evaluation-findings-in-clou | missing — stale v1.2.0/v2.0-era orphan reference |
-| quick_task | 260411-91n-fix-five-loose-ends-after-phase-2-comple | missing — stale v1.2.0/v2.0-era orphan reference |
-| quick_task | 260411-vbq-rename-design-spec-file-from-cloud-sync- | missing — stale v1.2.0/v2.0-era orphan reference |
-| quick_task | 260411-vp6-address-all-46-nec-evaluation-findings-a | missing — stale v1.2.0/v2.0-era orphan reference |
-| quick_task | 260428-lya-mark-decoder-defects-debug-session-resol | missing — already completed (commit 9ae8881; see Quick Tasks Completed) |
-| quick_task | 260609-hcb-dependency-vulnerability-hardening-v3-0- | missing — already completed (commit 087ff05; see Quick Tasks Completed) |
-| uat_gap | (phase UAT) | status "passed" — not an open gap |
+| debug | audit-includes-root-paths | diagnosed → **RESOLVED in v3.1.0** as CORE-15 (Phase 22 — shared `looksLikeProject` filter on audit + detect); debug-session file status was not auto-flipped to resolved |
+| debug | cli-silent-long-operations | diagnosed → **deferred to v3.2.0** as CLI-05 / 999.5 streaming refactor; TIER 1 stderr-status mitigation already shipped (Phase 14-11) |
+| uat_gap | Phase 21 21-HUMAN-UAT (2 pending) | release-gated read-backs, not code gaps: **#1 pinact live run is SATISFIED** by the Stage 1/2 pushes (verify-pins CI job green twice); **#2 SLSA-provenance attestation (D-11)** is a post-v3.1.0-publish read-back — run `gh attestation verify` against both published packages after the tag publishes |
+| uat_gap | Phase 19 19-UAT | status "passed", 0 pending scenarios — not an open gap |
+| verification_gap | Phase 21 21-VERIFICATION | status "human_needed" with **5/5 must-haves verified, 0 code gaps**; the two human items are the release-gated read-backs above |
+| quick_task | 260411-8t0 / -91n / -vbq / -vp6 | missing — stale v1.2.0/v2.0-era orphan references |
+| quick_task | 260428-lya / 260609-hcb / 260630-lhs / 260630-m1i | missing — already completed (see Quick Tasks Completed table above) |
 
 ## Session Continuity
 
-Last session: 2026-06-30T19:30:40.970Z
-Stopped at: Phase 23 complete (Plan 23-02 CORE-16 exhaustive matrix done) -- ready for verification
-Last commit: b89c3e7 docs(23-01): append self-check result to summary
-Resume file: None
+Last session: 2026-06-30 — v3.1.0 release arc
+Stopped at: v3.1.0 milestone close-out complete; STOPPED before the `v3.1.0` tag push (publish trigger) per user request — awaiting explicit go-ahead
+Next action: push `origin master` (close-out commits) → create + push `v3.1.0` tag → release.yml OIDC publish → `gh attestation verify` read-back
+Resume file: .planning/notes/2026-06-30-v3.1.0-release-arc-coord-state.md

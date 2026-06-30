@@ -88,6 +88,49 @@
 
 ---
 
+## Milestone: v3.1.0 — Hardening and Hygiene
+
+**Shipped:** 2026-06-30 (milestone close; release tag `v3.1.0` pending push → OIDC + provenance publish of `@localground/mcp@3.1.0` + `@localground/cli@3.1.0`)
+**Phases:** 3 (21-23) | **Plans:** 6
+
+### What Was Built
+- Supply chain hardened — both GitHub Actions workflows SHA-pinned (40-char SHA + `# vX.Y.Z`) with a `pinact` verify-pins CI gate that resolves each SHA to its tag against the live API; publish job exact-pins runner npm (≥11.5.1) on Node ≥22.14.0 (paired OIDC floors, runtime-asserted); Dependabot `github-actions` config keeps pins fresh (Phase 21, SEC-01)
+- mcp bin `--version` predicate hardened — recognizes `--version`/`--version=…`/`-v`/`-V`, prints + exits 0 before booting the transport, case-sensitive fall-through, no parser dependency added (Phase 21, CLI-06)
+- Last hardcoded version literal eliminated — seed `toolkitVersion` derives from each package's runtime version; `verify-tarball.mjs` asserts the seed-path version *value* through both real consumer surfaces (cli `seed --json` bin, mcp `localground_seed` JSON-RPC) on the packaged tarball (Phase 22, BUILD-01)
+- `looksLikeProject` path-shape filter wired to audit AND detect — rejects system/home/drive/AppData/other-user roots while keeping marker-less plain folders discoverable (D-01); 12-test regression-lock on both invariants (Phase 22, CORE-15)
+- Decoder trailing-edge round-trip fixed — additive `encodedName + '--'` `buildCandidates` branch + case-insensitive verify-then-return (`candidates[0]` best-guess removed); `encode()` byte-unchanged; locked by a 9×5 special-char×position matrix and a canonical-OneDrive value re-assertion (Phase 23, CORE-16)
+
+### What Worked
+- **"Assert the VALUE, not the shape" carried forward as a per-requirement success criterion** — BUILD-01's tarball value gate, SEC-01's SHA→tag resolution (not merely "is it pinned"), and CORE-16's value-asserted matrix each tested the outcome, not the format. The v3.0.1 lesson became a milestone-wide discipline.
+- **Additive-over-rewrite for the highest-risk change** — the CORE-16 `+ '--'` branch can only ADD decode candidates, so every previously-passing shape (incl. the load-bearing OneDrive fix) was structurally safe from regression; the verify-then-return filter rejected the spurious extras.
+- **Sequencing by blast radius** — SEC-01 (pure YAML) hardened the pipeline first; CORE-16 (highest regression risk) landed last with the full hardened suite as its safety net.
+- **Staged release with explicit stop points** — validate pinact CI green (Stage 1) → version bump (Stage 2) → milestone close → gated tag/publish (Stage 3) kept the human in the loop at every CI-firing push and before the irreversible npm publish.
+- **Pre-edit grep before the mechanical version bump** caught a 5th version-of-record (`.claude-plugin/plugin.json`) that the remembered "four manifests" scope missed.
+
+### What Was Inefficient
+- **GSD cascade-drift recurred** — `phase.complete` didn't flip the ROADMAP phase checkbox (manual fix, again), and `milestone.complete` rewrote STATE.md's body with stale pre-close fields (`Current focus: Phase 23`, `Last shipped: v3.0.1`) needing manual `update_state` cleanup.
+- **`.planning/` gitignored-but-tracked friction** — `gsd-sdk query commit` fails on those paths; every planning commit needs a `git add -f` fallback.
+- **Two Phase 21 human-UAT items sat "pending" through close** — the pinact live run and the SLSA-provenance read-back are release-gated; they show up in every pre-close audit until the actual release runs (the pinact one was in fact satisfied by the Stage 1/2 validation pushes).
+
+### Patterns Established
+- **Release-as-stages with a stop before the irreversible tag** — validate → bump → close → (gated) tag/publish → post-publish read-back. The tag push is the single point of no return (npm versions are immutable).
+- **Pre-bump grep sweep for every version-of-record** (workspace manifests + plugin manifest + lockfile) before editing — never trust a remembered file count.
+- **Derived-version verification end-to-end** — a value asserted equal to `package.json` must be tested through the real consumer surface (bin / JSON-RPC tool), not just the source constant.
+- **Additive recovery branches over regex/character-class widening** for calibrated decoders — preserve every passing shape by construction.
+
+### Key Lessons
+1. "Assert the value, not the shape" generalizes past CI to every requirement — make each requirement carry a value assertion and the whole milestone inherits the discipline.
+2. For a calibrated or load-bearing algorithm, fix *additively* — a branch that can only add candidates cannot regress existing passing inputs; widening a shared regex can.
+3. Release-gated validations (provenance attestation, live pin resolution) are deferred read-backs, not gaps — distinguish "unverifiable until the environment exists" from "untested."
+4. A remembered scope ("the four manifests") is an assumption — grep the repo for the actual surface before any mechanical sweep.
+
+### Cost Observations
+- Model mix: quality profile (opus main loop; `gsd-executor` on sonnet per config override). Phase 23 ran ultracode/sequential (worktrees disabled on Windows).
+- Sessions: the v3.1.0 implementation (Phases 21-23) plus this release arc, with a `/compact` + `post-compact-resume` bridging into the release.
+- Notable: a hardening minor with zero new feature surface — value was in closing drift/supply-chain/correctness gaps, evidenced by CI staying green (3-OS + pinact) straight through the version bump.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -96,6 +139,7 @@
 |-----------|---------|--------|------------|
 | v1.2.0 | 57 | 4 | First milestone — design spec + GSD phases for prompt engineering |
 | v3.0.1 | — | 5 | First automated release (OIDC + provenance); cross-model + adversarial verification around the irreversible publish; comprehension gates per phase |
+| v3.1.0 | — | 3 | Hardening minor (no new features); staged release with an explicit stop before the irreversible tag; a value-assertion per requirement; additive decoder fix |
 
 *(v2.0.0 and v3.0.0 predate this living retrospective and were not back-filled.)*
 
