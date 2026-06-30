@@ -99,4 +99,5 @@ The whole milestone runs on one rule carried forward from v3.0.1: **assert the V
 
 **Reviewer notes / flags for follow-up:**
 
-_(space for your notes — e.g. the CR-01 backlog item, the first-push/pinact decision, or anything you want restated)_
+- Reviewer confirmed COMPREHENSION CONFIRMED — all four sections AFFIRMED (2026-06-30).
+- Follow-up tracked: CR-01 pre-existing `seed.ts` read-back throw → backlog candidate (with WR-02/WR-03). First-push/`pinact` gate timing is a deliberate release-cadence decision, still open.
