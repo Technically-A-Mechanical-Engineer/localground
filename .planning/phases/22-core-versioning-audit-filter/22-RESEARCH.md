@@ -333,17 +333,19 @@ No `security_enforcement` key in config and no auth/crypto/network/input-trust s
 
 (Only two assumptions — both build-config HOW details deliberately left to plan-phase per ROADMAP. Every factual claim about current code, versions, and tsup behavior is `[VERIFIED]` this session.)
 
-## Open Questions
+## Open Questions (RESOLVED at plan-phase 2026-06-30 — see 22-CONTEXT.md D-01..D-07)
 
-1. **BUILD-01 mechanism (A vs B)** — *Settled to a recommendation, not a hard decision (per ROADMAP "A-vs-B HOW decision settles at plan-phase").*
+> **RESOLVED 2026-06-30** via Codex adversarial cross-review + user confirmation. All three questions below are now binding decisions in `22-CONTEXT.md`: Q1 → **D-01 (Option A)**; Q2 → **D-06 (EXTENDED scope)**; Q3 → **D-03 (direct-import driver)**. Retained here as the pre-decision record.
+
+1. **BUILD-01 mechanism (A vs B)** — *[RESOLVED → D-01: Option A].* *Settled to a recommendation, not a hard decision (per ROADMAP "A-vs-B HOW decision settles at plan-phase").*
    - What we know: Option A gives correct per-consumer semantics with no build change; Option B is correct-by-lockstep and needs an ambient + fallback. A consumer-side define is impossible (proven).
    - Recommendation: Option A. Lay both out for the planner; A is preferred.
 
-2. **CORE-15 residual-leak scope** — *Judgment call for the planner.*
+2. **CORE-15 residual-leak scope** — *[RESOLVED → D-06: EXTENDED — close other-user home roots + AppData/system-dir denylist, path-shape-only].* *Judgment call for the planner.*
    - What we know: success criteria are met by a regression-lock test alone (symptom already fixed). Residual leaks (`AppData`, other-user homes) exist but are unnamed in the criteria.
    - Recommendation: ship the mandatory test; treat leak-tightening as an optional, separately-tested, path-shape-only addition — never a marker check.
 
-3. **verify-tarball seed-invocation mechanism** — bin-driven vs direct-import (A2). HOW detail; either satisfies SC-3.
+3. **verify-tarball seed-invocation mechanism** — *[RESOLVED → D-03: direct-import driver — the mcp tarball has no `seed` bin].* bin-driven vs direct-import (A2). HOW detail; either satisfies SC-3.
 
 ## Environment Availability
 
