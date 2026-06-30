@@ -5,6 +5,20 @@ All notable changes to the LocalGround Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-06-30
+
+A hardening-and-hygiene release: supply-chain, version-integrity, and correctness fixes carried forward from the v3.0.1 close. No new feature surface — the MCP tools, CLI commands, and skills are unchanged.
+
+### Security
+- Every third-party GitHub Actions `uses:` reference in the CI and release workflows is now pinned to a full 40-character commit SHA, and a CI gate (`pinact`) verifies each pinned SHA actually resolves to its commented tag — a SHA alone can point at a fork or the wrong commit. A Dependabot `github-actions` config keeps the pins updatable.
+- The OIDC publish job exact-pins the runner's npm (≥ 11.5.1) and runs on Node ≥ 22.14.0 — the paired OIDC trusted-publishing floors — and asserts both at runtime. Publishing still uses OIDC with no stored npm token and produces a SLSA-provenance attestation.
+
+### Fixed
+- The `@localground/mcp` bin now robustly recognizes a `--version` request — including `--version=…` and the `-v`/`-V` aliases — prints the version to stdout and exits 0 without ever booting the stdio transport. Long-form flags are case-sensitive, so `--Version`/`--VERSION` intentionally fall through to normal startup. No argument-parser dependency was added.
+- The seed manifest's `toolkitVersion` is now derived from the consuming package's version (`@localground/mcp` or `@localground/cli`) instead of a hardcoded literal, so it can no longer drift from the published package version. `scripts/verify-tarball.mjs` now asserts the seed-path version *value* (it previously gated only the bin `--version`).
+- Audit auto-discovery no longer surfaces home, drive, or system roots (e.g. `C:\Users\…`) as candidate projects, while plain-folder projects with no `.git`/`package.json` marker stay discoverable. The fix lives in `@localground/core`, so the CLI `audit`/`detect` and the MCP `audit` tool behave identically.
+- A special character (`'`, `&`, `[`, `]`, `(`, `)`, `+`, `=`, `%`) at the trailing edge of an intermediate path component now round-trips losslessly through `encode()`/`decode()`. The previously-passing path-hashes and the load-bearing v3.0.0 OneDrive decode fix are unchanged.
+
 ## [3.0.2] - 2026-06-29
 
 ### Fixed
