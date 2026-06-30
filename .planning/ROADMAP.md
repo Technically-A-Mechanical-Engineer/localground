@@ -180,6 +180,17 @@ Plans:
 
 **Status:** PROMOTED into v3.1.0 scope on 2026-06-29 as **CORE-16 → Phase 23: Decoder Trailing-Edge Fix**. No longer a backlog item; tracked under `## Phases (v3.1.0 -- Active)` above. Original diagnosis: CORE-13 special char at the trailing edge of an intermediate component still fails decode due to the trailing-hyphen-strip asymmetry in `buildCandidates`.
 
+### Phase 999.8: multi-trailing-special-character decode — out of CORE-16 scope (BACKLOG)
+
+**Goal:** Phase 23 (CORE-16) makes a SINGLE special char at the trailing edge of an intermediate path component round-trip, via the additive `encodedName + '--'` branch in `buildCandidates`. A component ending in TWO OR MORE special chars (e.g. `Foo&&/sub` → `...-Foo---sub`, three hyphens) is matched by neither the single-hyphen nor the double-hyphen prefix branch and still returns `no_candidates`. A general fix would try N consecutive separators (`encodedName + '-'.repeat(k)`, k ≥ 1), relying on the Phase-23 D-01 verify-then-return filter to reject the spurious interpretations the extra branching surfaces — explicitly beyond CORE-16's "a special character" (singular) scope and the locked L-01 `+ '--'` shape.
+**Source:** Surfaced at Phase 23 plan time (cross-model stress test + orchestrator verbatim-port empirical probe, 2026-06-30); pinned as a passing documented boundary guard in `.planning/phases/23-decoder-trailing-edge-fix/23-02-PLAN.md` (Task 2 — asserts it stays `no_candidates`). Promotion lineage mirrors 999.7 → CORE-16.
+**Requirements:** none yet (a new CORE-NN would be assigned on promotion).
+**Active-environment impact:** Zero — same as the original CORE-16 defect; the user's live `~/.claude/projects/` contains no path-hashes of this shape (Phase 17 23-path-hash diagnostic). Decode of every real path the user touches is unaffected.
+**Deferral note:** Document-and-guard chosen over a fix to preserve L-01/L-02 and CORE-16's single-char scope. Low priority; promote only if a real multi-trailing-special path-hash is observed in the wild.
+
+Plans:
+- [ ] TBD (promote with /gsd-review-backlog when ready)
+
 ---
 *Roadmap created: 2026-04-11*
 *v3.0.0 phases added: 2026-04-12*
@@ -189,3 +200,4 @@ Plans:
 *v3.0.1 amendment: 2026-04-27 — added DOC-03 (per-package READMEs visible on npmjs.com) mapped to Phase 20*
 *v3.0.1 milestone closed: 2026-06-29 — Phases 16-20 collapsed to archive; shipped to npm as v3.0.2 (SC5 fix-forward). Carry-forward to v3.1.0: seed toolkitVersion drift-proofing, MD-01 (SHA-pin actions), MD-02 (mcp --version parsing), CLI-05 (999.5).*
 *v3.1.0 phases added: 2026-06-29 — Phases 21-23 (SEC-01 + CLI-06 → 21; BUILD-01 + CORE-15 → 22; CORE-16 → 23). 5/5 requirements mapped. Backlog 999.7 PROMOTED to CORE-16 (Phase 23); 999.5 retained as backlog with its requirement pointer corrected to CLI-05 → v3.2.0.*
+*Backlog 999.8 added: 2026-06-30 — multi-trailing-special-character decode (out of CORE-16 scope); surfaced at Phase 23 plan time, guarded in 23-02-PLAN.md.*
