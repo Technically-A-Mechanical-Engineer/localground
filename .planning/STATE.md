@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v3.1.0
 milestone_name: Hardening and Hygiene
-status: verifying
+status: ready_to_plan
 stopped_at: Completed 22-02-PLAN.md
 last_updated: "2026-06-30T17:01:55.097Z"
 last_activity: 2026-06-30
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 4
   completed_plans: 4
   percent: 100
@@ -16,7 +16,7 @@ progress:
 
 # Project State
 
-**Status:** Phase complete — ready for verification
+**Status:** Ready to plan
 **Last Activity:** 2026-06-30
 **Current focus:** Phase 22 Plan 02 (CORE-15 — audit root filter regression-lock)
 
@@ -30,8 +30,8 @@ See: `.planning/PROJECT.md` (updated 2026-06-29 after v3.0.1 milestone close)
 
 ## Current Position
 
-Phase: 22 (core-versioning-audit-filter) — EXECUTING
-Plan: 2 of 2
+Phase: 23
+Plan: Not started
 Status: Phase complete — ready for verification
 Last activity: 2026-06-30
 
